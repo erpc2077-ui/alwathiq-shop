@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +15,8 @@
 <meta name="twitter:title" content="الوثيق | إكسسوارات الهاتف الأصلية في الجزائر">
 <meta name="twitter:description" content="متجر متخصص في إكسسوارات الهاتف: باور بانك، شواحن، كوابل، سماعات، أغطية واقيات أصلية. توصيل لكل ولايات الجزائر مع الدفع عند الاستلام.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1b34" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#ffffff" id="themeColorNow">
+<meta name="theme-color" content="#0E0E0E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0E0E0E" id="themeColorNow">
 
 <!-- الوضع يُضبط قبل الرسم لتفادي الوميض الأبيض -->
 <script>
@@ -24,16 +24,16 @@
   try {
     var t = localStorage.getItem("kp-theme");
     if (t !== "light" && t !== "dark") {
-      t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      t = "dark";
     }
     document.documentElement.setAttribute("data-theme", t);
     var tc = document.getElementById("themeColorNow");
-    if (tc) tc.setAttribute("content", t === "dark" ? "#0b1b34" : "#ffffff");
+    if (tc) tc.setAttribute("content", t === "dark" ? "#0E0E0E" : "#F5F5F5");
   } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
 })();
 </script>
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23405de6'/%3E%3Cstop offset='0.2' stop-color='%235851db'/%3E%3Cstop offset='0.4' stop-color='%23833ab4'/%3E%3Cstop offset='0.6' stop-color='%23c13584'/%3E%3Cstop offset='0.8' stop-color='%23e1306c'/%3E%3Cstop offset='1' stop-color='%23fd1d1d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='24' height='24' rx='5.5' fill='url(%23g)'/%3E%3Crect x='3.1' y='3.1' width='17.8' height='17.8' rx='5.3' fill='none' stroke='white' stroke-width='1.35'/%3E%3Ccircle cx='12' cy='12' r='4.05' fill='none' stroke='white' stroke-width='1.35'/%3E%3Ccircle cx='17.15' cy='6.85' r='1.15' fill='white'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-14 -10 148 150'%3E%3Crect x='-14' y='-10' width='148' height='150' rx='30' fill='%230E0E0E'/%3E%3Cg fill='%23D4AF7C'%3E%3Cpath d="M60 3l7 11-7 11-7-11z"/%3E%3Cpath d="M4 20h30l26 100L40 74z"/%3E%3Cpath d="M116 20H86L60 120l20-46z"/%3E%3Cpath d="M40 34h12l8 58-12-14z"/%3E%3Cpath d="M80 34H68l-8 58 12-14z"/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23405de6'/%3E%3Cstop offset='0.2' stop-color='%235851db'/%3E%3Cstop offset='0.4' stop-color='%23833ab4'/%3E%3Cstop offset='0.6' stop-color='%23c13584'/%3E%3Cstop offset='0.8' stop-color='%23e1306c'/%3E%3Cstop offset='1' stop-color='%23fd1d1d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='url(%23g)'/%3E%3Crect x='23' y='23' width='134' height='134' rx='40' fill='none' stroke='white' stroke-width='10'/%3E%3Ccircle cx='90' cy='90' r='30' fill='none' stroke='white' stroke-width='10'/%3E%3Ccircle cx='128.6' cy='51.4' r='8.6' fill='white'/%3E%3C/svg%3E">
 <meta name="author" content="الوثيق">
 <meta name="robots" content="index, follow">
@@ -45,7 +45,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Almarai:wght@400;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    إكسسوارات الهاتف الأصلية: شواحن، باور بانك، سماعات، أغطية واقيات.
@@ -1581,26 +1581,127 @@ ul { margin: 0; padding: 0; list-style: none; }
 .gear-float svg { width: 23px; height: 23px; }
 .gear-float:hover { transform: scale(1.09); color: var(--accent); box-shadow: var(--shadow-lg), var(--glow-sm); }
 
-.admin-modal { max-width: 840px; }
-.admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 26px 0; }
-.admin-head h3 { font-size: 20px; }
-.aout {
-  color: var(--muted); font-weight: 600; font-size: 14px; padding: 7px 12px;
-  border-radius: 9px; border: 1px solid var(--line); background: var(--bg-2);
-  transition: color .2s, background .2s;
+/* ---------------- 18. غرفة الإدارة (كاملة الشاشة) ---------------- */
+/* الغرفة تحلّ محلّ اللوحة المنبثقة القديمة: شريط علوي ثابت، شرائط
+   تبويب أفقية، ومحتوى واسع. المكوّنات الداخلية (الحقول، بطاقات الطلب،
+   بطاقات المنتجات) باقية كما هي فتُعيد الاستعمال. */
+.adroom {
+  position: fixed; inset: 0; z-index: 300;
+  background: var(--bg); color: var(--text);
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  animation: adroomIn .22s var(--ease);
 }
-.aout:hover { color: var(--text); background: var(--bg-3); }
-.admin-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 26px 0; border-bottom: 1px solid var(--line); }
-.atab {
-  padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 600;
-  color: var(--muted); border: 1px solid transparent;
-  transition: color .2s, background .2s, border-color .2s;
+.adroom[hidden] { display: none; }
+@keyframes adroomIn { from { opacity: 0; } }
+/* نمنع تمرير الصفحة خلف الغرفة */
+html.adm-open, html.adm-open body { overflow: hidden; }
+
+.adroom-top {
+  position: sticky; inset-block-start: 0; z-index: 4;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px;
+  padding: 11px clamp(14px, 3vw, 30px);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
 }
-.atab:hover { color: var(--text); background: var(--bg-3); }
-.atab.active { color: var(--accent); background: var(--accent-soft); border-color: var(--glow-line); box-shadow: var(--glow-sm); }
-.admin-pane { padding: 20px 26px 8px; }
-.admin-foot { padding: 8px 26px 26px; display: grid; gap: 10px; }
-.admin-foot .btn { justify-self: start; }
+.adroom-brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.adroom-logo {
+  width: 40px; height: 40px; border-radius: 12px; flex: none;
+  display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); box-shadow: var(--glow-sm);
+}
+.adroom-logo svg { width: 22px; height: 22px; }
+.adroom-brand b { display: block; font-size: 15px; }
+.adroom-brand small { display: block; color: var(--faint); font-size: 12px; }
+.adroom-spacer { flex: 1 1 auto; }
+.adroom-act {
+  height: 38px; padding: 0 13px; border-radius: 10px; flex: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  font-weight: 600; font-size: 13.5px; transition: color .2s, border-color .2s, background .2s;
+}
+.adroom-act:hover { color: var(--text); border-color: var(--glow-line); }
+
+.adroom-tabs {
+  position: sticky; inset-block-start: 0; z-index: 3;
+  display: flex; gap: 8px;
+  padding: 12px clamp(14px, 3vw, 30px);
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+.adroom-tab {
+  flex: none; white-space: nowrap;
+  padding: 9px 16px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 7px;
+  transition: color .2s, background .2s, border-color .2s, box-shadow .2s;
+}
+.adroom-tab:hover { color: var(--text); }
+.adroom-tab b {
+  font: inherit; background: var(--danger); color: #fff;
+  border-radius: 999px; font-size: 11px; padding: 1px 7px;
+}
+.adroom-tab b.grey { background: var(--faint); }
+.adroom-tab.on {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent; color: var(--accent-ink); box-shadow: var(--glow-sm);
+}
+
+.adroom-wrap {
+  width: 100%; max-width: 1180px; margin: 0 auto;
+  padding: clamp(16px, 3vw, 30px); display: grid; gap: 14px;
+}
+.adroom-foot { display: grid; gap: 10px; padding-top: 4px; }
+.adroom-foot .btn { justify-self: start; }
+.adroom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; align-items: start; }
+.adroom-card {
+  border: 1px solid var(--line); border-radius: 16px; background: var(--card);
+  padding: 18px; display: grid; gap: 11px;
+}
+.adroom-grid .adroom-card { background: var(--bg-2); }
+.adroom-card h4 { font-size: 15px; }
+.adroom-login { min-height: 70vh; display: grid; place-items: center; padding: 24px; }
+.adroom-hint { max-width: 34ch; }
+
+/* بطاقة العميل */
+.cust { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); padding: 13px 14px; display: grid; gap: 7px; }
+.cust-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.cust-top b { font-size: 15px; }
+.cust-top a { color: var(--accent); font-weight: 600; font-size: 13.5px; }
+.cust-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--muted); font-size: 13.5px; }
+
+/* بطاقة الرأي */
+.arev { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); padding: 13px 14px; display: grid; gap: 8px; }
+.arev-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+.arev-top b { font-size: 14.5px; }
+.arev-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 9px; }
+.arev-acts .adel { margin-inline-start: auto; }
+
+/* إحصاءات مختصرة */
+.adroom-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.adroom-stat { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 12px 14px; }
+.adroom-stat b { display: block; font-size: 22px; }
+.adroom-stat span { color: var(--faint); font-size: 12.5px; }
+
+/* شاشة الدخول */
+.adroom-login .alogin {
+  width: 100%; max-width: 400px; border: 1px solid var(--line); border-radius: 20px;
+  background: var(--card); box-shadow: var(--shadow-lg);
+}
+.adroom-hint { margin-top: 2px; }
+
+/* المكوّنات الموروثة (تُستعمل داخل الغرفة) */
+.alogin { padding: 34px 30px 36px; display: grid; gap: 12px; justify-items: center; text-align: center; }
+.alogin-ico {
+  width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); box-shadow: var(--glow-sm);
+}
+.alogin-ico svg { width: 28px; height: 28px; }
+.alogin form { width: 100%; display: grid; gap: 12px; margin-top: 6px; text-align: start; }
+.aerr { color: var(--danger); font-weight: 600; font-size: 14px; }
 .a-note { color: var(--faint); font-size: 13px; }
 .alist { display: grid; gap: 10px; }
 .aprod {
@@ -1627,16 +1728,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .afield.check { grid-auto-flow: column; justify-content: start; align-items: center; gap: 7px; }
 .afield.check input { width: auto; }
-.aset { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .afield.wide { grid-column: 1 / -1; }
-.alogin { padding: 34px 30px 36px; display: grid; gap: 12px; justify-items: center; text-align: center; }
-.alogin-ico {
-  width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center;
-  background: var(--accent-soft); color: var(--accent); box-shadow: var(--glow-sm);
-}
-.alogin-ico svg { width: 28px; height: 28px; }
-.alogin form { width: 100%; display: grid; gap: 12px; margin-top: 6px; text-align: start; }
-.aerr { color: var(--danger); font-weight: 600; font-size: 14px; }
+.aset { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .aorder { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); padding: 14px; display: grid; gap: 9px; }
 .aorder-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .aorder-id { font-weight: 800; }
@@ -1665,6 +1758,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   .aprod-name { grid-column: 1 / -1; }
   .adeliv { grid-template-columns: 1fr 1fr; }
   .adeliv-name { grid-column: 1 / -1; }
+  .adroom-stat-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
@@ -1944,9 +2038,9 @@ body { line-height: 1.7; }
   .aprod, .adeliv { grid-template-columns: 1fr 1fr; }
   .aprod-name, .adeliv-name { grid-column: 1 / -1; }
   .aset, .anew form { grid-template-columns: 1fr; }
-  .admin-head, .admin-pane, .admin-foot, .admin-tabs { padding-inline: 16px; }
-  .admin-tabs { flex-wrap: nowrap; overflow-x: auto; }
-  .atab { white-space: nowrap; flex: none; }
+  .adroom-top, .adroom-wrap { padding-inline: 14px; }
+  .adroom-brand small { display: none; }
+  .adroom-tab { padding: 9px 14px; }
 }
 
 /* اسم المتجر فوق العنوان: أزرق متوهّج وحجم كبير بخط Tajawal */
@@ -2134,6 +2228,398 @@ h1, h2, h3, h4, .pnow, .section-head h2 { font-family: "Almarai", "Tajawal", san
 .cf-ig svg { filter: none; }
 .cf-ig::before, .cf-ig::after { display: none; }
 .cf-ig:hover { box-shadow: var(--shadow-lg), 0 14px 30px -8px rgba(253, 89, 73, .7); }
+
+/* ============================================================
+   19. هوية الوثيق الفاخرة
+   الذهبي #D4AF7C · الأسود #0E0E0E · الرمادي #2A2A2A · الكريمي #F5F5F5
+   Tajawal للعربية · Playfair Display للإنجليزية
+   ============================================================ */
+:root, [data-theme="light"] {
+  --font: "Tajawal", "Inter", system-ui, sans-serif;
+  --serif: "Playfair Display", "Times New Roman", serif;
+  --r-lg: 14px; --r-md: 10px; --r-sm: 6px; --sec: clamp(56px, 8vw, 92px);
+  --bg: #F5F5F5; --bg-2: #ECE8DF; --bg-3: #E1DBCE; --card: #FFFFFF; --card-2: #F2EEE5;
+  --line: #E0D9CA; --line-2: #CFC5AF;
+  --text: #0E0E0E; --muted: #4A463E; --faint: #6B655A;
+  --accent: #8F6A33; --accent-2: #B8924E; --accent-soft: rgba(184, 146, 78, .14); --accent-ink: #0E0E0E;
+  --gold: #B8924E; --star: #B8924E; --sun: #8F6A33;
+  --grad: linear-gradient(135deg, #EBD2A4 0%, #D4AF7C 50%, #B58E55 100%);
+  --grad-soft: linear-gradient(135deg, #F3E8D2 0%, #EADDC0 100%);
+  --gold-text: linear-gradient(180deg, #C9A262 0%, #8F6A33 100%);
+  --ok: #0b7a53; --danger: #b3261e;
+  --shadow-sm: 0 1px 2px rgba(60, 45, 20, .07);
+  --shadow: 0 10px 28px -12px rgba(60, 45, 20, .22);
+  --shadow-lg: 0 28px 64px -24px rgba(60, 45, 20, .30);
+  --ring: 0 0 0 3px rgba(184, 146, 78, .30);
+  --glow-g1: 184, 146, 78; --glow-g2: 143, 106, 51;
+  --glow-ring: 0 0 0 3px rgba(184, 146, 78, .28);
+  --art-accent: #B8924E; --art-shell-1: #FBF9F4; --art-shell-2: #ECE6D8; --art-shell-3: #D3C9B3;
+  --art-metal-1: #E8CFA2; --art-metal-2: #B8924E; --art-glass-1: #F1ECE0; --art-glass-2: #D9CFB8;
+  --art-port: #2A2A2A; --art-screen: #0E0E0E; --art-screen-ink: #E8CFA2; --art-ring: #B8924E;
+  --art-shadow: #3a3226; --art-cable: #2A2A2A;
+  --pimg-bg: #EFEBE2;
+}
+[data-theme="dark"] {
+  --r-lg: 14px; --r-md: 10px; --r-sm: 6px;
+  --bg: #0E0E0E; --bg-2: #141414; --bg-3: #1D1D1D; --card: #171717; --card-2: #202020;
+  --line: rgba(212, 175, 124, .20); --line-2: rgba(212, 175, 124, .36);
+  --text: #F5F5F5; --muted: #C4BCAC; --faint: #968F81;
+  --accent: #D4AF7C; --accent-2: #E8CFA2; --accent-soft: rgba(212, 175, 124, .12); --accent-ink: #0E0E0E;
+  --gold: #D4AF7C; --star: #D4AF7C; --sun: #D4AF7C;
+  --grad: linear-gradient(135deg, #EBD2A4 0%, #D4AF7C 50%, #B58E55 100%);
+  --grad-soft: linear-gradient(135deg, #2A2A2A 0%, #1B1B1B 100%);
+  --gold-text: linear-gradient(180deg, #F3DFB8 0%, #D4AF7C 55%, #A98245 100%);
+  --ok: #6fcf97; --danger: #e5707a;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
+  --shadow: 0 12px 30px -12px rgba(0, 0, 0, .75);
+  --shadow-lg: 0 30px 70px -24px rgba(0, 0, 0, .85);
+  --ring: 0 0 0 3px rgba(212, 175, 124, .32);
+  --glow-g1: 212, 175, 124; --glow-g2: 181, 142, 85;
+  --glow-ring: 0 0 0 3px rgba(212, 175, 124, .30);
+  --art-accent: #D4AF7C; --art-shell-1: #3a3a3a; --art-shell-2: #2A2A2A; --art-shell-3: #1a1a1a;
+  --art-metal-1: #E8CFA2; --art-metal-2: #9C7A45; --art-glass-1: #3a3631; --art-glass-2: #1f1d1a;
+  --art-port: #0E0E0E; --art-screen: #0E0E0E; --art-screen-ink: #E8CFA2; --art-ring: #D4AF7C;
+  --art-shadow: #000; --art-rim: rgba(255, 235, 200, .35); --art-shine: rgba(255, 240, 210, .35); --art-cable: #0E0E0E;
+  --pimg-bg: radial-gradient(circle at 50% 30%, #2A2A2A 0%, #161616 80%);
+}
+html { color-scheme: dark light; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); }
+body::before, body::after { display: none !important; }
+::selection { background: #D4AF7C; color: #0E0E0E; }
+::-webkit-scrollbar-thumb { background: rgba(212, 175, 124, .45); border: 2px solid var(--bg); }
+h1, h2, h3, h4, .pnow, .section-head h2, .hero h1 { font-family: var(--font); font-weight: 800; letter-spacing: 0; }
+html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3, html[lang="en"] .hero h1, html[lang="en"] .section-head h2 { font-family: var(--serif); font-weight: 600; }
+input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: var(--ring); }
+
+/* الهيدر */
+#navbar { background: color-mix(in srgb, var(--bg) 88%, transparent); border-bottom: 1px solid var(--line); box-shadow: 0 1px 0 rgba(212, 175, 124, .12); }
+.logo-mark { width: auto; height: auto; background: none; box-shadow: none; border-radius: 0; filter: drop-shadow(0 0 10px rgba(212, 175, 124, .25)); }
+.logo-mark .emb { width: 34px; height: 37px; display: block; }
+.logo-txt b { background: var(--gold-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; font-weight: 800; font-size: 1.25em; }
+.logo-txt::after { content: "AL WATHIQ"; display: block; font: 600 9px var(--serif); letter-spacing: .4em; color: var(--accent); margin-top: 1px; }
+html[lang="en"] .logo-txt::after { display: none; }
+.nav-links a { border-radius: 8px; color: var(--muted); }
+.nav-links a:hover, .nav-links a.active { background: var(--accent-soft); color: var(--accent); }
+
+/* الأزرار */
+.btn { border-radius: 10px; font-weight: 700; letter-spacing: .01em; }
+.btn-primary { background: var(--grad); color: #0E0E0E; box-shadow: 0 12px 26px -12px rgba(212, 175, 124, .65); border: 1px solid rgba(255, 235, 200, .35); }
+.btn-primary:hover { box-shadow: 0 16px 34px -10px rgba(212, 175, 124, .75); transform: translateY(-2px); }
+.btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--line-2); }
+.btn-ghost:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+
+/* الهيرو */
+.hero { padding-block: 56px 40px; }
+.eyebrow { background: transparent; border: 1px solid var(--line-2); border-radius: 4px; color: var(--accent); letter-spacing: .02em; padding: 6px 14px; }
+.eyebrow::before { width: 6px; height: 6px; border-radius: 0; transform: rotate(45deg); background: var(--accent); animation: none; }
+.hero h1 .accent { background: var(--gold-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.hbadge, .hero-art .tag-float { background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+.orb { background: radial-gradient(circle at 50% 40%, rgba(212, 175, 124, .22), rgba(212, 175, 124, 0) 66%); }
+
+.hero-art { min-height: 660px; }
+.hero-lockup { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+.hl-emb { width: clamp(52px, 7vw, 68px); height: auto; margin-bottom: 8px; filter: drop-shadow(0 0 18px rgba(212, 175, 124, .35)); }
+.hl-name { font-family: var(--font); font-weight: 800; line-height: 1.15; font-size: clamp(54px, 8vw, 80px); background: var(--gold-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; text-shadow: none; filter: drop-shadow(0 0 22px rgba(212, 175, 124, .22)); }
+.hl-sub { font-family: var(--serif); font-weight: 500; font-size: clamp(15px, 2vw, 19px); letter-spacing: .5em; padding-inline-start: .5em; color: var(--text); margin-top: 0; }
+.hl-tag { display: flex; align-items: center; gap: 12px; margin-top: 12px; color: var(--muted); font-size: 14px; }
+.hl-tag i { width: 34px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+.hl-tag i:last-child { transform: scaleX(-1); }
+.hl-desc { font-family: var(--serif); font-size: 10.5px; letter-spacing: .34em; padding-inline-start: .34em; color: var(--faint); margin-top: 6px; }
+
+.hero-art .phone-mock { border-color: #000; background: linear-gradient(145deg, #2A2A2A, #0E0E0E); box-shadow: 0 0 0 1px rgba(212, 175, 124, .55), 0 36px 60px -26px rgba(0, 0, 0, .8); }
+.hero-art .phone-screen { background: linear-gradient(160deg, #2A2A2A, #0E0E0E); }
+.screen-glow { background: radial-gradient(circle at 30% 20%, rgba(212, 175, 124, .28), transparent 55%); }
+.ps-check circle { stroke: #D4AF7C; } .ps-check path { stroke: #F5F5F5; }
+.ps-top i { background: #D4AF7C; }
+.ps-pill { background: rgba(212, 175, 124, .14); border-color: rgba(212, 175, 124, .55); color: #E8CFA2; }
+.hero-art .float-chip { background: var(--card); border: 1px solid var(--line-2); border-radius: 8px; color: var(--text); box-shadow: var(--shadow); }
+.hero-art .float-chip svg, .hero-art .chip-1 svg, .hero-art .chip-2 svg, .hero-art .chip-3 svg, .hero-art .chip-4 svg { color: var(--accent); }
+@media (max-width: 860px) { .hero-art { min-height: 560px; } }
+
+/* عناوين الأقسام */
+.section-head h2::after { content: ""; display: block; width: 56px; height: 1px; margin-top: 12px; background: linear-gradient(90deg, var(--accent), transparent); }
+.chip { background: transparent; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); }
+.chip:hover { border-color: var(--line-2); color: var(--accent); }
+.chip.active, .chip[aria-pressed="true"], .chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+/* البطاقات */
+.pcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: none; }
+.pcard:hover { transform: translateY(-4px); border-color: var(--line-2); box-shadow: var(--shadow), 0 0 0 1px rgba(212, 175, 124, .12); }
+.pimg, .pcard:hover .pimg { background: var(--pimg-bg); }
+.pcat { background: none; border: 0; padding: 0; color: var(--accent); letter-spacing: .04em; border-radius: 0; }
+.pname { color: var(--text); }
+.pnow { color: var(--accent); }
+.pold { color: var(--faint); }
+.padd { background: transparent; border: 1px solid var(--line-2); color: var(--accent); border-radius: 8px; }
+.padd:hover:not(:disabled) { background: var(--grad); color: #0E0E0E; border-color: transparent; }
+.ptag.fire, [data-theme="dark"] .ptag.fire { background: var(--grad); color: #0E0E0E; }
+
+/* نوافذ وتذييل وإشعارات */
+.ov { background: rgba(0, 0, 0, .74); }
+.modal, .drawer { background: var(--card); border: 1px solid var(--line-2); }
+.drawer { border-radius: 0; }
+.toast { background: var(--card); color: var(--text); border: 1px solid var(--line-2); border-radius: 8px; }
+#footer { background: var(--bg-2); border-top: 1px solid var(--line-2); }
+#footer .logo-mark .emb { width: 40px; height: 43px; }
+.gear-float { background: var(--card); border: 1px solid var(--line-2); color: var(--accent); }
+.cf-wa { background: #1faa59; }
+
+/* الشاشة الافتتاحية */
+#splash { background: #0E0E0E; }
+#splash .splash-mark { background: none; box-shadow: none; width: auto; height: auto; filter: drop-shadow(0 0 22px rgba(212, 175, 124, .35)); }
+#splash .splash-mark .emb { width: 66px; height: 71px; }
+#splash .splash-name b { font-family: var(--serif); font-weight: 500; font-size: 20px; letter-spacing: .5em; padding-inline-start: .5em; color: #F5F5F5; }
+#splash .splash-name span { font-weight: 800; font-size: 48px; background: linear-gradient(180deg, #F3DFB8, #D4AF7C 55%, #A98245); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none; }
+#splash .splash-bar span { background: linear-gradient(90deg, #A98245, #F3DFB8); }
+
+/* تصحيح قواعد الوضع الداكن القديمة الزرقاء */
+[data-theme="dark"] .rev::before { background: linear-gradient(90deg, transparent, #D4AF7C 22%, #F3DFB8 50%, #D4AF7C 78%, transparent); }
+[data-theme="dark"] .section-head h2::before { display: none; }
+[data-theme="dark"] .pimg { background: var(--pimg-bg); }
+[data-theme="dark"] .pimg .art { filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .6)) drop-shadow(0 0 22px rgba(212, 175, 124, .18)); }
+[data-theme="dark"] .pcard:hover .pimg .art { filter: drop-shadow(0 22px 28px rgba(0, 0, 0, .65)) drop-shadow(0 0 30px rgba(212, 175, 124, .30)); }
+[data-theme="dark"] #navbar { border-bottom-color: rgba(212, 175, 124, .28); box-shadow: 0 1px 18px -8px rgba(212, 175, 124, .35); }
+[data-theme="dark"] .fopt.on { box-shadow: inset 0 0 0 1px rgba(212, 175, 124, .3); }
+[data-theme="dark"] .pimg:has(.art-img) .art-img { filter: none; }
+
+/* ============================================================
+   20. إصلاحات الخط والأرقام والجوال والنماذج
+   ============================================================ */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; line-height: 1.75; font-weight: 400; }
+/* التباعد بين الحروف يقطع اتصال الحروف العربية: نلغيه في كل النصوص العربية */
+html[lang="ar"] :is(h1, h2, h3, h4, h5, p, a, button, span, li, label, small, b, strong, em, input, textarea, select, td, th, div):not(.hl-sub):not(.hl-desc):not(#splashEn) { letter-spacing: 0 !important; }
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3 { line-height: 1.4; }
+.hero h1 { line-height: 1.32; font-weight: 800; }
+/* النص المتدرّج: مساحة كافية كي لا تُقصّ الحروف النازلة (ق، ي، ج) */
+.hl-name { line-height: 1.5; padding-block: .06em .1em; padding-inline: .08em; }
+.logo-txt b { line-height: 1.5; padding-block: .02em .08em; display: inline-block; }
+.hero h1 .accent { padding-inline: .06em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.pname { font-weight: 700; line-height: 1.55; }
+.pnow, .cur, .num, .total-row b, .btn-amt, .dopt-price { font-variant-numeric: lining-nums tabular-nums; }
+
+/* الأرقام والأسعار: لا تنقلب أبداً داخل النص العربي */
+.num, .order-code, .aorder-id, a[href^="tel:"], [data-ltr] { direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+.pprice, .pold, .total-row b { white-space: nowrap; }
+input[type="tel"], input[type="email"], input[data-digits], input[type="password"] { direction: ltr; }
+[dir="rtl"] input[type="tel"], [dir="rtl"] input[type="email"], [dir="rtl"] input[data-digits] { text-align: right; }
+input[data-digits]::placeholder, input[type="tel"]::placeholder { direction: ltr; }
+
+/* الحقول: لا يكبّر الآيفون الشاشة، وأهداف لمس مريحة */
+.field input, .field select, .field textarea, .afield input, .afield select, .afield textarea, .news-form input { font-size: 16px; min-height: 46px; }
+.field textarea, .afield textarea { min-height: 84px; }
+.btn, .padd, .icon-btn, .chip { min-height: 44px; }
+.padd, .icon-btn { min-width: 40px; }
+.modal { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 860px) {
+  .hero-art { order: 0; min-height: 470px; margin-top: 8px; }
+  .hero-art .phone-mock { width: 152px; height: 304px; border-width: 5px; border-radius: 34px; }
+  .hero-art .phone-screen { border-radius: 27px; }
+  .ps-check { width: 62px; height: 62px; }
+  .hl-emb { width: 48px; }
+  .hl-name { font-size: clamp(44px, 14vw, 62px); }
+  .hl-desc { display: none; }
+  .hero-art .chip-1 { top: 44%; } .hero-art .chip-4 { top: 50%; } .hero-art .chip-2 { bottom: 20%; } .hero-art .chip-3 { bottom: 10%; }
+}
+@media (max-width: 620px) {
+  :root { --pad: 16px; --sec: 44px; }
+  body { font-size: 16px; }
+  .hero { padding-block: 28px 20px; }
+  .hero h1 { font-size: clamp(27px, 8vw, 34px); }
+  .lead { font-size: 15.5px; }
+  .hero-ctas, .hero-cta { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .hero-ctas .btn, .hero-cta .btn { width: 100%; justify-content: center; }
+  .section-head h2 { font-size: 22px; }
+  .logo-txt { display: block !important; font-size: 17px; }
+  .logo-txt::after { font-size: 8px; letter-spacing: .3em; }
+  .logo-mark .emb { width: 28px; height: 31px; }
+  .field.two { grid-template-columns: 1fr; gap: 12px; }
+  .prod-grid { gap: 12px; }
+  .pbody { padding: 12px 12px 14px; gap: 5px; }
+  .pname { font-size: 14px; min-height: 2.9em; }
+  .pnow { font-size: 15.5px; }
+  .pold { font-size: 12px; }
+  .pbottom { gap: 8px; align-items: center; }
+  /* النوافذ تصعد من أسفل الشاشة كصفحة سفلية */
+  .modal, [dir="rtl"] .modal, .modal.open, [dir="rtl"] .modal.open {
+    inset-block-start: auto !important; inset-block-end: 0 !important; inset-inline-start: 0 !important; inset-inline-end: 0 !important;
+    transform: none !important; width: 100%; max-width: none; max-height: 94vh; max-height: 94dvh;
+    border-radius: 20px 20px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px);
+    animation: kpSheet .28s var(--ease);
+  }
+  @keyframes kpSheet { from { opacity: 0; margin-block-end: -28px; } }
+  .drawer { width: 100%; max-width: 100%; }
+  .modal-close { inset-block-start: 10px; inset-inline-end: 10px; }
+  #footer { padding-bottom: 96px; }
+  .toast, #toasts { max-width: calc(100vw - 24px); }
+}
+@media (max-width: 400px) {
+  .hero-art .float-chip { font-size: 11px; padding: 6px 9px; }
+  .hero-art .float-chip svg { width: 15px; height: 15px; }
+  .hero-art .chip-1, .hero-art .chip-2 { right: -2%; } .hero-art .chip-3, .hero-art .chip-4 { left: -2%; }
+}
+
+/* ============================================================
+   21. هيرو الجوال: الهاتف يتحرك وحده في الأعلى، وتحته العنوان والتعريفات
+   ============================================================ */
+@media (max-width: 860px) {
+  .hero-grid { gap: 6px; }
+  .hero-art { order: -1; min-height: 0; margin: 0; padding-top: 4px; }
+  .hero-art .float-chip, .hero-art .tag-float { display: none !important; }
+  .hero-art .phone-mock { width: 176px; height: 352px; margin-bottom: 26px; }
+  .hero-art .phone-screen { border-radius: 30px; }
+  .ps-check { width: 70px; height: 70px; }
+  .hl-emb { width: 52px; }
+  .hero-grid > div:first-child { text-align: center; }
+  .hero-grid > div:first-child .lead { margin-inline: auto; }
+  .hero-cta { justify-content: center; }
+  .hero-badges { justify-content: center; }
+}
+/* الحركة تبقى شغّالة حتى لو كان الجوال في وضع توفير الحركة/البطارية */
+@media (prefers-reduced-motion: reduce) {
+  .hero-art .phone-mock { opacity: 1; animation: rf2-phone-in 1s cubic-bezier(.2, .8, .2, 1) .1s forwards, rf2-phone-float 4.5s ease-in-out 1.1s infinite !important; }
+  .hero-art .ps-check path { animation: rf2-check 3.4s ease-in-out infinite !important; }
+  .hero-art .orb { animation: rf-orb 5s ease-in-out infinite !important; }
+}
+
+/* ============================================================
+   22. أربعة إكسسوارات متحركة مكان الهاتف
+   ============================================================ */
+.hero-art { min-height: 0; padding: 4px 0 14px; }
+.hero-art .tag-float, .hero-art .phone-mock, .hero-art .float-chip { display: none !important; }
+.acc-stage { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; width: min(100%, 390px); margin-top: 6px; }
+.acc {
+  --d: 4.6s; --dl: 0s; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  aspect-ratio: 1 / 1; padding: 14px 10px 12px; border-radius: 18px;
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--accent) 16%, var(--card)) 0%, var(--card) 72%);
+  border: 1px solid var(--line-2); box-shadow: var(--shadow), 0 0 0 1px rgba(212, 175, 124, .08) inset;
+  opacity: 0; animation: rf4-in .8s cubic-bezier(.2, .8, .2, 1) var(--dl) forwards, rf4-float var(--d) ease-in-out calc(var(--dl) + .8s) infinite;
+}
+.acc svg { width: 64%; height: auto; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .35)); }
+.acc span { font-size: 13.5px; font-weight: 700; color: var(--accent); }
+.acc-1 { --d: 4.4s; --dl: .1s; }
+.acc-2 { --d: 5.2s; --dl: .3s; margin-top: 26px; }
+.acc-3 { --d: 4.8s; --dl: .5s; }
+.acc-4 { --d: 5.6s; --dl: .7s; margin-top: 26px; }
+@keyframes rf4-in { from { opacity: 0; transform: translateY(26px) scale(.92); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes rf4-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-13px) rotate(2.5deg); } }
+@media (max-width: 860px) {
+  .acc-stage { width: min(100%, 320px); gap: 14px; }
+  .acc span { font-size: 12.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acc { opacity: 1; animation: rf4-in .8s cubic-bezier(.2, .8, .2, 1) var(--dl) forwards, rf4-float var(--d) ease-in-out calc(var(--dl) + .8s) infinite !important; }
+}
+
+/* ============================================================
+   23. إكسسوارات بدون إطار، سوداء في الوضع الفاتح، وتفتح وتغلق عند اللمس
+   ============================================================ */
+.acc-stage { gap: 10px 22px; width: min(100%, 410px); }
+.acc { background: none; border: 0; box-shadow: none; aspect-ratio: auto; padding: 4px 0 0; cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; outline: none; }
+.acc svg { width: 82%; filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .35)) drop-shadow(0 0 18px rgba(212, 175, 124, .16)); overflow: visible; }
+.acc span { color: var(--accent); font-size: 14px; }
+.acc:focus-visible span { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ألوان الأشكال: ذهبي في الداكن */
+/* أسود في الوضع الفاتح */
+[data-theme="light"] .acc svg { filter: drop-shadow(0 12px 14px rgba(40, 30, 10, .28)); }
+[data-theme="light"] .acc span { color: var(--text); }
+
+/* حركة الأجزاء */
+.acc .lid, .acc .bud, .acc .cup, .acc .hp-band, .acc .prong, .acc .bolt, .acc .dot, .acc .pb-logo { transform-box: fill-box; transform-origin: center; transition: transform .6s cubic-bezier(.3, 1.5, .4, 1), opacity .3s, filter .3s; }
+/* الوضع الافتراضي = مفتوحة */
+.acc .lid { transform: translateY(-30px) rotate(-7deg); }
+.acc .bud { transform: translateY(0); }
+.acc .cup-l { transform: translateX(-6px) rotate(-14deg); }
+.acc .cup-r { transform: translateX(6px) rotate(14deg); }
+.acc .hp-band { transform: scaleX(1.07); }
+.acc .prong { transform: translateY(0); }
+.acc .dot { animation: rf5-dot 2.4s ease-in-out infinite; }
+.acc .d2 { animation-delay: .4s; } .acc .d3 { animation-delay: .8s; }
+@keyframes rf5-dot { 0%, 100% { opacity: .3; } 40% { opacity: 1; } }
+/* عند المرور أو الضغط = تُغلق، وعند الترك تُفتح */
+@media (hover: hover) {
+    .acc:hover .lid { transform: translateY(0) rotate(0); }
+    .acc:hover .bud { transform: translateY(26px); }
+    .acc:hover .cup-l,   .acc:hover .cup-r { transform: translateX(0) rotate(0); }
+    .acc:hover .hp-band { transform: scaleX(.95); }
+    .acc:hover .prong { transform: translateY(15px); }
+    .acc:hover .bolt { transform: scale(1.14); filter: drop-shadow(0 0 6px rgba(212, 175, 124, .9)); }
+    .acc:hover .dot { opacity: 1; animation: none; transform: scale(1.2); }
+    .acc:hover .pb-logo { transform: scale(1.15); }
+}
+.acc.pressed .lid { transform: translateY(0) rotate(0); }
+.acc.pressed .bud { transform: translateY(26px); }
+.acc.pressed .cup-l, .acc.pressed .cup-r { transform: translateX(0) rotate(0); }
+.acc.pressed .hp-band { transform: scaleX(.95); }
+.acc.pressed .prong { transform: translateY(15px); }
+.acc.pressed .bolt { transform: scale(1.14); filter: drop-shadow(0 0 6px rgba(212, 175, 124, .9)); }
+.acc.pressed .dot { opacity: 1; animation: none; transform: scale(1.2); }
+.acc.pressed .pb-logo { transform: scale(1.15); }
+.acc:focus-visible .lid { transform: translateY(0) rotate(0); }
+.acc:focus-visible .bud { transform: translateY(26px); }
+.acc:focus-visible .cup-l, .acc:focus-visible .cup-r { transform: translateX(0) rotate(0); }
+.acc:focus-visible .hp-band { transform: scaleX(.95); }
+.acc:focus-visible .prong { transform: translateY(15px); }
+.acc:focus-visible .bolt { transform: scale(1.14); filter: drop-shadow(0 0 6px rgba(212, 175, 124, .9)); }
+.acc:focus-visible .dot { opacity: 1; animation: none; transform: scale(1.2); }
+.acc:focus-visible .pb-logo { transform: scale(1.15); }
+@media (max-width: 860px) { .acc-stage { width: min(100%, 330px); gap: 6px 14px; } .acc span { font-size: 12.5px; } }
+
+/* ============================================================
+   24. الجوال: عمود واحد فعلاً (كانت شبكة الهيرو تبقى عمودين)
+   ============================================================ */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .hero-art { order: -1; }
+  .hero-grid > div:first-child { text-align: center; }
+  .hero .eyebrow { max-width: 100%; text-align: center; }
+  .hero h1 br { display: none; }
+  .hero h1 span { display: inline; }
+  .hero h1 .accent { display: block; }
+}
+
+/* الجوال: فئات ومنتجات في عمودين بدل عمود طويل واحد */
+@media (max-width: 620px) {
+  .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .cat-card { padding: 14px 12px; }
+  .cat-card .ico { margin-bottom: 8px; }
+  .cat-card b { font-size: 14px; }
+  .prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px; }
+  .pcard { border-radius: 12px; }
+  .pimg { padding: 10px; }
+  .pbody { padding: 10px 10px 12px; gap: 4px; }
+  .pname { font-size: 13.5px; }
+  .pbottom { flex-wrap: wrap; row-gap: 6px; }
+  .pprice { flex-wrap: wrap; row-gap: 0; }
+  .pnow { font-size: 15px; }
+  .padd { width: 100%; justify-content: center; min-height: 40px; }
+}
+
+/* ألوان الإكسسوارات النهائية: بيج + لمسات ذهبية (لون صريح احتياطي بجانب التدرّج) */
+:root .acc .b { fill: url(#wBeige) #EADBBE; stroke: url(#wGold3) #C39A57; stroke-width: 2.5; }
+:root .acc .g { fill: url(#wGold3) #C39A57; }
+:root .acc .gs { fill: none; stroke: url(#wTan) #C9A96E; stroke-width: 7; stroke-linecap: round; }
+/* ============================================================
+   25. إكسسوارات بيج مع لمسات ذهبية: نفس الألوان في الوضعين
+   ============================================================ */
+:root[data-theme="dark"] .acc svg { filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .5)) drop-shadow(0 0 18px rgba(226, 196, 140, .14)); }
+:root[data-theme="light"] .acc svg { filter: drop-shadow(0 10px 12px rgba(110, 82, 32, .30)); }
+:root[data-theme="light"] .acc span { color: #7A5A2A; }
+
+/* ============================================================
+   26. الوضع الفاتح فقط: الإكسسوارات بالأخضر الزمردي الداكن مع ذهبي لامع
+   (تبقى بيج + ذهبي في الوضع الداكن). لتغيير لون الوضع الفاتح عدّل القيم الثلاث أدناه.
+   ============================================================ */
+/* الوضع الفاتح: بيج غالب مع إطار رمادي مسوّد يحيط بكل قطعة ولمسات ذهبية */
+.acc .ol { display: none; }
+:root[data-theme="light"] .acc .b { fill: url(#wBeige) #EFE0C2; stroke: #26262A; stroke-width: 3.2; stroke-linejoin: round; }
+:root[data-theme="light"] .acc .g { fill: url(#wGold3) #C39A57; stroke: #26262A; stroke-width: 1.6; stroke-linejoin: round; }
+:root[data-theme="light"] .acc .gs { fill: none; stroke: #E9D8B2; stroke-width: 7; stroke-linecap: round; }
+:root[data-theme="light"] .acc .ol { display: inline; fill: none; stroke: #26262A; stroke-width: 12.4; stroke-linecap: round; }
+:root[data-theme="light"] .acc svg { filter: drop-shadow(0 12px 12px rgba(30, 22, 8, .34)); }
+:root[data-theme="light"] .acc span { color: #26262A; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
@@ -2143,13 +2629,12 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
 </script>
 </head>
 <body>
+<svg width="1" height="1" style="position:absolute;left:-9999px;top:0;overflow:hidden" aria-hidden="true" focusable="false"><defs><linearGradient id="wGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0D9AE"/><stop offset=".5" stop-color="#D4AF7C"/><stop offset="1" stop-color="#9C7A45"/></linearGradient><linearGradient id="wGold2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#F0D9AE"/><stop offset=".5" stop-color="#D4AF7C"/><stop offset="1" stop-color="#9C7A45"/></linearGradient><linearGradient id="wBeige" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#F8EEDA"/><stop offset="1" stop-color="#E0CDA6"/></linearGradient><linearGradient id="wGold3" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#E2C48C"/><stop offset=".55" stop-color="#C39A57"/><stop offset="1" stop-color="#94703A"/></linearGradient><linearGradient id="wTan" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#DCC592"/><stop offset="1" stop-color="#B58E52"/></linearGradient><linearGradient id="wEmerald" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#2F8068"/><stop offset="1" stop-color="#0F3B30"/></linearGradient><linearGradient id="wGoldBright" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#F6E4BE"/><stop offset=".5" stop-color="#DDB878"/><stop offset="1" stop-color="#B58E55"/></linearGradient></defs></svg>
 
 <!-- ================= شاشة الدخول: الاسم وشريط التحميل ثم الدخول ================= -->
 <div id="splash" aria-hidden="false">
   <div class="splash-in">
-    <span class="splash-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><circle cx="12" cy="18.6" r="1"/></svg>
-    </span>
+    <span class="splash-mark" aria-hidden="true"><svg class="emb " viewBox="0 0 120 130" fill="url(#wGold)" aria-hidden="true"><path d="M60 3l7 11-7 11-7-11z"/><path d="M4 20h30l26 100L40 74z"/><path d="M116 20H86L60 120l20-46z"/><path d="M40 34h12l8 58-12-14z"/><path d="M80 34H68l-8 58 12-14z"/></svg></span>
     <div class="splash-name">
       <b id="splashEn">AL WATHIQ</b>
       <span id="splashAr">الوثيق</span>
@@ -2170,11 +2655,7 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
     </button>
 
     <a href="#top" class="logo" id="brandLogo" aria-label="متجر الإكسسوارات">
-      <span class="logo-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="7" y="2.5" width="10" height="19" rx="2.6"/><circle cx="12" cy="18.6" r="1"/>
-        </svg>
-      </span>
+      <span class="logo-mark" aria-hidden="true"><svg class="emb " viewBox="0 0 120 130" fill="url(#wGold)" aria-hidden="true"><path d="M60 3l7 11-7 11-7-11z"/><path d="M4 20h30l26 100L40 74z"/><path d="M116 20H86L60 120l20-46z"/><path d="M40 34h12l8 58-12-14z"/><path d="M80 34H68l-8 58 12-14z"/></svg></span>
       <span class="logo-txt"><b data-brand></b></span>
     </a>
 
@@ -2240,20 +2721,18 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
         <div class="glow" aria-hidden="true"></div>
         <div class="stage" id="heroArt" hidden></div>
         <div class="hero-lockup">
-          <div class="hl-row"><span class="hl-seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 2.1 3.2-.3 1 3 2.7 1.8-1 3 1 3-2.7 1.8-1 3-3.2-.3L12 22l-2.4-2.1-3.2.3-1-3L2.7 15.4l1-3-1-3 2.7-1.8 1-3 3.2.3z"/><path d="M8.5 12.3l2.4 2.4 4.6-4.9"/></svg></span><span class="hl-name" id="heroBrand">الوثيق</span></div>
+          <svg class="emb hl-emb" viewBox="0 0 120 130" fill="url(#wGold)" aria-hidden="true"><path d="M60 3l7 11-7 11-7-11z"/><path d="M4 20h30l26 100L40 74z"/><path d="M116 20H86L60 120l20-46z"/><path d="M40 34h12l8 58-12-14z"/><path d="M80 34H68l-8 58 12-14z"/></svg>
+          <div class="hl-name" id="heroBrand">الوثيق</div>
           <div class="hl-sub">AL WATHIQ</div>
+          <div class="hl-tag"><i></i><span>أصالة تستحق ثقتك</span><i></i></div>
+          <div class="hl-desc">GENUINE TECH ACCESSORIES</div>
         </div>
-        <div class="float-chip chip-1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>شحن سريع</span></div>
-        <div class="float-chip chip-2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg><span>سماعات</span></div>
-        <div class="float-chip chip-3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>حماية</span></div>
-        <div class="float-chip chip-4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg><span>باور بانك</span></div>
-        <div class="phone-mock" aria-hidden="true"><div class="phone-screen">
-          <div class="screen-glow"></div>
-          <div class="ps-top"><span></span><i></i></div>
-          <svg class="ps-check" viewBox="0 0 80 80" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="40" cy="40" r="32"/><path d="M26 41l10 10 19-21"/></svg>
-          <div class="ps-line w1"></div><div class="ps-line w2"></div>
-          <div class="ps-pill">أصلي · مضمون</div>
-        </div></div>
+        <div class="acc-stage">
+          <div class="acc acc-1" tabindex="0" role="img" aria-label="سماعات"><svg class="ic ic-hp" viewBox="0 0 120 120" aria-hidden="true"><path class="ol hp-band" d="M24 68V58a36 36 0 0 1 72 0v10" fill="none"/><path class="gs hp-band" fill="none" stroke="#C9A96E" stroke-width="7" stroke-linecap="round" d="M24 68V58a36 36 0 0 1 72 0v10"/><g class="cup cup-l"><rect class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" x="12" y="60" width="26" height="42" rx="12"/><rect class="g" fill="#C39A57" x="19" y="70" width="12" height="22" rx="6"/></g><g class="cup cup-r"><rect class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" x="82" y="60" width="26" height="42" rx="12"/><rect class="g" fill="#C39A57" x="89" y="70" width="12" height="22" rx="6"/></g></svg><span>سماعات</span></div>
+          <div class="acc acc-2" tabindex="0" role="img" aria-label="شواحن"><svg class="ic ic-ch" viewBox="0 0 120 120" aria-hidden="true"><rect class="g prong" fill="#C39A57" x="45" y="6" width="7" height="22" rx="2"/><rect class="g prong" fill="#C39A57" x="68" y="6" width="7" height="22" rx="2"/><rect class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" x="30" y="24" width="60" height="68" rx="14"/><path class="g bolt" fill="#C39A57" d="M64 38L47 62h11l-3 20 18-26H62z"/><rect class="g" fill="#C39A57" x="52" y="92" width="16" height="14" rx="4" opacity=".85"/></svg><span>شواحن</span></div>
+          <div class="acc acc-3" tabindex="0" role="img" aria-label="باور بانك"><svg class="ic ic-pb" viewBox="0 0 120 120" aria-hidden="true"><rect class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" x="6" y="34" width="108" height="58" rx="15"/><rect class="g" fill="#C39A57" x="2" y="54" width="8" height="18" rx="3"/><path class="g pb-logo" fill="#C39A57" d="M36 53l9 10-9 10-9-10z"/><circle class="g dot d1" fill="#C39A57" cx="68" cy="63" r="5"/><circle class="g dot d2" fill="#C39A57" cx="82" cy="63" r="5"/><circle class="g dot d3" fill="#C39A57" cx="96" cy="63" r="5"/></svg><span>باور بانك</span></div>
+          <div class="acc acc-4" tabindex="0" role="img" aria-label="سماعات لاسلكية"><svg class="ic ic-bd" viewBox="0 0 120 120" aria-hidden="true"><g class="bud"><ellipse class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" cx="42" cy="50" rx="11" ry="15"/><rect class="g" fill="#C39A57" x="39" y="58" width="6" height="22" rx="3"/></g><g class="bud"><ellipse class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" cx="78" cy="50" rx="11" ry="15"/><rect class="g" fill="#C39A57" x="75" y="58" width="6" height="22" rx="3"/></g><rect class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" x="16" y="64" width="88" height="46" rx="20"/><rect class="g" fill="#C39A57" x="22" y="78" width="76" height="2.6" rx="1.3" opacity=".8"/><circle class="g" fill="#C39A57" cx="60" cy="96" r="3.5"/><g class="lid"><rect class="b" fill="#EADBBE" stroke="#C39A57" stroke-width="2.5" x="16" y="40" width="88" height="28" rx="14"/><rect class="g" fill="#C39A57" x="48" y="50" width="24" height="3" rx="1.5"/></g></svg><span>سماعات لاسلكية</span></div>
+        </div>
         <div class="tag-float">
           <span class="dot-live" aria-hidden="true"></span>
           <span><b id="heroStock">—</b> <span data-i18n="heroStock">قطعة في المخزون</span></span>
@@ -2389,11 +2868,7 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
     <div class="foot-grid">
       <div>
         <div class="logo">
-          <span class="logo-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="7" y="2.5" width="10" height="19" rx="2.6"/><circle cx="12" cy="18.6" r="1"/>
-            </svg>
-          </span>
+          <span class="logo-mark" aria-hidden="true"><svg class="emb " viewBox="0 0 120 130" fill="url(#wGold)" aria-hidden="true"><path d="M60 3l7 11-7 11-7-11z"/><path d="M4 20h30l26 100L40 74z"/><path d="M116 20H86L60 120l20-46z"/><path d="M40 34h12l8 58-12-14z"/><path d="M80 34H68l-8 58 12-14z"/></svg></span>
           <span class="logo-txt"><b data-brand></b></span>
         </div>
         <p id="footAbout"></p>
@@ -2571,14 +3046,8 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
   </div>
 </div>
 
-<!-- ================= لوحة الإدارة ================= -->
-<div class="ov" id="adminOv"></div>
-<div class="modal admin-modal" id="adminModal" role="dialog" aria-modal="true">
-  <button class="modal-close" data-close aria-label="إغلاق">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-  </button>
-  <div id="adminBody"></div>
-</div>
+<!-- ================= غرفة الإدارة ================= -->
+<section class="adroom" id="adminRoom" dir="rtl" aria-hidden="true" hidden></section>
 
 <div id="toasts" aria-live="polite"></div>
 
@@ -4230,6 +4699,21 @@ window.DB = (function () {
     return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   }
 
+  /* أرقام عربية/فارسية ← لاتينية، وإزالة فواصل الآلاف: ١٢٠٠ أو 1,200 ← 1200 */
+  function toLatin(s) {
+    return String(s == null ? "" : s)
+      .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x660))
+      .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x6F0));
+  }
+  function toNum(s) { return toLatin(s).replace(/[,\s\u066C\u00A0]/g, ""); }
+  /* هاتف جزائري: يقبل 0555.. و +213555.. و 00213555.. وأي مسافات أو شرطات */
+  function normPhone(s) {
+    let v = toLatin(s).replace(/[^\d+]/g, "");
+    v = v.replace(/^\+?00?213/, "0").replace(/^\+213/, "0").replace(/^213(?=[5-7]\d{8}$)/, "0");
+    if (/^[5-7]\d{8}$/.test(v)) v = "0" + v;
+    return v;
+  }
+
   /* تطبيع النص للبحث: يزيل التشكيل ويوحّد الهمزات والتاء المربوطة */
   function normAr(s) {
     return String(s == null ? "" : s)
@@ -4431,7 +4915,7 @@ window.DB = (function () {
     stats: stats, createOrder: createOrder, orders: orders, subscribe: subscribe,
     setProduct: setProduct, saveSettings: saveSettings, setOrder: setOrder,
     removeOrder: removeOrder, rateMap: rateMap, setRate: setRate,
-    navCount: navCount, fmt: fmt, esc: esc, normAr: normAr, fmtDate: fmtDate,
+    navCount: navCount, fmt: fmt, esc: esc, normAr: normAr, fmtDate: fmtDate, toLatin: toLatin, toNum: toNum, normPhone: normPhone,
     load: load, persist: persist,
     reset: function () { state = seedState(); try { localStorage.removeItem(KEY); } catch (e) { } persist(); }
   };
@@ -4705,7 +5189,7 @@ window.DB = (function () {
 
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
-  const t = I18N.t, pick = I18N.pick, fmt = DB.fmt, esc = DB.esc;
+  const t = I18N.t, pick = I18N.pick, fmt = DB.fmt, esc = DB.esc, toNum = DB.toNum, normPhone = DB.normPhone;
 
   const CART_KEY = "kp-cart";
   const THEME_KEY = "kp-theme";
@@ -4737,7 +5221,7 @@ window.DB = (function () {
   /* مظهران فقط: فاتح (أبيض وأزرق هادئ) وداكن (أزرق مخملي عميق).
      زرّ واحد يتبدّل بينهما، فنقرأ الحالة من السمة على الجذر. */
   const THEMES = ["light", "dark"];
-  const THEME_COLOR = { light: "#eef1f7", dark: "#0b1b34" };
+  const THEME_COLOR = { light: "#F5F5F5", dark: "#0E0E0E" };
 
   function theme() {
     const v = document.documentElement.getAttribute("data-theme");
@@ -5115,9 +5599,9 @@ window.DB = (function () {
     /* السعر */
     html += '<div class="fgroup"><b>' + esc(t("fPrice")) + '</b><div class="fopts">' +
       '<div class="price-row">' +
-      '<input type="number" id="fMin" inputmode="numeric" min="0" placeholder="' + pmin + '" value="' + (filters.min != null ? filters.min : "") + '" aria-label="' + esc(t("fPrice")) + '">' +
+      '<input type="text" id="fMin" inputmode="numeric" data-digits autocomplete="off" placeholder="' + pmin + '" value="' + (filters.min != null ? filters.min : "") + '" aria-label="' + esc(t("fPrice")) + '">' +
       "<span>—</span>" +
-      '<input type="number" id="fMax" inputmode="numeric" min="0" placeholder="' + pmax + '" value="' + (filters.max != null ? filters.max : "") + '" aria-label="' + esc(t("fPrice")) + '">' +
+      '<input type="text" id="fMax" inputmode="numeric" data-digits autocomplete="off" placeholder="' + pmax + '" value="' + (filters.max != null ? filters.max : "") + '" aria-label="' + esc(t("fPrice")) + '">' +
       "</div></div></div>";
 
     html += '<div class="fgroup"><b>' + esc(t("fAvailability")) + '</b><div class="fopts">' +
@@ -5187,7 +5671,7 @@ window.DB = (function () {
   }
 
   function money(n) {
-    return fmt(n) + ' <span class="cur">' + currency() + "</span>";
+    return '<bdi class="num" dir="ltr">' + fmt(n).replace(/ /g, "\u00A0") + "</bdi> " + '<span class="cur">' + currency() + "</span>";
   }
 
   function tagHTML(p) {
@@ -5394,9 +5878,9 @@ window.DB = (function () {
       '<div class="form-err" id="coErr"></div>' +
       '<div class="field two">' +
       '<div class="field"><label>' + esc(t("coName")) + " *</label>" +
-      '<input id="fName" autocomplete="name" placeholder=""></div>' +
+      '<input id="fName" autocomplete="name" enterkeyhint="next" autocapitalize="words" placeholder=""></div>' +
       '<div class="field"><label>' + esc(t("coPhone")) + " *</label>" +
-      '<input id="fPhone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" placeholder="0555123456"></div>' +
+      '<input id="fPhone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" enterkeyhint="next" maxlength="17" data-digits placeholder="0555123456"></div>' +
       "</div>" +
       '<div class="field two">' +
       '<div class="field"><label>' + esc(t("coWilaya")) + " *</label><select id=\"fWilaya\">" +
@@ -5507,7 +5991,7 @@ window.DB = (function () {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const name = $("#fName").value.trim();
-      const phone = $("#fPhone").value.replace(/[\s.-]/g, "");
+      const phone = normPhone($("#fPhone").value);
       const commune = $("#fCommune").value;
       const addrEl = $("#fAddr");
       const address = addrEl ? addrEl.value.trim() : "";
@@ -5559,11 +6043,21 @@ window.DB = (function () {
   function showDone(order) {
     const wl = ((window.WILAYA_LIST || []).find((w) => w.code === order.customer.wilaya) || {}).name || "";
     /* رسالة التأكيد مختصرة: تبدأ بالسلام وتُختم بمبلغ الطلب */
-    const msg = (I18N.lang === "ar" ? "السلام عليكم، أرغب في تأكيد طلبي" : "Hello, I would like to confirm my order") +
-      "\n" + (I18N.lang === "ar" ? "رقم الطلب" : "Order") + ": " + order.id +
-      "\n" + (I18N.lang === "ar" ? "الاسم" : "Name") + ": " + order.customer.name +
-      "\n" + (I18N.lang === "ar" ? "الولاية" : "Wilaya") + ": " + wl +
-      "\n" + (I18N.lang === "ar" ? "المجموع" : "Total") + ": " + fmt(order.total) + " " + currency();
+    const ar = I18N.lang === "ar", c = order.customer || {};
+    const lines = (order.items || []).map((it) => "• " + (typeof it.name === "object" ? (it.name[I18N.lang] || it.name.ar || "") : (it.name || "")) +
+      " × " + it.qty + " — " + fmt(it.price * it.qty) + " " + currency());
+    const msg = [
+      ar ? "السلام عليكم، أرغب في تأكيد طلبي" : "Hello, I would like to confirm my order",
+      (ar ? "رقم الطلب: " : "Order: ") + order.id,
+      (ar ? "الاسم: " : "Name: ") + (c.name || ""),
+      (ar ? "الهاتف: " : "Phone: ") + (c.phone || ""),
+      (ar ? "الولاية: " : "Wilaya: ") + wl + (c.commune ? " - " + c.commune : ""),
+      c.address ? (ar ? "العنوان: " : "Address: ") + c.address : "",
+      (ar ? "التوصيل: " : "Delivery: ") + (order.delivery === "desk" ? (ar ? "نقطة استلام" : "Pickup point") : (ar ? "إلى المنزل" : "Home")),
+      "", ar ? "الطلب:" : "Items:"
+    ].concat(lines).concat([
+      "", (ar ? "المجموع: " : "Total: ") + fmt(order.total) + " " + currency()
+    ]).filter((x, i, arr) => x !== "" || (arr[i - 1] !== "" && i < arr.length - 1)).join("\n");
 
     $("#coBody").innerHTML =
       '<div class="order-done">' +
@@ -5595,31 +6089,148 @@ window.DB = (function () {
     openOv("#textOv", "#textModal");
   }
 
-  /* ---------------- لوحة الإدارة ---------------- */
-  /* بابٌ في زاوية الموقع يفتح لوحة تحكّم محميّة بكلمة سرّ، وتُكتب
-     التعديلات في المتصفح نفسه عبر طبقة البيانات. */
-  const ADMIN_PASS = "1234";
+  /* ============================================================
+     18. غرفة الإدارة
+     ------------------------------------------------------------
+     غرفة كاملة الشاشة تحلّ محلّ اللوحة المنبثقة القديمة، وتعمل على
+     طبقة بيانات المتجر نفسها (DB) — لا صلة لها بأي ربط خارجي.
+
+     • الدخول: كلمة سرّ مخزّنة مشفّرة محلياً (PBKDF2-SHA256 + ملح)،
+       أو حساب سحابي إن كانت السحابة مربوطة (DB.auth.enabled).
+     • الجلسة: تبقى بعد تحديث الصفحة، و«تذكّرني» يمدّها لإغلاق المتصفّح.
+     • الأقسام: الطلبات، السجل، السلة، العملاء، المنتجات، الآراء،
+       التوصيل، الإعدادات، الأمان.
+     ============================================================ */
   const ORDER_STATES = ["new", "confirmed", "shipped", "done"];
+  const ADM_TABS = [
+    ["orders", "adminTabOrders"], ["history", "adminTabHistory"], ["trash", "adminTabTrash"],
+    ["customers", "adTabCustomers"], ["products", "adminTabProducts"], ["reviews", "adTabReviews"],
+    ["delivery", "adminTabDelivery"], ["settings", "adminTabSettings"], ["security", "adTabSecurity"]
+  ];
+  const ADM_SAVE_TABS = ["products", "delivery", "settings"];
+
+  /* نصوص خاصة بالغرفة (تكمل قاموس الواجهة DICT) */
   const AT = {
-    ar: { email: "البريد الإلكتروني", localMode: "وضع تجريبي محلي: اربط Firebase لتأمين الدخول وحفظ المنتجات والطلبات لكل الزوار.",
-      loggedOut: "تم تسجيل الخروج", newProd: "إضافة منتج جديد", pNameAr: "اسم المنتج", pNameEn: "الاسم بالإنجليزية (اختياري)",
-      pCat: "الفئة", pPrice: "السعر (دج)", pOld: "السعر القديم (اختياري)", pStock: "الكمية المتوفرة", pDesc: "الوصف",
-      pImg: "صورة المنتج", imgHint: "تُصغَّر الصورة تلقائياً قبل الرفع.", publish: "نشر المنتج", publishing: "جارٍ الرفع…",
-      added: "تمت إضافة المنتج", needName: "اكتب اسم المنتج.", needPrice: "اكتب السعر.", needImg: "الملف المختار ليس صورة.",
-      fail: "تعذّر الحفظ", confirmDel: "حذف هذا المنتج نهائياً؟", del: "حذف",
-      cloudNote: "المنتجات تُحفظ في السحابة وتظهر لكل الزوار." },
-    en: { email: "Email", localMode: "Local demo mode: connect Firebase for secure login and shared products and orders.",
-      loggedOut: "Logged out", newProd: "Add a new product", pNameAr: "Product name", pNameEn: "English name (optional)",
-      pCat: "Category", pPrice: "Price (DZD)", pOld: "Old price (optional)", pStock: "Stock", pDesc: "Description",
-      pImg: "Product image", imgHint: "The image is resized automatically before upload.", publish: "Publish product", publishing: "Uploading…",
-      added: "Product added", needName: "Enter the product name.", needPrice: "Enter the price.", needImg: "The chosen file is not an image.",
-      fail: "Could not save", confirmDel: "Delete this product permanently?", del: "Delete",
-      cloudNote: "Products are stored in the cloud and visible to all visitors." }
+    ar: {
+      roomTitle: "غرفة الإدارة", loginSub: "أدخل كلمة السرّ للدخول إلى غرفة الإدارة.",
+      remember: "تذكّرني على هذا الجهاز", back: "رجوع إلى المتجر",
+      defaultHint: "كلمة السرّ الافتراضية 1234 — غيّرها من قسم الأمان.",
+      theme: "المظهر", close: "إغلاق", email: "البريد الإلكتروني",
+      localNote: "تُحفظ التغييرات في هذا المتصفّح.",
+      cloudNote: "المنتجات تُحفظ في السحابة وتظهر لكل الزوار.",
+      loggedOut: "تم تسجيل الخروج",
+      adTabCustomers: "العملاء", adTabReviews: "الآراء", adTabSecurity: "الأمان",
+      cEmpty: "لا يوجد عملاء بعد — يظهر الزبائن هنا بعد أوّل طلب.",
+      cOrders: "طلبات", cTotal: "الإجمالي", cLast: "آخر طلب", cMsg: "مراسلة على واتساب",
+      noReviews: "لا توجد آراء بعد.", shown: "ظاهر في الموقع", delRev: "حذف هذا الرأي؟",
+      secTitle: "تغيير كلمة السرّ", curPass: "كلمة السرّ الحالية", newPass: "كلمة السرّ الجديدة",
+      confPass: "تأكيد كلمة السرّ الجديدة", chShort: "اجعل كلمة السرّ 4 أحرف على الأقل.",
+      chMismatch: "كلمتا السرّ غير متطابقتين.", chWrong: "كلمة السرّ الحالية غير صحيحة.",
+      chOk: "تم تحديث كلمة السرّ.", cloudSec: "الدخول السحابي",
+      cloudSecNote: "الحساب مربوط بالسحابة، وتُدار كلمة السرّ من مزوّد الخدمة. استخدم زرّ الخروج لإنهاء الجلسة.",
+      sessTitle: "الجلسة", sessNote: "أنت مسجَّل الدخول على هذا الجهاز. استخدم زرّ الخروج لإنهاء الجلسة.",
+      dataTitle: "ملخّص البيانات",
+      stProducts: "منتج", stOrders: "طلب", stCustomers: "عميل", stRate: "ولاية بأسعار مخصّصة",
+      newProd: "إضافة منتج جديد", pNameAr: "اسم المنتج", pNameEn: "الاسم بالإنجليزية (اختياري)",
+      pCat: "الفئة", pPrice: "السعر (دج)", pOld: "السعر القديم (اختياري)", pStock: "الكمية المتوفرة",
+      pDesc: "الوصف", pImg: "صورة المنتج", imgHint: "تُصغَّر الصورة تلقائياً قبل الرفع.",
+      publish: "نشر المنتج", publishing: "جارٍ الرفع…", added: "تمت إضافة المنتج",
+      needName: "اكتب اسم المنتج.", needPrice: "اكتب السعر.", needImg: "الملف المختار ليس صورة.",
+      fail: "تعذّر الحفظ", confirmDel: "حذف هذا المنتج نهائياً؟", del: "حذف"
+    },
+    en: {
+      roomTitle: "Admin room", loginSub: "Enter the password to open the admin room.",
+      remember: "Remember me on this device", back: "Back to the store",
+      defaultHint: "Default password is 1234 — change it in the Security tab.",
+      theme: "Theme", close: "Close", email: "Email",
+      localNote: "Changes are saved in this browser.",
+      cloudNote: "Products are stored in the cloud and visible to all visitors.",
+      loggedOut: "Logged out",
+      adTabCustomers: "Customers", adTabReviews: "Reviews", adTabSecurity: "Security",
+      cEmpty: "No customers yet — they appear after the first order.",
+      cOrders: "orders", cTotal: "Total", cLast: "Last order", cMsg: "Message on WhatsApp",
+      noReviews: "No reviews yet.", shown: "Shown on the site", delRev: "Delete this review?",
+      secTitle: "Change password", curPass: "Current password", newPass: "New password",
+      confPass: "Confirm new password", chShort: "Use at least 4 characters.",
+      chMismatch: "The new passwords do not match.", chWrong: "The current password is wrong.",
+      chOk: "Password updated.", cloudSec: "Cloud sign-in",
+      cloudSecNote: "The account is cloud-linked; manage its password with the provider. Use Log out to end the session.",
+      sessTitle: "Session", sessNote: "You are signed in on this device. Use Log out to end the session.",
+      dataTitle: "Data summary",
+      stProducts: "products", stOrders: "orders", stCustomers: "customers", stRate: "wilayas with custom rates",
+      newProd: "Add a new product", pNameAr: "Product name", pNameEn: "English name (optional)",
+      pCat: "Category", pPrice: "Price (DZD)", pOld: "Old price (optional)", pStock: "Stock",
+      pDesc: "Description", pImg: "Product image", imgHint: "The image is resized automatically before upload.",
+      publish: "Publish product", publishing: "Uploading…", added: "Product added",
+      needName: "Enter the product name.", needPrice: "Enter the price.", needImg: "The chosen file is not an image.",
+      fail: "Could not save", confirmDel: "Delete this product permanently?", del: "Delete"
+    }
   };
-  const at = (k) => (AT[I18N.lang] || AT.ar)[k] || AT.ar[k] || k;
+  const at = function (k, vars) {
+    let s = (AT[I18N.lang] || AT.ar)[k];
+    if (s == null) s = AT.ar[k] != null ? AT.ar[k] : k;
+    if (vars) s = String(s).replace(/\{(\w+)\}/g, (m, x) => (vars[x] != null ? vars[x] : m));
+    return s;
+  };
 
   let adminTab = "orders";
   let adminUnlocked = false;
+
+  /* ---------- الأمان: كلمة السرّ تُخزَّن مشفّرة (PBKDF2)، لا نصّ صريح ---------- */
+  const ADM_CRED_KEY = "kp-admin-cred";
+  const ADM_SESS_KEY = "kp-admin-session";
+  const ADM_REM_KEY = "kp-admin-remember";
+  const ADM_DEFAULT = "1234";
+  const ADM_ITER = 120000;
+  const TE = new TextEncoder();
+  function toHex(buf) {
+    const u = new Uint8Array(buf); let s = "";
+    for (let i = 0; i < u.length; i++) s += u[i].toString(16).padStart(2, "0");
+    return s;
+  }
+  function toB64(bytes) {
+    const u = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    let s = "";
+    for (let i = 0; i < u.length; i++) s += String.fromCharCode(u[i]);
+    return btoa(s);
+  }
+  function fromB64(s) {
+    const bin = atob(s), u = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return u;
+  }
+  async function admHash(pass, saltB64, iter) {
+    const key = await crypto.subtle.importKey("raw", TE.encode(String(pass)), "PBKDF2", false, ["deriveBits"]);
+    const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: fromB64(saltB64), iterations: iter || ADM_ITER, hash: "SHA-256" }, key, 256);
+    return toHex(bits);
+  }
+  function readCred() { try { const r = localStorage.getItem(ADM_CRED_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+  function writeCred(c) { try { localStorage.setItem(ADM_CRED_KEY, JSON.stringify(c)); return true; } catch (e) { return false; } }
+  async function ensureCred() {
+    let c = readCred();
+    if (c && c.salt && c.hash && c.iter) return c;
+    const salt = toB64(crypto.getRandomValues(new Uint8Array(16)));
+    c = { v: 1, salt: salt, iter: ADM_ITER, hash: await admHash(ADM_DEFAULT, salt, ADM_ITER), def: true };
+    writeCred(c);
+    return c;
+  }
+  async function checkPass(pass) { const c = await ensureCred(); return (await admHash(pass, c.salt, c.iter)) === c.hash; }
+  async function savePass(pass) {
+    const salt = toB64(crypto.getRandomValues(new Uint8Array(16)));
+    writeCred({ v: 1, salt: salt, iter: ADM_ITER, hash: await admHash(pass, salt, ADM_ITER), def: false });
+  }
+  function passIsDefault() { const c = readCred(); return !c || c.def === true; }
+  function sessionOn() { try { return sessionStorage.getItem(ADM_SESS_KEY) === "1" || localStorage.getItem(ADM_REM_KEY) === "1"; } catch (e) { return false; } }
+  function sessionSet(remember) {
+    try {
+      if (remember) localStorage.setItem(ADM_REM_KEY, "1");
+      else sessionStorage.setItem(ADM_SESS_KEY, "1");
+    } catch (e) { /* لا شيء */ }
+  }
+  function sessionClear() {
+    try { sessionStorage.removeItem(ADM_SESS_KEY); localStorage.removeItem(ADM_REM_KEY); } catch (e) { /* لا شيء */ }
+  }
+  function isUnlocked() { return DB.auth.enabled ? DB.auth.isAdmin() : adminUnlocked; }
 
   function adminStatusLabel(s) {
     if (s === "confirmed") return t("adminStConfirmed");
@@ -5628,67 +6239,105 @@ window.DB = (function () {
     return t("adminStNew");
   }
 
+  /* ---------- شاشة الدخول ---------- */
   function adminLoginHTML() {
-    const sb = DB.auth.enabled;
-    return '<div class="alogin">' +
+    const cloud = DB.auth.enabled;
+    return '<div class="adroom-login"><div class="alogin">' +
       '<span class="alogin-ico" aria-hidden="true">' + ART.icon("gear") + "</span>" +
-      "<h3>" + esc(t("adminTitle")) + "</h3>" +
-      '<form data-admin="login" novalidate>' +
-      (sb ? '<label class="afield wide"><span>' + esc(at("email")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr"></label>' : "") +
-      '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" autocomplete="current-password" dir="ltr"></label>' +
+      "<h3>" + esc(at("roomTitle")) + "</h3>" +
+      '<p class="a-note">' + esc(at("loginSub")) + "</p>" +
+      '<form data-adm="login" novalidate>' +
+      (cloud ? '<label class="afield wide"><span>' + esc(at("email")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr"></label>' : "") +
+      '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" autocomplete="current-password" dir="ltr" required></label>' +
+      (cloud ? "" : '<label class="afield check"><input type="checkbox" name="remember" checked><span>' + esc(at("remember")) + "</span></label>") +
       '<p class="aerr" role="alert" hidden></p>' +
-      '<button type="submit" class="btn btn-primary btn-block">' + esc(t("adminEnter")) + "</button></form>" +
-      (sb ? "" : '<p class="a-note">' + esc(at("localMode")) + "</p>") + "</div>";
+      '<button type="submit" class="btn btn-primary btn-block">' + esc(t("adminEnter")) + "</button>" +
+      '<button type="button" class="adroom-act" data-adm="close" style="justify-self:center">' + esc(at("back")) + "</button>" +
+      "</form>" +
+      (cloud ? "" : (passIsDefault() ? '<p class="a-note adroom-hint">' + esc(at("defaultHint")) + "</p>" : "")) +
+      "</div></div>";
   }
 
+  /* ---------- الطلبات ---------- */
   function adminOrderCard(o, mode) {
     const c = o.customer || {};
-    const wl = ((window.WILAYA_LIST || []).find((w) => w.code === c.wilaya) || {}).name || c.wilaya || "";
-    const items = (o.items || []).map((it) =>
-      '<div class="aorder-item"><span>' + esc(pick(it.name)) + " × " + esc(it.qty) + "</span><b>" + money(it.price * it.qty) + "</b></div>").join("");
-    const opts = ORDER_STATES.map((s) =>
-      '<option value="' + s + '"' + (o.status === s ? " selected" : "") + ">" + esc(adminStatusLabel(s)) + "</option>").join("");
-    /* في السلة: استعادة أو حذف نهائي. وخلافه: تغيير الحالة أو نقل إلى السلة. */
-    const actions = mode === "trash"
-      ? '<button type="button" class="arestore" data-order-restore="' + esc(o.id) + '">' + esc(t("adminRestore")) + "</button>" +
-        '<button type="button" class="adel" data-order-del="' + esc(o.id) + '">' + esc(t("adminDeleteForever")) + "</button>"
-      : '<label class="afield inline"><span>' + esc(t("adminStatus")) + "</span>" +
-        '<select data-order-status="' + esc(o.id) + '">' + opts + "</select></label>" +
+    const wl = ((window.WILAYA_LIST || []).find((w) => w.code === c.wilaya) || {}).name || "";
+    const items = (o.items || []).map((it) => '<div class="aorder-item"><span>' + esc(pick(it.name)) + " × " + esc(it.qty) + "</span><b>" + money(it.price * it.qty) + "</b></div>").join("");
+    const opts = ORDER_STATES.map((s) => '<option value="' + s + '"' + (o.status === s ? " selected" : "") + ">" + esc(adminStatusLabel(s)) + "</option>").join("");
+    const foot = mode === "trash"
+      ? '<button type="button" class="arestore" data-adm="orestore" data-id="' + esc(o.id) + '">' + esc(t("adminRestore")) + "</button>" +
+        '<button type="button" class="adel" data-adm="odel" data-id="' + esc(o.id) + '">' + esc(t("adminDeleteForever")) + "</button>"
+      : '<label class="afield inline"><span>' + esc(t("adminStatus")) + '</span><select data-adm="ostatus" data-id="' + esc(o.id) + '">' + opts + "</select></label>" +
         "<b>" + money(o.total) + "</b>" +
-        '<button type="button" class="adel" data-order-trash="' + esc(o.id) + '">' + esc(t("adminDelete")) + "</button>";
+        '<button type="button" class="adel" data-adm="otrash" data-id="' + esc(o.id) + '">' + esc(t("adminDelete")) + "</button>";
     return '<div class="aorder">' +
       '<div class="aorder-top"><b class="aorder-id">' + esc(o.id) + '</b><span class="aorder-date">' + esc(DB.fmtDate(o.at)) + "</span></div>" +
       '<div class="aorder-meta"><span>' + esc(c.name || "") + '</span><span dir="ltr">' + esc(c.phone || "") + "</span>" +
-      "<span>" + esc(wl) + (c.commune ? " — " + esc(c.commune) : "") + "</span>" +
-      "<span>" + esc(o.delivery === "desk" ? t("dOptDesk") : t("dOptHome")) + "</span></div>" +
+      "<span>" + esc(wl) + (c.commune ? " - " + esc(c.commune) : "") + "</span>" +
+      "<span>" + esc(o.delivery === "desk" ? t("adminDesk") : t("adminHome")) + "</span></div>" +
       (c.address ? '<div class="aorder-addr">' + esc(c.address) + "</div>" : "") +
       (c.notes ? '<div class="aorder-addr">' + esc(c.notes) + "</div>" : "") +
       '<div class="aorder-items">' + items + "</div>" +
-      '<div class="aorder-foot">' + actions + "</div></div>";
+      '<div class="aorder-foot">' + foot + "</div></div>";
   }
 
   function adminOrdersHTML(mode) {
-    /* الجارية: بلا حذف وبلا حالة متقدّمة. السجل: بلا حذف وبحالة متقدّمة.
-       السلة: كل ما نُقل إليها. */
     const list = DB.orders().filter((o) =>
       mode === "trash" ? !!o.trashed
-        : !o.trashed && (mode === "history" ? o.status !== "new" : (o.status === "new" || !o.status)));
+        : !o.trashed && (mode === "history" ? (o.status && o.status !== "new") : (o.status === "new" || !o.status)));
     const empty = mode === "trash" ? t("adminNoTrash") : mode === "history" ? t("adminNoHistory") : t("adminNoOrders");
     if (!list.length) return '<p class="a-note">' + esc(empty) + "</p>";
     return list.map((o) => adminOrderCard(o, mode)).join("");
   }
 
+  /* ---------- العملاء (مستخرجون من الطلبات) ---------- */
+  function adminCustomers() {
+    const map = {};
+    DB.orders().filter((o) => !o.trashed).forEach((o) => {
+      const c = o.customer || {};
+      const key = c.phone || c.name || ("anon-" + (o.id || ""));
+      let g = map[key];
+      if (!g) { g = { name: "", phone: "", wilaya: "", commune: "", count: 0, total: 0, at: 0 }; map[key] = g; }
+      g.count++; g.total += Number(o.total) || 0; g.at = Math.max(g.at, Number(o.at) || 0);
+      if (c.name) g.name = c.name;
+      if (c.phone) g.phone = c.phone;
+      if (c.wilaya) g.wilaya = c.wilaya;
+      if (c.commune) g.commune = c.commune;
+    });
+    return Object.keys(map).map((k) => map[k]).sort((a, b) => b.at - a.at);
+  }
+
+  function waLink(phone) { return "https://wa.me/" + String(phone || "").replace(/\D/g, ""); }
+
+  function adminCustomersHTML() {
+    const list = adminCustomers();
+    if (!list.length) return '<p class="a-note">' + esc(at("cEmpty")) + "</p>";
+    return '<div class="alist">' + list.map((c) => {
+      const wl = ((window.WILAYA_LIST || []).find((w) => w.code === c.wilaya) || {}).name || "";
+      return '<div class="cust">' +
+        '<div class="cust-top"><b>' + esc(c.name || "—") + "</b>" +
+        (c.phone ? '<a dir="ltr" href="' + esc(waLink(c.phone)) + '" target="_blank" rel="noopener">' + esc(c.phone) + "</a>" : "") +
+        (c.at ? '<span class="aorder-date">' + esc(DB.fmtDate(c.at)) + "</span>" : "") + "</div>" +
+        '<div class="cust-meta"><span>' + esc(wl || c.wilaya || "") + (c.commune ? " - " + esc(c.commune) : "") + "</span>" +
+        "<span>" + c.count + " " + esc(at("cOrders")) + "</span>" +
+        "<span>" + esc(at("cTotal")) + ": <b>" + money(c.total) + "</b></span></div>" +
+        (c.phone ? '<a class="adroom-act" style="justify-self:start" href="' + esc(waLink(c.phone)) + '" target="_blank" rel="noopener">' + esc(at("cMsg")) + "</a>" : "") +
+        "</div>";
+    }).join("") + "</div>";
+  }
+
+  /* ---------- المنتجات ---------- */
   function adminProductsHTML() {
     const cats = DB.CATS.map((c) => '<option value="' + esc(c.id) + '">' + esc(pick(c.name)) + "</option>").join("");
     const fld = (label, inner, wide) => '<label class="afield' + (wide ? " wide" : "") + '"><span>' + esc(at(label)) + "</span>" + inner + "</label>";
     const form = '<details class="anew"><summary>' + esc(at("newProd")) + "</summary>" +
-      '<form data-admin="newprod" novalidate>' +
+      '<form data-adm="newprod" novalidate>' +
       fld("pNameAr", '<input name="nameAr" maxlength="120">', 1) +
       fld("pNameEn", '<input name="nameEn" maxlength="120" dir="ltr">') +
       fld("pCat", '<select name="cat">' + cats + "</select>") +
-      fld("pPrice", '<input type="number" min="0" name="price">') +
-      fld("pOld", '<input type="number" min="0" name="old">') +
-      fld("pStock", '<input type="number" min="0" name="stock" value="10">') +
+      fld("pPrice", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="price">') +
+      fld("pOld", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="old">') +
+      fld("pStock", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="stock" value="10">') +
       fld("pDesc", '<textarea name="descAr" maxlength="600"></textarea>', 1) +
       fld("pImg", '<input type="file" name="img" accept="image/*" data-img>', 1) +
       '<div class="apreview wide"></div><p class="a-note wide" style="grid-column:1/-1;margin:0">' + esc(at("imgHint")) + "</p>" +
@@ -5698,10 +6347,10 @@ window.DB = (function () {
       '<div class="aprod" data-product="' + esc(p.id) + '">' +
       '<div class="aprod-name">' + (p.image ? '<img class="athumb" alt="" src="' + esc(p.image) + '">' : "") +
       "<span>" + esc(pick(p.name)) + "</span>" +
-      (p.custom ? '<button type="button" class="aprod-del" data-prod-del="' + esc(p.id) + '">' + esc(at("del")) + "</button>" : "") + "</div>" +
-      '<label class="afield"><span>' + esc(t("adminPrice")) + '</span><input type="number" min="0" data-pf="price" value="' + esc(p.price) + '"></label>' +
-      '<label class="afield"><span>' + esc(t("adminOld")) + '</span><input type="number" min="0" data-pf="old" value="' + esc(p.old || 0) + '"></label>' +
-      '<label class="afield"><span>' + esc(t("adminStock")) + '</span><input type="number" min="0" data-pf="stock" value="' + esc(DB.stockOf(p.id)) + '"></label>' +
+      (p.custom ? '<button type="button" class="aprod-del" data-adm="pdel" data-id="' + esc(p.id) + '">' + esc(at("del")) + "</button>" : "") + "</div>" +
+      '<label class="afield"><span>' + esc(t("adminPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="price" value="' + esc(p.price) + '"></label>' +
+      '<label class="afield"><span>' + esc(t("adminOld")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="old" value="' + esc(p.old || 0) + '"></label>' +
+      '<label class="afield"><span>' + esc(t("adminStock")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="stock" value="' + esc(DB.stockOf(p.id)) + '"></label>' +
       '<label class="afield check"><input type="checkbox" data-pf="active"' + (p.active === false ? "" : " checked") + "><span>" + esc(t("adminActive")) + "</span></label>" +
       "</div>").join("") + "</div>";
   }
@@ -5709,8 +6358,8 @@ window.DB = (function () {
   async function submitNewProduct(f) {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const g = (n) => f.elements[n].value.trim();
-    const num = (n) => Math.max(0, Math.round(Number(f.elements[n].value) || 0));
-    const fail = (m) => { err.hidden = false; err.textContent = m; };
+    const num = (n) => Math.max(0, Math.round(Number(toNum(f.elements[n].value)) || 0));
+    const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; btn.textContent = at("publish"); };
     err.hidden = true;
     if (!g("nameAr")) return fail(at("needName"));
     if (!num("price")) return fail(at("needPrice"));
@@ -5723,29 +6372,38 @@ window.DB = (function () {
     } catch (x) {
       console.error(x);
       fail(at("fail") + (x && x.message ? " (" + x.message + ")" : ""));
-      btn.disabled = false; btn.textContent = at("publish");
     }
   }
 
-  async function doLogout() {
-    try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (x) { console.error(x); }
-    adminUnlocked = false; adminTab = "orders";
-    closeAll();
-    toast(at("loggedOut"), "ok");
+  /* ---------- الآراء ---------- */
+  function adminReviewsHTML() {
+    const list = DB.reviews();
+    if (!list.length) return '<p class="a-note">' + esc(at("noReviews")) + "</p>";
+    return '<div class="alist">' + list.map((r) =>
+      '<div class="arev">' +
+      '<div class="arev-top">' + ART.stars(Number(r.rate) || 5) + "<b>" + esc(pick(r.name)) + "</b>" +
+      '<span class="aorder-date">' + esc(DB.fmtDate(r.at)) + "</span></div>" +
+      "<p>" + esc(pick(r.text)) + "</p>" +
+      '<div class="arev-acts">' +
+      '<label class="afield check"><input type="checkbox" data-adm="rshow" data-id="' + esc(r.id) + '"' + (r.active === false ? "" : " checked") + "><span>" + esc(at("shown")) + "</span></label>" +
+      '<button type="button" class="adel" data-adm="rdel" data-id="' + esc(r.id) + '">' + esc(at("del")) + "</button>" +
+      "</div></div>").join("") + "</div>";
   }
 
+  /* ---------- التوصيل ---------- */
   function adminDeliveryHTML() {
-    return '<div class="alist">' + (window.WILAYA_LIST || []).map((w) => {
+    return (window.WILAYA_LIST || []).map((w) => {
       const r = DB.rates(w.code);
       return '<div class="adeliv" data-rate="' + esc(w.code) + '">' +
         '<div class="adeliv-name">' + esc(w.code + " - " + w.name) + "</div>" +
-        '<label class="afield"><span>' + esc(t("adminHome")) + '</span><input type="number" min="0" data-rf="home" value="' + esc(r.home) + '"></label>' +
-        '<label class="afield"><span>' + esc(t("adminDesk")) + '</span><input type="number" min="0" data-rf="desk" value="' + esc(r.desk) + '"></label>' +
+        '<label class="afield"><span>' + esc(t("adminHome")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-rf="home" value="' + esc(r.home) + '"></label>' +
+        '<label class="afield"><span>' + esc(t("adminDesk")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-rf="desk" value="' + esc(r.desk) + '"></label>' +
         '<label class="afield wide"><span>' + esc(t("adminDelay")) + '</span><input data-rf="delay" value="' + esc(r.delay || "") + '"></label>' +
         "</div>";
-    }).join("") + "</div>";
+    }).join("");
   }
 
+  /* ---------- الإعدادات ---------- */
   function adminSettingsHTML() {
     const s = DB.settings();
     const g = (k, label, val, area) =>
@@ -5764,36 +6422,152 @@ window.DB = (function () {
       "</div>";
   }
 
+  /* ---------- الأمان ---------- */
+  function adminSecurityHTML() {
+    const rateCount = Object.keys(DB.rateMap() || {}).length;
+    const stats = '<div class="adroom-stat"><b>' + DB.products().length + '</b><span>' + esc(at("stProducts")) + "</span></div>" +
+      '<div class="adroom-stat"><b>' + DB.orders().length + '</b><span>' + esc(at("stOrders")) + "</span></div>" +
+      '<div class="adroom-stat"><b>' + adminCustomers().length + '</b><span>' + esc(at("stCustomers")) + "</span></div>" +
+      '<div class="adroom-stat"><b>' + rateCount + '</b><span>' + esc(at("stRate")) + "</span></div>";
+    const dataCard = '<div class="adroom-card"><h4>' + esc(at("dataTitle")) + '</h4><div class="adroom-stat-grid">' + stats + "</div></div>";
+    if (DB.auth.enabled) {
+      return '<div class="adroom-grid">' +
+        '<div class="adroom-card"><h4>' + esc(at("cloudSec")) + "</h4><p class='a-note'>" + esc(at("cloudSecNote")) + "</p>" +
+        '<button type="button" class="adroom-act" data-adm="logout">' + esc(t("adminLogout")) + "</button></div>" +
+        dataCard + "</div>";
+    }
+    return '<div class="adroom-grid">' +
+      '<form class="adroom-card" data-adm="chpass" novalidate>' +
+      "<h4>" + esc(at("secTitle")) + "</h4>" +
+      '<label class="afield wide"><span>' + esc(at("curPass")) + '</span><input type="password" name="cur" autocomplete="current-password" dir="ltr"></label>' +
+      '<label class="afield wide"><span>' + esc(at("newPass")) + '</span><input type="password" name="nw" autocomplete="new-password" dir="ltr"></label>' +
+      '<label class="afield wide"><span>' + esc(at("confPass")) + '</span><input type="password" name="cf" autocomplete="new-password" dir="ltr"></label>' +
+      '<p class="aerr" role="alert" hidden></p>' +
+      '<button type="submit" class="btn btn-primary" style="justify-self:start">' + esc(t("adminSave")) + "</button>" +
+      "</form>" +
+      '<div class="adroom-card"><h4>' + esc(at("sessTitle")) + "</h4><p class='a-note'>" + esc(at("sessNote")) + "</p>" +
+      '<button type="button" class="adroom-act" data-adm="logout">' + esc(t("adminLogout")) + "</button></div>" +
+      dataCard + "</div>";
+  }
+
+  function adminPaneHTML() {
+    if (adminTab === "history" || adminTab === "trash" || adminTab === "orders") return adminOrdersHTML(adminTab);
+    if (adminTab === "customers") return adminCustomersHTML();
+    if (adminTab === "products") return adminProductsHTML();
+    if (adminTab === "reviews") return adminReviewsHTML();
+    if (adminTab === "delivery") return adminDeliveryHTML();
+    if (adminTab === "settings") return adminSettingsHTML();
+    if (adminTab === "security") return adminSecurityHTML();
+    return adminOrdersHTML("orders");
+  }
+
+  /* اسم التبويب: من قاموس الواجهة إن وُجد، وإلا من نصوص الغرفة */
+  function admTabLabel(key) { const v = t(key); return v === key ? at(key) : v; }
+
+  function adminRoomShellHTML() {
+    const counts = adminCounts();
+    const s = DB.settings();
+    const tabs = ADM_TABS.map(([k, key]) => {
+      const n = counts[k];
+      return '<button type="button" role="tab" class="adroom-tab' + (adminTab === k ? " on" : "") +
+        '" data-adm="tab" data-tab="' + k + '" aria-selected="' + (adminTab === k) + '">' +
+        esc(admTabLabel(key)) + (n ? ' <b' + (k === "orders" ? "" : ' class="grey"') + ">" + n + "</b>" : "") + "</button>";
+    }).join("");
+    const foot = ADM_SAVE_TABS.indexOf(adminTab) >= 0
+      ? '<div class="adroom-foot"><button type="button" class="btn btn-primary" data-adm="save">' + esc(t("adminSave")) + "</button>" +
+        '<p class="a-note">' + esc(adminTab === "products" && DB.auth.enabled ? at("cloudNote") : at("localNote")) + "</p></div>"
+      : "";
+    return '<header class="adroom-top">' +
+        '<div class="adroom-brand"><span class="adroom-logo">' + ART.icon("gear") + "</span>" +
+        "<div><b>" + esc(pick(s.brand)) + "</b><small>" + esc(at("roomTitle")) + "</small></div></div>" +
+        '<span class="adroom-spacer"></span>' +
+        '<button type="button" class="adroom-act" data-adm="theme">' + esc(at("theme")) + "</button>" +
+        '<button type="button" class="adroom-act" data-adm="logout">' + esc(t("adminLogout")) + "</button>" +
+        '<button type="button" class="adroom-act" data-adm="close" aria-label="' + esc(at("close")) + '" title="' + esc(at("close")) + '">✕</button>' +
+      "</header>" +
+      '<nav class="adroom-tabs" role="tablist">' + tabs + "</nav>" +
+      '<div class="adroom-wrap" id="admPane">' + adminPaneHTML() + foot + "</div>";
+  }
+
+  function adminCounts() {
+    const list = DB.orders();
+    return {
+      orders: list.filter((o) => !o.trashed && (o.status === "new" || !o.status)).length,
+      trash: list.filter((o) => !!o.trashed).length,
+      customers: adminCustomers().length
+    };
+  }
+
   function renderAdmin() {
-    const body = $("#adminBody");
-    if (!body) return;
-    if (DB.auth.enabled) adminUnlocked = DB.auth.isAdmin();
-    if (!adminUnlocked) { body.innerHTML = adminLoginHTML(); return; }
-    const tabs = [["orders", "adminTabOrders"], ["history", "adminTabHistory"], ["trash", "adminTabTrash"], ["products", "adminTabProducts"], ["delivery", "adminTabDelivery"], ["settings", "adminTabSettings"]];
-    const orderView = adminTab === "orders" || adminTab === "history" || adminTab === "trash";
-    const pane = adminTab === "products" ? adminProductsHTML()
-      : adminTab === "delivery" ? adminDeliveryHTML()
-      : adminTab === "settings" ? adminSettingsHTML()
-      : adminOrdersHTML(adminTab);
-    body.innerHTML =
-      '<div class="admin-head"><h3>' + esc(t("adminTitle")) + "</h3>" +
-      '<button type="button" class="aout" data-admin="logout">' + esc(t("adminLogout")) + "</button></div>" +
-      '<div class="admin-tabs" role="tablist">' + tabs.map(([k, l]) =>
-        '<button type="button" role="tab" class="atab' + (adminTab === k ? " active" : "") + '" data-admin="tab" data-tab="' + k + '" aria-selected="' + (adminTab === k) + '">' + esc(t(l)) + "</button>").join("") + "</div>" +
-      '<div class="admin-pane">' + pane + "</div>" +
-      (orderView ? "" : '<div class="admin-foot"><button type="button" class="btn btn-primary" data-admin="save">' + esc(t("adminSave")) + "</button>" +
-        '<p class="a-note">' + esc(adminTab === "products" && DB.auth.enabled ? at("cloudNote") : t("adminLocalNote")) + "</p></div>");
+    const room = $("#adminRoom");
+    if (!room) return;
+    room.innerHTML = isUnlocked() ? adminRoomShellHTML() : adminLoginHTML();
   }
 
   function openAdmin() {
+    const room = $("#adminRoom");
+    if (!room) return;
     renderAdmin();
-    openOv("#adminOv", "#adminModal");
+    room.hidden = false;
+    room.setAttribute("aria-hidden", "false");
+    try { document.documentElement.classList.add("adm-open"); } catch (e) { /* لا شيء */ }
+    const first = room.querySelector("input, select, textarea");
+    if (first) { try { first.focus(); } catch (e) { /* لا شيء */ } }
+  }
+
+  function closeAdmin() {
+    const room = $("#adminRoom");
+    if (!room) return;
+    room.hidden = true;
+    room.setAttribute("aria-hidden", "true");
+    try { document.documentElement.classList.remove("adm-open"); } catch (e) { /* لا شيء */ }
+  }
+
+  async function doLogout() {
+    try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (x) { console.error(x); }
+    adminUnlocked = false;
+    sessionClear();
+    adminTab = "orders";
+    renderAdmin();
+    toast(at("loggedOut"), "ok");
+  }
+
+  async function doLogin(f) {
+    const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
+    const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
+    err.hidden = true; btn.disabled = true;
+    if (DB.auth.enabled) {
+      try { await DB.auth.signIn(f.elements.email.value.trim(), f.elements.pass.value); adminUnlocked = true; adminTab = "orders"; }
+      catch (x) { return fail(t("adminWrong")); }
+    } else {
+      const ok = await checkPass(f.elements.pass.value).catch(() => false);
+      if (!ok) return fail(t("adminWrong"));
+      adminUnlocked = true;
+      sessionSet(!!(f.elements.remember && f.elements.remember.checked));
+    }
+    renderAdmin();
+  }
+
+  async function changePass(f) {
+    const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
+    const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
+    const v = (n) => (f.elements[n] ? f.elements[n].value : "");
+    err.hidden = true;
+    if (v("nw").length < 4) return fail(at("chShort"));
+    if (v("nw") !== v("cf")) return fail(at("chMismatch"));
+    btn.disabled = true;
+    const ok = await checkPass(v("cur")).catch(() => false);
+    if (!ok) return fail(at("chWrong"));
+    await savePass(v("nw"));
+    f.reset();
+    renderAdmin();
+    toast(at("chOk"), "ok");
   }
 
   function saveAdmin() {
-    const pane = $("#adminBody .admin-pane");
+    const pane = $("#admPane");
     if (!pane) return;
-    const val = (row, attr, k) => { const el = row.querySelector('[' + attr + '="' + k + '"]'); return el ? el.value : ""; };
+    const val = (row, attr, k) => { const el = row.querySelector('[' + attr + '="' + k + '"]'); if (!el) return ""; return (attr === "data-pf" || k === "home" || k === "desk") ? toNum(el.value) : el.value; };
     if (adminTab === "products") {
       $$("[data-product]", pane).forEach((row) => {
         const box = row.querySelector('[data-pf="active"]');
@@ -5832,6 +6606,60 @@ window.DB = (function () {
   function renderAdminEntry() {
     const b = $("#adminBtn");
     if (b) b.innerHTML = ART.icon("gear", "gear-ico");
+  }
+
+  /* ---------- أحداث الغرفة ---------- */
+  function onAdminSubmit(e) {
+    const f = e.target;
+    if (!f || !f.matches) return;
+    if (f.matches('[data-adm="login"]')) { e.preventDefault(); doLogin(f); return; }
+    if (f.matches('[data-adm="newprod"]')) { e.preventDefault(); submitNewProduct(f); return; }
+    if (f.matches('[data-adm="chpass"]')) { e.preventDefault(); changePass(f); return; }
+  }
+
+  function onAdminClick(e) {
+    const hit = e.target.closest("[data-adm]");
+    if (!hit) return;
+    const act = hit.getAttribute("data-adm"), id = hit.getAttribute("data-id");
+    if (act === "close") { closeAdmin(); return; }
+    if (act === "theme") { setTheme(theme() === "dark" ? "light" : "dark"); return; }
+    if (act === "logout") { doLogout(); return; }
+    if (act === "tab") { adminTab = hit.getAttribute("data-tab") || "orders"; renderAdmin(); return; }
+    if (act === "save") { saveAdmin(); return; }
+    if (act === "pdel") {
+      if (confirm(at("confirmDel"))) DB.removeProduct(id).then(() => { renderAll(); renderAdmin(); toast(t("adminSaved"), "ok"); }).catch(() => toast(at("fail"), "err"));
+      return;
+    }
+    if (act === "odel") { DB.removeOrder(id); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "otrash") { DB.setOrder(id, { trashed: true }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "orestore") { DB.setOrder(id, { trashed: false }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "rdel") {
+      if (confirm(at("delRev"))) {
+        const s = DB.load();
+        s.reviews = (s.reviews || []).filter((r) => r.id !== id);
+        DB.persist(); renderReviews(); renderAdmin(); toast(t("adminSaved"), "ok");
+      }
+      return;
+    }
+  }
+
+  function onAdminChange(e) {
+    const im = e.target.closest("[data-img]");
+    if (im) {
+      const box = $("#admPane .apreview"), fl = im.files && im.files[0];
+      if (box) box.innerHTML = fl ? '<img alt="" src="' + URL.createObjectURL(fl) + '">' : "";
+      return;
+    }
+    const el = e.target.closest("[data-adm]");
+    if (!el) return;
+    const act = el.getAttribute("data-adm"), id = el.getAttribute("data-id");
+    if (act === "ostatus") { DB.setOrder(id, { status: el.value }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "rshow") {
+      const s = DB.load();
+      const r = (s.reviews || []).find((x) => x.id === id);
+      if (r) { r.active = el.checked; DB.persist(); }
+      renderReviews(); renderAdmin(); toast(t("adminSaved"), "ok");
+    }
   }
 
   /* ---------------- الآراء والتذييل ---------------- */
@@ -5956,8 +6784,8 @@ window.DB = (function () {
 
   function readPriceInputs() {
     const mn = $("#fMin"), mx = $("#fMax");
-    filters.min = mn && mn.value !== "" ? Math.max(0, Number(mn.value) || 0) : null;
-    filters.max = mx && mx.value !== "" ? Math.max(0, Number(mx.value) || 0) : null;
+    filters.min = mn && mn.value !== "" ? Math.max(0, Number(toNum(mn.value)) || 0) : null;
+    filters.max = mx && mx.value !== "" ? Math.max(0, Number(toNum(mx.value)) || 0) : null;
     if (filters.min != null && filters.max != null && filters.min > filters.max) {
       const s = filters.min; filters.min = filters.max; filters.max = s;
     }
@@ -6197,49 +7025,24 @@ window.DB = (function () {
       setTheme(theme() === "dark" ? "light" : "dark");
     });
 
-    /* لوحة الإدارة */
+    /* غرفة الإدارة */
     $("#adminBtn").addEventListener("click", openAdmin);
-    $("#adminBody").addEventListener("submit", async (e) => {
-      const f = e.target;
-      if (f.closest('[data-admin="login"]')) {
-        e.preventDefault();
-        const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
-        const fail = (m) => { err.hidden = false; err.textContent = m; };
-        if (!DB.auth.enabled) {
-          if (f.elements.pass.value === ADMIN_PASS) { adminUnlocked = true; adminTab = "orders"; renderAdmin(); }
-          else fail(t("adminWrong"));
-          return;
-        }
-        btn.disabled = true;
-        try { await DB.auth.signIn(f.elements.email.value.trim(), f.elements.pass.value); adminUnlocked = true; adminTab = "orders"; renderAdmin(); }
-        catch (x) { fail(t("adminWrong")); btn.disabled = false; }
-        return;
-      }
-      if (f.closest('[data-admin="newprod"]')) { e.preventDefault(); await submitNewProduct(f); }
+    const admRoom = $("#adminRoom");
+    if (admRoom) {
+      admRoom.addEventListener("submit", onAdminSubmit);
+      admRoom.addEventListener("click", onAdminClick);
+      admRoom.addEventListener("change", onAdminChange);
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && admRoom && !admRoom.hidden) { e.preventDefault(); closeAdmin(); }
     });
-    $("#adminBody").addEventListener("click", (e) => {
-      const tab = e.target.closest('[data-admin="tab"]');
-      if (tab) { adminTab = tab.dataset.tab; renderAdmin(); return; }
-      if (e.target.closest('[data-admin="logout"]')) { doLogout(); return; }
-      if (e.target.closest('[data-admin="save"]')) { saveAdmin(); return; }
-      const pd = e.target.closest("[data-prod-del]");
-      if (pd) {
-        if (confirm(at("confirmDel"))) DB.removeProduct(pd.dataset.prodDel).then(() => { renderAll(); renderAdmin(); toast(t("adminSaved"), "ok"); }).catch(() => toast(at("fail"), "err"));
-        return;
-      }
-      const del = e.target.closest("[data-order-del]");
-      if (del) { DB.removeOrder(del.dataset.orderDel); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-      const tr = e.target.closest("[data-order-trash]");
-      if (tr) { DB.setOrder(tr.dataset.orderTrash, { trashed: true }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-      const rs = e.target.closest("[data-order-restore]");
-      if (rs) { DB.setOrder(rs.dataset.orderRestore, { trashed: false }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-    });
-    $("#adminBody").addEventListener("change", (e) => {
-      const im = e.target.closest("[data-img]");
-      if (im) { const box = $("#adminBody .apreview"), fl = im.files && im.files[0]; if (box) box.innerHTML = fl ? '<img alt="" src="' + URL.createObjectURL(fl) + '">' : ""; return; }
-      const st = e.target.closest("[data-order-status]");
-      if (st) { DB.setOrder(st.dataset.orderStatus, { status: st.value }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-    });
+    /* استعادة جلسة المدير المحلية بعد تحديث الصفحة */
+    if (!DB.auth.enabled && sessionOn()) adminUnlocked = true;
+    /* رابط سري: ?admin أو #admin يفتح الغرفة مباشرة */
+    try {
+      const q = new URLSearchParams(location.search);
+      if (q.has("admin") || location.hash === "#admin") setTimeout(openAdmin, 60);
+    } catch (e) { /* لا شيء */ }
 
     /* أدوات التكبير داخل نافذة المنتج */
     wireZoom();
@@ -6288,6 +7091,37 @@ window.DB = (function () {
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var AR = /[\u0660-\u0669\u06F0-\u06F9]/g;
+  function conv(s) { return s.replace(AR, function (d) { var c = d.charCodeAt(0); return String(c >= 0x6F0 ? c - 0x6F0 : c - 0x660); }); }
+  document.addEventListener("input", function (e) {
+    var el = e.target;
+    if (!el || !el.matches || !el.matches("input[data-digits],input[type=tel]")) return;
+    var v = conv(el.value);
+    if (v !== el.value) { var p = el.selectionStart; el.value = v; try { el.setSelectionRange(p, p); } catch (x) { } }
+  }, true);
+  document.addEventListener("focusin", function (e) {
+    var el = e.target;
+    if (!el || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || !window.matchMedia("(max-width:620px)").matches) return;
+    setTimeout(function () { try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (x) { } }, 320);
+  });
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  document.querySelectorAll(".acc").forEach(function (el) {
+    var on = function () { el.classList.add("pressed"); }, off = function () { el.classList.remove("pressed"); };
+    el.addEventListener("pointerdown", on);
+    ["pointerup", "pointercancel", "pointerleave", "blur"].forEach(function (t) { el.addEventListener(t, off); });
+    el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); on(); } });
+    el.addEventListener("keyup", off);
+    el.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  });
 })();
 </script>
 </body>
