@@ -3210,17 +3210,7 @@ window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey:
 <!-- بابٌ في الزاوية المقابلة لركن التواصل يفتح لوحة الإدارة -->
 <button class="gear-float" id="adminBtn" aria-label="لوحة الإدارة" data-i18n-aria="adminOpen"><b class="gear-badge" id="gearBadge" hidden>0</b></button>
 
-<!-- ================= شاشة أول زيارة: اختر فئتك ================= -->
-<!-- تظهر مرّة واحدة عند أوّل زيارة، وتُعرض فيها أسماء الفئات بخطّ كبير واضح -->
-<div class="catpick" id="catPick" hidden role="dialog" aria-modal="true" aria-labelledby="catPickTitle">
-  <div class="catpick-in">
-    <span class="catpick-eyebrow" id="catPickEyebrow"></span>
-    <h2 class="catpick-title" id="catPickTitle"></h2>
-    <p class="catpick-sub" id="catPickSub"></p>
-    <div class="catpick-grid" id="catPickGrid"></div>
-    <button type="button" class="catpick-all" id="catPickAll"></button>
-  </div>
-</div>
+<!-- شاشة «اختر فئتك» أُزيلت: كانت تظهر تلقائياً عند أوّل زيارة. -->
 
 <!-- ================= نافذة المنتج ================= -->
 <div class="ov" id="prodOv"></div>
@@ -5025,7 +5015,7 @@ window.DB = (function () {
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        if (parsed && Array.isArray(parsed.products) && parsed.products.length) {
+        if (parsed && Array.isArray(parsed.products) && (parsed.products.length || parsed.settings)) {
           state = parsed;
           /* ضمان اكتمال الحقول بعد أي تحديث مستقبلي للاشتقاق */
           if (!state.settings) state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
@@ -5585,6 +5575,19 @@ window.DB = (function () {
     signOut: async () => {
       if (useFB) { await fbReady; await fb.A.signOut(fb.auth); } else await SB.auth.signOut();
       session = null; remoteOrders = [];
+    },
+    /* تغيير كلمة سرّ حساب السحابة أيضاً حتى تبقى كلمة السرّ واحدة والدخول متطابقاً */
+    updatePass: async (pass) => {
+      if (useFB) {
+        await fbReady;
+        const u = fb.auth.currentUser;
+        if (!u) throw new Error("no-user");
+        return fb.A.updatePassword(u, pass);
+      }
+      if (!SB) throw new Error("no-cloud");
+      const r = await SB.auth.updateUser({ password: pass });
+      if (r.error) throw r.error;
+      return true;
     }
   };
   DB.syncRemote = sync;
@@ -5715,11 +5718,14 @@ window.DB = (function () {
   };
   DB.removeProduct = async function (id) {
     const p = DB.getProduct(id);
-    if (!p || !p.custom) return false;
-    if (ENABLED && session && p.remote) {
-      await BE.delProduct(id);
-      const ks = useFB ? [] : [p.image].concat(Array.isArray(p.images) ? p.images : []).map((u) => String(u || "").split("/" + BUCKET + "/")[1]).filter((k, n, a) => k && a.indexOf(k) === n);
-      if (ks.length) SB.storage.from(BUCKET).remove(ks).then(log);
+    if (!p) return false;
+    /* حذف من السحابة أيضاً حتى لا يعود المنتج عند المزامنة القادمة */
+    if (ENABLED && session && (p.remote || p.custom)) {
+      try {
+        await BE.delProduct(id);
+        const ks = useFB ? [] : [p.image].concat(Array.isArray(p.images) ? p.images : []).map((u) => String(u || "").split("/" + BUCKET + "/")[1]).filter((k, n, a) => k && a.indexOf(k) === n);
+        if (ks.length) SB.storage.from(BUCKET).remove(ks).then(log);
+      } catch (e) { logE(e); }
     }
     const s = DB.load();
     s.products = s.products.filter((x) => x.id !== id);
@@ -6188,12 +6194,10 @@ window.DB = (function () {
     if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (x) { /* لا شيء */ } }
   }
   function catPickInit() {
+    /* شاشة «اختر فئتك» أُلغيت — لا تظهر إطلاقاً عند فتح الموقع. */
     const box = $("#catPick");
-    if (!box) return;
-    let picked = null;
-    try { picked = localStorage.getItem(CAT_PICK_KEY); } catch (e) { /* لا شيء */ }
-    if (picked) return;
-    catPickShow();
+    if (box) box.hidden = true;
+    try { if (!localStorage.getItem(CAT_PICK_KEY)) localStorage.setItem(CAT_PICK_KEY, "all"); } catch (e) { /* لا شيء */ }
   }
   document.addEventListener("click", function (e) {
     const t2 = e.target;
@@ -6393,7 +6397,6 @@ window.DB = (function () {
   function cardHTML(p) {
     const stock = DB.stockOf(p.id);
     const out = stock <= 0;
-    const cat = DB.CATS.find((c) => c.id === p.cat) || {};
     const rate = Number(p.rating || 5);
     let stockTxt = '<div class="pstock">' + esc(t("inStock", { n: stock })) + "</div>";
     if (out) stockTxt = '<div class="pstock out">' + esc(t("outOfStock")) + "</div>";
@@ -6407,7 +6410,6 @@ window.DB = (function () {
       (out ? '<div class="pout">' + esc(t("outOfStock")) + "</div>" : "") +
       "</div>" +
       '<div class="pbody">' +
-      '<span class="pcat">' + esc(pick(cat.name)) + "</span>" +
       '<h3 class="pname" role="button" tabindex="0" data-open="' + esc(p.id) + '">' + esc(pick(p.name)) + "</h3>" +
       '<div class="prate">' + ART.stars(Math.round(rate)) + rate.toFixed(1) + "</div>" +
       stockTxt +
@@ -6941,7 +6943,7 @@ window.DB = (function () {
       adHintCats: "فئات المتجر", adHintDelivery: "أسعار التوصيل لكل ولاية",
       adHintSettings: "اسم المتجر وبيانات التواصل",
       remember: "تذكّرني على هذا الجهاز", back: "رجوع إلى المتجر",
-      defaultHint: "كلمة السرّ الافتراضية 123456 — غيّرها من قسم الأمان.",
+      defaultHint: "كلمة السرّ الحالية: 123456 — يمكنك تغييرها من الإعدادات ← الأمان.",
       theme: "المظهر", close: "إغلاق", email: "البريد الإلكتروني",
       localNote: "تُحفظ التغييرات في هذا المتصفّح.",
       cloudNote: "المنتجات تُحفظ في السحابة وتظهر لكل الزوار.",
@@ -6955,7 +6957,10 @@ window.DB = (function () {
       cOrders: "طلبات", cTotal: "الإجمالي", cLast: "آخر طلب", cMsg: "مراسلة على واتساب",
       noReviews: "لا توجد آراء بعد.", shown: "ظاهر في الموقع", delRev: "حذف هذا الرأي؟",
       secTitle: "تغيير كلمة السرّ", curPass: "كلمة السرّ الحالية", newPass: "كلمة السرّ الجديدة",
-      confPass: "تأكيد كلمة السرّ الجديدة", chShort: "اجعل كلمة السرّ 4 أحرف على الأقل.",
+      confPass: "تأكيد كلمة السرّ الجديدة", chShort: "اجعل كلمة السرّ من 6 إلى 12 رقماً (أرقام فقط).",
+      secNote: "أرقام فقط، من 6 إلى 12 رقماً. تتغيّر معها كلمة سرّ حساب السحابة حتى تبقى المزامنة تعمل، ولن تُطلب منك مرّة أخرى على هذا الجهاز حتى تسجيل الخروج.",
+      secSave: "حفظ كلمة السرّ",
+      chOkLocal: "حُفظت في هذا المتصفّح، لكن تعذّر تحديث كلمة سرّ السحابة — تحقّق من الاتصال وحاول مرّة أخرى.",
       chMismatch: "كلمتا السرّ غير متطابقتين.", chWrong: "كلمة السرّ الحالية غير صحيحة.",
       chOk: "تم تحديث كلمة السرّ.", cloudSec: "الدخول السحابي",
       cloudSecNote: "الحساب مربوط بالسحابة، وتُدار كلمة السرّ من مزوّد الخدمة. استخدم زرّ الخروج لإنهاء الجلسة.",
@@ -6989,7 +6994,7 @@ window.DB = (function () {
       adHintCats: "Store categories", adHintDelivery: "Delivery rates per wilaya",
       adHintSettings: "Store name and contact details",
       remember: "Remember me on this device", back: "Back to the store",
-      defaultHint: "Default password is 123456 — change it in the Security tab.",
+      defaultHint: "Current password: 123456 — you can change it in Settings → Security.",
       theme: "Theme", close: "Close", email: "Email",
       localNote: "Changes are saved in this browser.",
       cloudNote: "Products are stored in the cloud and visible to all visitors.",
@@ -7003,7 +7008,10 @@ window.DB = (function () {
       cOrders: "orders", cTotal: "Total", cLast: "Last order", cMsg: "Message on WhatsApp",
       noReviews: "No reviews yet.", shown: "Shown on the site", delRev: "Delete this review?",
       secTitle: "Change password", curPass: "Current password", newPass: "New password",
-      confPass: "Confirm new password", chShort: "Use at least 4 characters.",
+      confPass: "Confirm new password", chShort: "Use 6 to 12 digits (numbers only).",
+      secNote: "Numbers only, 6 to 12 digits. Your cloud account password changes with it so syncing keeps working. You will not be asked again on this device until you log out.",
+      secSave: "Save password",
+      chOkLocal: "Saved in this browser, but the cloud password could not be updated — check the connection and try again.",
       chMismatch: "The new passwords do not match.", chWrong: "The current password is wrong.",
       chOk: "Password updated.", cloudSec: "Cloud sign-in",
       cloudSecNote: "The account is cloud-linked; manage its password with the provider. Use Log out to end the session.",
@@ -7127,9 +7135,7 @@ window.DB = (function () {
       "<h3>" + esc(at("roomTitle")) + "</h3>" +
       '<p class="a-note">' + esc(at("loginSub")) + "</p>" +
       '<form data-adm="login" novalidate>' +
-      '<label class="afield wide"><span>' + esc(at("email")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr" value="' + esc(ADM_EMAIL) + '" required></label>' +
-      '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" autocomplete="current-password" dir="ltr" required></label>' +
-      '<label class="afield check"><input type="checkbox" name="remember" checked><span>' + esc(at("remember")) + "</span></label>" +
+      '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" dir="ltr" maxlength="12" required></label>' +
       '<p class="aerr" role="alert" hidden></p>' +
       '<button type="submit" class="btn btn-primary btn-block">' + esc(t("adminEnter")) + "</button>" +
       '<button type="button" class="adroom-act" data-adm="close" style="justify-self:center">' + esc(at("back")) + "</button>" +
@@ -7248,8 +7254,8 @@ window.DB = (function () {
       '<div class="aprod" data-product="' + esc(p.id) + '">' +
       '<div class="aprod-name">' + (p.image ? '<img class="athumb" alt="" src="' + esc(p.image) + '">' : "") +
       "<span>" + esc(pick(p.name)) + "</span>" +
-      (p.custom ? '<button type="button" class="aprod-del" data-adm="pdel" data-id="' + esc(p.id) + '">' + esc(at("del")) + "</button>" : "") + "</div>" +
-      (p.custom ? '<label class="afield wide"><span>' + esc(at("pNameAr")) + '</span><input type="text" maxlength="90" autocomplete="off" data-pf="name" value="' + esc(p.name.ar) + '"></label>' : "") +
+      '<button type="button" class="aprod-del" data-adm="pdel" data-id="' + esc(p.id) + '">' + esc(at("del")) + "</button></div>" +
+      '<label class="afield wide"><span>' + esc(at("pNameAr")) + '</span><input type="text" maxlength="90" autocomplete="off" data-pf="name" value="' + esc((p.name && p.name.ar) || "") + '"></label>' +
       '<label class="afield"><span>' + esc(t("adminPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="price" value="' + esc(p.price) + '"></label>' +
       '<label class="afield disc-field"' + ((p.tags || []).indexOf("sale") >= 0 ? "" : " hidden") + '><span>' + esc(at("pBeforeDisc")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="old" value="' + esc(p.old || 0) + '"></label>' +
       '<label class="afield"><span>' + esc(t("adminStock")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="stock" value="' + esc(DB.stockOf(p.id)) + '"></label>' +
@@ -7463,7 +7469,18 @@ window.DB = (function () {
       g("instagram", "adminInstagram", s.instagram) + g("facebook", "adminFacebook", s.facebook) +
       g("tiktok", "adminTikTok", s.tiktok) +
       g("address.ar", "adminAddress", s.address.ar) + g("address.en", "adminAddress", s.address.en) +
-      "</div>";
+      "</div>" +
+      /* الأمان: تغيير كلمة السرّ من داخل الإدارة */
+      '<div class="adroom-card" style="margin-top:14px;max-width:520px">' +
+        "<h4>" + esc(at("secTitle")) + "</h4>" +
+        '<p class="a-note" style="margin:0">' + esc(at("secNote")) + "</p>" +
+        '<form data-adm="chpass" novalidate style="display:grid;gap:11px">' +
+        '<label class="afield wide"><span>' + esc(at("curPass")) + '</span><input type="password" name="cur" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" dir="ltr" maxlength="12" required></label>' +
+        '<label class="afield wide"><span>' + esc(at("newPass")) + '</span><input type="password" name="nw" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" dir="ltr" maxlength="12" required></label>' +
+        '<label class="afield wide"><span>' + esc(at("confPass")) + '</span><input type="password" name="cf" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" dir="ltr" maxlength="12" required></label>' +
+        '<p class="aerr" role="alert" hidden></p>' +
+        '<button type="submit" class="btn btn-primary" style="justify-self:start">' + esc(at("secSave")) + "</button>" +
+        "</form></div>";
   }
 
   function adminPaneHTML() {
@@ -7611,14 +7628,14 @@ window.DB = (function () {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
     err.hidden = true; btn.disabled = true;
-    const email = (f.elements.email ? f.elements.email.value : "").trim().toLowerCase();
-    const pass = f.elements.pass.value;
-    /* البريد ثابت: الحساب الوحيد المسموح لغرفة الإدارة. */
-    if (email !== ADM_EMAIL) return fail(t("adminWrong"));
+    const pass = String(f.elements.pass ? f.elements.pass.value : "").trim();
+    /* كلمة السرّ فقط — بدون بريد إلكتروني. */
+    if (!pass) return fail(t("adminWrong"));
     if (DB.auth.enabled) {
       try {
-        await DB.auth.signIn(email, pass);
+        await DB.auth.signIn(ADM_EMAIL, pass);
         adminUnlocked = true; adminTab = "home"; admResetScroll = true;
+        sessionSet(true);
         renderAdmin();
         return;
       } catch (x) { /* نُكمل إلى كلمة السرّ المحلية */ }
@@ -7628,24 +7645,30 @@ window.DB = (function () {
     adminUnlocked = true;
     adminTab = "home";
     admResetScroll = true;
-    sessionSet(!!(f.elements.remember && f.elements.remember.checked));
+    /* تذكّر الجهاز دائماً: لا تُطلب كلمة السرّ مرّة أخرى هنا حتى تسجيل الخروج */
+    sessionSet(true);
     renderAdmin();
   }
 
   async function changePass(f) {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
-    const v = (n) => (f.elements[n] ? f.elements[n].value : "");
+    const v = (n) => String(f.elements[n] ? f.elements[n].value : "").replace(/\D/g, "");
     err.hidden = true;
-    if (v("nw").length < 4) return fail(at("chShort"));
+    if (v("nw").length < 6 || v("nw").length > 12) return fail(at("chShort"));
     if (v("nw") !== v("cf")) return fail(at("chMismatch"));
     btn.disabled = true;
     const ok = await checkPass(v("cur")).catch(() => false);
     if (!ok) return fail(at("chWrong"));
     await savePass(v("nw"));
+    /* كلمة سرّ حساب السحابة تتغيّر معها حتى يبقى الدخول والمزامنة متطابقين */
+    let cloudOk = true;
+    if (DB.auth.enabled && DB.auth.isAdmin() && DB.auth.updatePass) {
+      try { await DB.auth.updatePass(v("nw")); } catch (e) { cloudOk = false; console.error(e); }
+    }
     f.reset();
     renderAdmin();
-    toast(at("chOk"), "ok");
+    toast(cloudOk ? at("chOk") : at("chOkLocal"), cloudOk ? "ok" : "err");
   }
 
   function saveAdmin() {
