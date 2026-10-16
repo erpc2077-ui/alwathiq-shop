@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,15 +16,18 @@
 <meta name="twitter:description" content="متجر متخصص في إكسسوارات الهاتف: باور بانك، شواحن، كوابل، سماعات، أغطية واقيات أصلية. توصيل لكل ولايات الجزائر مع الدفع عند الاستلام.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E0E0E" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#0E0E0E" id="themeColorNow">
+<meta name="theme-color" content="#F5F5F5" id="themeColorNow">
 
 <!-- الوضع يُضبط قبل الرسم لتفادي الوميض الأبيض -->
 <script>
+/* الوضع الافتراضي: فاتح (أبيض). لا ننتقل إلى الداكن إلا إذا اختاره
+   الزائر صراحةً من زرّ المظهر، فنحفظ اختياره في kp-theme-choice. */
 (function () {
   try {
     var t = localStorage.getItem("kp-theme");
-    if (t !== "light" && t !== "dark") {
-      t = "dark";
+    var chosen = localStorage.getItem("kp-theme-choice") === "1";
+    if (!chosen || (t !== "light" && t !== "dark")) {
+      t = "light";
     }
     document.documentElement.setAttribute("data-theme", t);
     var tc = document.getElementById("themeColorNow");
@@ -40,6 +43,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="الوثيق">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
 <meta property="og:url" content="./">
 <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%230b1b34'/%3E%3Crect x='540' y='180' width='120' height='290' rx='34' fill='none' stroke='%2338bdf8' stroke-width='14'/%3E%3Ccircle cx='600' cy='420' r='16' fill='%2338bdf8'/%3E%3C/svg%3E">
 
@@ -441,17 +445,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .burger:hover, .burger.on { box-shadow: var(--glow-1); }
 .burger svg { filter: drop-shadow(0 0 6px rgba(var(--glow-g1), .30)); }
 
-/* شريط الفئات (على طريقة Anker) */
-.cat-strip { border-bottom: 1px solid var(--line); background: var(--bg); }
-.cat-strip .wrap { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
-.cat-strip .wrap::-webkit-scrollbar { display: none; }
-.cat-strip a {
-  padding: 14px 15px; font-size: 14.5px; font-weight: 500; color: var(--muted);
-  white-space: nowrap; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s;
-}
-.cat-strip a:hover { color: var(--text); }
-.cat-strip a.on { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
-
 /* ---------------- 4. البطل ---------------- */
 .hero { padding-block: clamp(52px, 7vw, 96px); position: relative; overflow: hidden; }
 .hero::before {
@@ -771,61 +764,41 @@ ul { margin: 0; padding: 0; list-style: none; }
 .modal-close svg { width: 17px; height: 17px; }
 
 /* نافذة المنتج */
-.pm { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
-.pm-img {
-  position: relative; padding: 34px; display: grid; place-items: center;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 58%),
-    radial-gradient(circle at 50% 40%, var(--bg-2) 0%, var(--card) 72%);
-  border-inline-end: 1px solid var(--line);
-}
-[dir="rtl"] .pm-img { border-inline-end: 0; border-inline-start: 1px solid var(--line); }
-
-/* مسرح الصورة: ما يُطبَّق عليه التكبير والإزاحة */
+#prodModal { max-width: 900px; }
+.pm { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; padding: 26px; }
+.pm-img { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.pm-gal { position: relative; min-width: 0; }
 .pm-stage {
+  position: relative; aspect-ratio: 1; overflow: hidden;
   display: grid; place-items: center;
-  inline-size: 100%; block-size: 100%;
-  transform-origin: center; will-change: transform;
-  /* الإصبع يضغط على الصورة فيُزاحها، فنمنع تمرير الصفحة ونتكفّل بالحركة */
-  touch-action: none; cursor: zoom-in;
+  border-radius: 16px; border: 1px solid var(--line); background: var(--bg-3);
 }
-.pm-stage.zoomed { cursor: grab; }
-.pm-stage.zoomed:active { cursor: grabbing; }
+#pmArt { inline-size: 100%; block-size: 100%; display: grid; place-items: center; }
 .pm-img .art {
-  width: 100%; max-width: 260px; height: auto;
+  width: 100%; max-width: 62%; height: auto;
   filter: drop-shadow(0 20px 34px rgba(24, 40, 78, .20)) drop-shadow(0 0 30px color-mix(in srgb, var(--accent) 18%, transparent));
   user-select: none; -webkit-user-drag: none;
 }
+.pm-stage .art-img {
+  inline-size: 100%; block-size: 100%; max-width: none;
+  object-fit: cover; display: block; filter: none;
+  user-select: none; -webkit-user-drag: none;
+}
 
-/* أدوات التكبير: ثلاثة أزرار ومؤشّر النسبة، مثبّتة في زاوية الصورة */
+/* زرّ تكبير الصورة، في زاوية الصورة نفسها */
 .pm-zoom {
-  position: absolute; inset-block-end: 14px;
-  /* ملتصقة بالحوافّ من الجانبين، ثم تتوسّط: فلا تتجاوز الحاوية أبداً */
-  inset-inline: 14px; width: max-content; max-inline-size: 100%;
-  margin-inline: auto;
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px; border-radius: 999px;
-  background: color-mix(in srgb, var(--card) 88%, transparent);
+  position: absolute; inset-block-start: 10px; inset-inline-start: 10px; z-index: 3;
+  inline-size: 38px; block-size: 38px; border-radius: 50%;
+  display: grid; place-items: center; color: var(--muted);
+  background: color-mix(in srgb, var(--card) 90%, transparent);
   border: 1px solid var(--line);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow-sm), inset 0 0 0 1px rgba(var(--glow-g1), .10);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: color .18s, border-color .18s, transform .18s;
 }
-.pz-btn {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: grid; place-items: center;
-  color: var(--muted);
-  transition: color .18s, background .18s;
-}
-.pz-btn:hover { color: var(--accent); background: var(--accent-soft); }
-.pz-btn svg { width: 17px; height: 17px; filter: var(--glow-drop); }
-.pm-zpct {
-  min-inline-size: 44px; text-align: center;
-  min-inline-size: 0; text-align: center;
-  font-variant-numeric: tabular-nums;
-}
+.pm-zoom:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.08); }
+.pm-zoom svg { inline-size: 18px; block-size: 18px; }
 
-.pm-body { padding: 30px 28px; display: flex; flex-direction: column; }
+.pm-body { min-width: 0; padding: 4px 0; display: flex; flex-direction: column; }
 .pm-body h3 { font-size: 21px; margin-top: 9px; line-height: 1.32; }
 .pm-desc { color: var(--muted); font-size: 14.8px; margin-top: 14px; line-height: 1.68; }
 
@@ -842,6 +815,29 @@ ul { margin: 0; padding: 0; list-style: none; }
 .pm-actions .btn-ico { width: 18px; height: 18px; }
 .pm-now { background: var(--grad-soft); border-color: var(--line-2); color: var(--accent); }
 .pm-now:hover { border-color: var(--accent); box-shadow: var(--glow-btn); }
+/* ---------- نبض واضح على زرّ «شراء مباشرة» ---------- */
+/* حلقة تتوسّع وتخبو + هالة نابضة، دورة كل 2.4 ثانية */
+.pm-now { position: relative; animation: buyPulse 2.4s ease-in-out infinite; }
+.pm-now::after {
+  content: ""; position: absolute; inset: -2px; border-radius: inherit;
+  border: 2px solid var(--accent); opacity: 0; pointer-events: none;
+  animation: buyRing 2.4s ease-out infinite;
+}
+.pm-now:disabled { animation: none; }
+.pm-now:disabled::after { animation: none; }
+@keyframes buyPulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); }
+  50% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+@keyframes buyRing {
+  0% { opacity: .9; transform: scale(1); }
+  14% { opacity: .55; transform: scale(1.05); }
+  42% { opacity: 0; transform: scale(1.3); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pm-now, .pm-now::after { animation: none; }
+}
 .pnow.big { font-size: 27px; }
 
 .qty { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--card); }
@@ -978,8 +974,21 @@ ul { margin: 0; padding: 0; list-style: none; }
 .total-row.grand span:last-child { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
 
 /* ---------------- 11. إتمام الطلب ---------------- */
-.co { padding: 30px 30px 32px; max-width: 660px; }
+/* شاشة عريضة بعمودين مثل متجر X: النموذج في اليمين والملخّص في بطاقة لاصقة يساراً */
+.co { padding: 26px 26px 28px; max-width: 980px; }
 .co h3 { font-size: 21px; }
+#checkoutModal { max-width: 980px; }
+.co-grid { display: grid; grid-template-columns: 1.18fr 1fr; gap: 24px; align-items: start; }
+.co-col { min-width: 0; }
+.co-side { position: sticky; inset-block-start: 4px; }
+.co-side .order-sum { margin: 0 0 14px; }
+.co-side .co-submit { margin-top: 0; }
+.co .order-done { max-width: 560px; margin-inline: auto; }
+@media (max-width: 820px) {
+  .co { padding: 22px 18px 24px; }
+  .co-grid { grid-template-columns: 1fr; gap: 16px; }
+  .co-side { position: static; }
+}
 
 .field { margin-top: 16px; display: flex; flex-direction: column; }
 .field.two { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
@@ -1083,6 +1092,24 @@ ul { margin: 0; padding: 0; list-style: none; }
 .rev p { color: var(--muted); font-size: 14.8px; line-height: 1.68; margin-top: 12px; }
 .rev b { display: block; font-size: 14.5px; margin-top: 16px; }
 .rev small { color: var(--faint); font-size: 12.5px; }
+
+/* ---------------- التحديات ---------------- */
+.ch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+.ch-card {
+  position: relative; padding: 26px 24px; border-radius: var(--r-lg); border: 1px solid var(--line);
+  background: var(--card); box-shadow: var(--shadow-sm);
+}
+.ch-card h3 { font-size: 18px; margin-top: 12px; }
+.ch-card p { color: var(--muted); font-size: 14.6px; line-height: 1.7; margin-top: 10px; white-space: pre-line; }
+.ch-card small { display: block; color: var(--faint); font-size: 12.5px; margin-top: 16px; }
+.ch-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  color: var(--accent); background: var(--accent-soft);
+}
+.ch-state { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11.5px; border: 1px solid var(--line); color: var(--muted); }
+.ch-state.on { color: var(--accent); border-color: var(--accent); }
+.ch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); }
+.ch-row b { font-weight: 600; font-size: 14.5px; }
 
 /* ---------------- 13. النشرة ---------------- */
 .news {
@@ -1388,12 +1415,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .cat-card.on .ico { filter: var(--glow-drop-lg); }
 .cat-card.on::after { box-shadow: 0 3px 16px 0 var(--glow-line); }
 
-/* ---------- شريط الفئات ---------- */
-.cat-strip a.on {
-  box-shadow: var(--glow-xs), inset 0 0 0 1px var(--glow-line);
-}
-.cat-strip a:hover { box-shadow: var(--glow-xs); }
-
 /* ---------- بطاقة المنتج ---------- */
 .pcard {
   box-shadow: var(--shadow-sm), inset 0 0 0 1px rgba(var(--glow-g1), .06);
@@ -1581,6 +1602,39 @@ ul { margin: 0; padding: 0; list-style: none; }
 .gear-float svg { width: 23px; height: 23px; }
 .gear-float:hover { transform: scale(1.09); color: var(--accent); box-shadow: var(--shadow-lg), var(--glow-sm); }
 
+/* ---------- نبض واضح كل 3 ثوانٍ عند وصول طلب جديد ---------- */
+/* حلقة تتوسّع وتخبو، مع نبضة خفيفة على الترس نفسه */
+.gear-float::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid var(--accent); opacity: 0; pointer-events: none;
+}
+.gear-float.has-new { color: var(--accent); border-color: var(--glow-line); }
+.gear-float.has-new::after { animation: kpRing 3s ease-out infinite; }
+.gear-float.has-new .gear-ico { animation: kpBeat 3s ease-in-out infinite; }
+.gear-badge {
+  position: absolute; inset-block-start: -5px; inset-inline-end: -5px;
+  min-width: 21px; height: 21px; padding: 0 6px; border-radius: 999px;
+  background: var(--danger); color: #fff; font-size: 11.5px; font-weight: 800;
+  display: grid; place-items: center; box-shadow: 0 0 0 2px var(--card);
+}
+.gear-badge[hidden] { display: none !important; }
+@keyframes kpRing {
+  0%   { opacity: .9;  transform: scale(1); }
+  7%   { opacity: .8;  transform: scale(1.1); }
+  30%  { opacity: 0;   transform: scale(1.95); }
+  100% { opacity: 0;   transform: scale(1.95); }
+}
+@keyframes kpBeat {
+  0%, 20%, 100% { transform: scale(1); }
+  8% { transform: scale(1.2); }
+}
+/* نفس النبض على بطاقة «الطلبات» في لوحة الإدارة */
+.adash-tile.has-new { border-color: var(--glow-line); box-shadow: var(--glow-sm); }
+.adash-tile.has-new .adash-ico { animation: kpBeat 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .gear-float.has-new::after, .gear-float.has-new .gear-ico, .adash-tile.has-new .adash-ico { animation: none; }
+}
+
 /* ---------------- 18. غرفة الإدارة (كاملة الشاشة) ---------------- */
 /* الغرفة تحلّ محلّ اللوحة المنبثقة القديمة: شريط علوي ثابت، شرائط
    تبويب أفقية، ومحتوى واسع. المكوّنات الداخلية (الحقول، بطاقات الطلب،
@@ -1623,40 +1677,62 @@ html.adm-open, html.adm-open body { overflow: hidden; }
 }
 .adroom-act:hover { color: var(--text); border-color: var(--glow-line); }
 
-.adroom-tabs {
-  position: sticky; inset-block-start: 0; z-index: 3;
-  display: flex; gap: 8px;
-  padding: 12px clamp(14px, 3vw, 30px);
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
-  overflow-x: auto;
-}
-.adroom-tab {
-  flex: none; white-space: nowrap;
-  padding: 9px 16px; border-radius: 999px;
-  border: 1px solid var(--line); background: var(--card); color: var(--muted);
-  font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 7px;
-  transition: color .2s, background .2s, border-color .2s, box-shadow .2s;
-}
-.adroom-tab:hover { color: var(--text); }
-.adroom-tab b {
-  font: inherit; background: var(--danger); color: #fff;
-  border-radius: 999px; font-size: 11px; padding: 1px 7px;
-}
-.adroom-tab b.grey { background: var(--faint); }
-.adroom-tab.on {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  border-color: transparent; color: var(--accent-ink); box-shadow: var(--glow-sm);
-}
-
 .adroom-wrap {
   width: 100%; max-width: 1180px; margin: 0 auto;
   padding: clamp(16px, 3vw, 30px); display: grid; gap: 14px;
 }
+/* شريط حالة السحابة داخل غرفة الإدارة */
+.acloud {
+  border: 1px solid var(--line-2); border-radius: 12px; padding: 10px 14px;
+  font-size: 13.5px; font-weight: 600; line-height: 1.6;
+}
+.acloud.ok { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: var(--accent-soft); color: var(--accent); }
+.acloud.warn { border-color: color-mix(in srgb, var(--danger) 40%, transparent); background: color-mix(in srgb, var(--danger) 10%, transparent); color: var(--danger); }
+/* لوحة الإدارة: بطاقات الأقسام */
+.adash { display: grid; gap: 18px; }
+.adash-head h2 { font-size: 21px; font-weight: 800; }
+.adash-head p { color: var(--muted); font-size: 14.5px; margin-top: 5px; }
+.adash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 13px; }
+.adash-tile {
+  position: relative; display: grid; gap: 9px; align-content: start; text-align: start;
+  padding: 17px 16px 16px; border: 1px solid var(--line); border-radius: 16px;
+  background: var(--card); color: var(--text); font: inherit;
+  transition: transform .16s var(--ease), border-color .16s var(--ease), box-shadow .16s var(--ease);
+}
+.adash-tile:hover { transform: translateY(-3px); border-color: var(--glow-line); box-shadow: var(--glow-sm); }
+.adash-ico {
+  width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); box-shadow: var(--glow-sm);
+}
+.adash-ico svg { width: 22px; height: 22px; }
+.adash-tile b { font-size: 16px; font-weight: 800; }
+.adash-tile small { color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+.adash-n {
+  position: absolute; inset-block-start: 13px; inset-inline-end: 13px;
+  min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px;
+  background: var(--danger); color: #fff; font-size: 11.5px; font-weight: 800;
+  display: grid; place-items: center;
+}
+/* رأس صفحة القسم داخل غرفة الإدارة */
+.asec-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.asec-back {
+  height: 38px; padding: 0 13px; border-radius: 10px;
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  font-weight: 700; font-size: 13.5px; cursor: pointer; transition: color .2s, border-color .2s;
+}
+.asec-back:hover { color: var(--text); border-color: var(--glow-line); }
+.asec-back svg { width: 17px; height: 17px; }
+.asec-title { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 9px; }
+.asec-title b {
+  font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+}
+.afield[hidden], .disc-field[hidden] { display: none !important; }
 .adroom-foot { display: grid; gap: 10px; padding-top: 4px; }
 .adroom-foot .btn { justify-self: start; }
-.adroom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; align-items: start; }
+.adroom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.adroom-grid > *, .aprod > *, .adeliv > *, .aset > *, .alist > * { min-width: 0; }
 .adroom-card {
   border: 1px solid var(--line); border-radius: 16px; background: var(--card);
   padding: 18px; display: grid; gap: 11px;
@@ -1705,16 +1781,25 @@ html.adm-open, html.adm-open body { overflow: hidden; }
 .a-note { color: var(--faint); font-size: 13px; }
 .alist { display: grid; gap: 10px; }
 .aprod {
-  display: grid; grid-template-columns: minmax(140px, 1.6fr) repeat(3, minmax(72px, .7fr)) auto;
-  gap: 10px; align-items: end; padding: 12px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px; align-items: end; padding: 12px;
   border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2);
 }
+.aprod > .aprod-name, .aprod > .aprev { grid-column: 1 / -1; }
+.apack {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 12px; align-items: end; padding: 12px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2);
+}
+.apack > .aprod-name { grid-column: 1 / -1; }
+.apack > .afield.wide { grid-column: 1 / -1; }
 .aprod-name { font-weight: 600; font-size: 14px; align-self: center; }
 .adeliv {
-  display: grid; grid-template-columns: minmax(140px, 1.6fr) repeat(2, minmax(72px, .7fr)) minmax(110px, 1fr);
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
   gap: 10px; align-items: end; padding: 10px 12px;
   border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2);
 }
+.adeliv > .adeliv-name { grid-column: 1 / -1; }
 .adeliv-name { font-weight: 600; font-size: 13.5px; align-self: center; }
 .afield { display: grid; gap: 5px; }
 .afield > span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
@@ -1729,7 +1814,7 @@ html.adm-open, html.adm-open body { overflow: hidden; }
 .afield.check { grid-auto-flow: column; justify-content: start; align-items: center; gap: 7px; }
 .afield.check input { width: auto; }
 .afield.wide { grid-column: 1 / -1; }
-.aset { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.aset { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 .aorder { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); padding: 14px; display: grid; gap: 9px; }
 .aorder-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .aorder-id { font-weight: 800; }
@@ -1766,8 +1851,8 @@ html.adm-open, html.adm-open body { overflow: hidden; }
   /* روابط التنقّل انتقلت إلى قائمة الزاوية، وبقي الدرج هو الطريق إليها */
   .nav-links { display: none; }
 
-  .pm { grid-template-columns: 1fr; }
-  .pm-img { border-inline-end: 0 !important; border-block-end: 1px solid var(--line); padding: 26px; }
+  .pm { grid-template-columns: 1fr; gap: 18px; padding: 20px; }
+  .pm-img { border-inline-end: 0 !important; }
   .pm-img .art { max-width: 200px; }
 
   .field.two { grid-template-columns: 1fr; }
@@ -1779,10 +1864,6 @@ html.adm-open, html.adm-open body { overflow: hidden; }
   /* الزرّان يتزاحمان على سطر واحد فيُقرآن بوضوح، وعلى ضيق الشاشة
      يتراكمان فلا يضيق النصّ ولا ينكسر إلى سطرين */
   .pm-actions { grid-template-columns: 1fr 1fr; }
-  .pz-btn { width: 30px; height: 30px; }
-  .pz-btn svg { width: 16px; height: 16px; }
-  .pm-zoom { gap: 4px; }
-  .pm-zpct { font-size: 11.5px; }
   :root { --pad: 16px; --sec: 48px; }
   body { font-size: 15.5px; }
   /* شريط الترويسة يضيق حتى لا يفيض على الشاشات الصغيرة جداً */
@@ -1924,9 +2005,6 @@ html.adm-open, html.adm-open body { overflow: hidden; }
 
 /* بطاقات البطل */
 [data-theme="dark"] .hero-badges .hbadge { border-radius: 6px; }
-[data-theme="dark"] .cat-strip a { border-radius: 6px; }
-[data-theme="dark"] .cat-strip a.on { background: color-mix(in srgb, var(--accent) 15%, transparent); }
-
 /* ---------------- 16. شاشة الدخول ---------------- */
 /* تظهر لحظة فتح الموقع: علامة المتجر واسماه (العربي والإنجليزي)
    وشريط تحميل يمتلئ، ثم تنحسر الشاشة لتكشف المتجر */
@@ -1997,7 +2075,7 @@ body { line-height: 1.7; }
 .art-img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .pimg:has(.art-img) { padding: 0; }
 .pimg .art-img, .pcard:hover .pimg .art-img { transform: none; filter: none; }
-.pm-img .art-img { max-width: 100%; max-height: 420px; object-fit: contain; filter: none; border-radius: var(--r-sm); }
+.pm-img .art-img { max-width: 100%; max-height: none; object-fit: cover; filter: none; border-radius: 0; }
 .ci-art .art-img { border-radius: 8px; }
 
 /* العناصر العائمة: لا تتزاحم ولا تغطي المحتوى */
@@ -2020,7 +2098,9 @@ body { line-height: 1.7; }
 .anew > summary::after { content: "+"; font-size: 20px; color: var(--accent); line-height: 1; }
 .anew[open] > summary::after { content: "–"; }
 .anew form { padding: 0 16px 16px; display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+.anew form > .wide, .anew form > .apreview, .anew form > .aerr { grid-column: 1 / -1; }
 .anew form .btn { justify-self: start; }
+.apreview { grid-column: 1 / -1; }
 .apreview img { width: 96px; height: 96px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
 .apreview:empty { display: none; }
 .aprod-name { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -2282,7 +2362,7 @@ h1, h2, h3, h4, .pnow, .section-head h2 { font-family: "Almarai", "Tajawal", san
   --art-shadow: #000; --art-rim: rgba(255, 235, 200, .35); --art-shine: rgba(255, 240, 210, .35); --art-cable: #0E0E0E;
   --pimg-bg: radial-gradient(circle at 50% 30%, #2A2A2A 0%, #161616 80%);
 }
-html { color-scheme: dark light; }
+html { color-scheme: light dark; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); }
 body::before, body::after { display: none !important; }
 ::selection { background: #D4AF7C; color: #0E0E0E; }
@@ -2498,18 +2578,19 @@ input[data-digits]::placeholder, input[type="tel"]::placeholder { direction: ltr
 }
 .acc svg { width: 64%; height: auto; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .35)); }
 .acc span { font-size: 13.5px; font-weight: 700; color: var(--accent); }
-.acc-1 { --d: 4.4s; --dl: .1s; }
-.acc-2 { --d: 5.2s; --dl: .3s; margin-top: 26px; }
-.acc-3 { --d: 4.8s; --dl: .5s; }
-.acc-4 { --d: 5.6s; --dl: .7s; margin-top: 26px; }
+.acc-1 { --d: 2.4s; --dl: .1s; }
+.acc-2 { --d: 2.9s; --dl: .3s; }
+.acc-3 { --d: 2.6s; --dl: .5s; }
+.acc-4 { --d: 3.2s; --dl: .7s; }
 @keyframes rf4-in { from { opacity: 0; transform: translateY(26px) scale(.92); } to { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes rf4-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-13px) rotate(2.5deg); } }
+/* الإكسسوارات تعلو وتهبط بحركة ناعمة واضحة (كانت 6px فقط) */
+@keyframes rf4-float { 0%, 100% { transform: translateY(6px); } 50% { transform: translateY(-10px); } }
 @media (max-width: 860px) {
   .acc-stage { width: min(100%, 320px); gap: 14px; }
   .acc span { font-size: 12.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .acc { opacity: 1; animation: rf4-in .8s cubic-bezier(.2, .8, .2, 1) var(--dl) forwards, rf4-float var(--d) ease-in-out calc(var(--dl) + .8s) infinite !important; }
+  .acc { opacity: 1; animation: none; }
 }
 
 /* ============================================================
@@ -2620,16 +2701,224 @@ input[data-digits]::placeholder, input[type="tel"]::placeholder { direction: ltr
 :root[data-theme="light"] .acc .ol { display: inline; fill: none; stroke: #26262A; stroke-width: 12.4; stroke-linecap: round; }
 :root[data-theme="light"] .acc svg { filter: drop-shadow(0 12px 12px rgba(30, 22, 8, .34)); }
 :root[data-theme="light"] .acc span { color: #26262A; }
+
+/* ---------- تبديل عرض المتجر: شبكة / قائمة ---------- */
+.view-toggle {
+  width: 42px; height: 42px; flex-shrink: 0; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+  display: grid; place-items: center; cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s, transform .18s var(--ease);
+}
+.view-toggle svg { width: 19px; height: 19px; }
+.view-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.view-toggle:active { transform: scale(.94); }
+.view-toggle[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+#grid.grid-list { grid-template-columns: 1fr; gap: 14px; }
+#grid.grid-list .pcard { flex-direction: row; align-items: stretch; }
+#grid.grid-list .pcard:hover { transform: none; }
+#grid.grid-list .pimg { width: 200px; min-width: 200px; flex-shrink: 0; padding: 14px; }
+#grid.grid-list .pbody { padding: 16px 20px; }
+#grid.grid-list .pname { -webkit-line-clamp: 3; }
+#grid.grid-list .pbottom { padding-top: 12px; }
+@media (max-width: 620px) {
+  #grid.grid-list .pimg { width: 122px; min-width: 122px; }
+  #grid.grid-list .pbody { padding: 12px 14px; }
+  #grid.grid-list .pname { font-size: 14px; }
+}
+
+/* ---------- محرّر صور المنتج في لوحة الإدارة ---------- */
+.aprev { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.aprev-cell { position: relative; display: inline-block; }
+.aprev-cell img { width: 62px; height: 62px; object-fit: cover; border-radius: 9px; border: 1px solid var(--line); display: block; }
+.aprev-x {
+  position: absolute; inset-block-start: -6px; inset-inline-end: -6px; width: 20px; height: 20px;
+  border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--danger);
+  font-size: 14px; line-height: 1; display: grid; place-items: center; cursor: pointer; padding: 0;
+}
+.aprev-add span {
+  display: grid; place-items: center; width: 62px; height: 62px; border-radius: 9px;
+  border: 1px dashed var(--line-2); color: var(--muted); font-size: 22px; line-height: 1;
+  cursor: pointer; transition: color .2s, border-color .2s;
+}
+.aprev-add:hover span { color: var(--accent); border-color: var(--accent); }
+
+/* ===== معرض صور المنتج: أسهم + نقاط + مصغّرات ===== */
+.pm-nav {
+  position: absolute; inset-block-start: 50%; transform: translateY(-50%); z-index: 4;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; color: var(--text);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  border: 1px solid var(--line); backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm); cursor: pointer;
+  opacity: 0; transition: opacity .18s, background .18s, color .18s, transform .18s;
+}
+.pm-gal:hover .pm-nav, .pm-nav:focus-visible { opacity: 1; }
+@media (hover: none) { .pm-nav { opacity: 1; } }
+.pm-nav[hidden], .pm-count[hidden], .pm-thumbs[hidden], .pm-dots[hidden], .pm-zoom[hidden] { display: none !important; }
+.pm-nav:hover { color: var(--accent); background: var(--accent-soft); }
+.pm-nav:active { transform: translateY(-50%) scale(.94); }
+.pm-nav svg { width: 20px; height: 20px; }
+.pm-prev { inset-inline-start: 10px; }
+.pm-next { inset-inline-end: 10px; }
+[dir="rtl"] .pm-nav svg { transform: scaleX(-1); }
+.pm-count {
+  position: absolute; inset-block-start: 10px; inset-inline-end: 10px; z-index: 3;
+  padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--muted);
+  background: color-mix(in srgb, var(--card) 90%, transparent); border: 1px solid var(--line);
+}
+.pm-dots {
+  position: absolute; inset-inline: 0; inset-block-end: 12px; z-index: 2;
+  display: flex; gap: 6px; justify-content: center; pointer-events: none;
+}
+.pm-dots i {
+  inline-size: 7px; block-size: 7px; border-radius: 999px;
+  background: rgba(255, 255, 255, .62); box-shadow: 0 0 0 1px rgba(9, 9, 11, .22);
+  transition: background .18s, width .18s;
+}
+.pm-dots i.on { background: var(--accent); inline-size: 20px; border-radius: 4px; }
+.pm-thumbs {
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 4px;
+  scrollbar-width: none;
+}
+.pm-thumbs::-webkit-scrollbar { display: none; }
+.pm-thumb {
+  flex: 0 0 auto; inline-size: 58px; block-size: 58px; border-radius: 10px; overflow: hidden; padding: 0;
+  border: 2px solid transparent; background: var(--bg-3); opacity: .68; cursor: pointer;
+  transition: opacity .18s, border-color .18s;
+}
+.pm-thumb:hover { opacity: 1; }
+.pm-thumb.on { opacity: 1; border-color: var(--accent); }
+.pm-thumb img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; pointer-events: none; }
+
+/* ===== الصورة على كامل الشاشة: تكبير وتحريك ===== */
+.pm-light { position: fixed; inset: 0; z-index: 210; display: none; align-items: center; justify-content: center; background: rgba(4, 6, 12, .93); }
+.pm-light.open { display: flex; }
+.pm-light-box { position: relative; inline-size: 100%; block-size: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.pm-lb-img { max-width: 94vw; max-height: 92vh; object-fit: contain; border-radius: 12px; background: var(--bg-3); will-change: transform; touch-action: none; cursor: zoom-in; user-select: none; -webkit-user-drag: none; }
+.pm-lb-img.zoomed { cursor: grab; }
+.pm-lb-img.zoomed:active { cursor: grabbing; }
+.pm-lb-nav, .pm-lb-x {
+  position: absolute; z-index: 3; display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--card) 72%, transparent); color: var(--text);
+  cursor: pointer; transition: color .18s, background .18s, transform .18s;
+}
+.pm-lb-nav { inset-block-start: 50%; transform: translateY(-50%); inline-size: 46px; block-size: 46px; font-size: 28px; line-height: 1; }
+.pm-lb-nav:hover, .pm-lb-x:hover { color: var(--accent); }
+.pm-lb-nav.prev { inset-inline-start: 16px; }
+.pm-lb-nav.next { inset-inline-end: 16px; }
+.pm-lb-x { inset-block-start: 16px; inset-inline-start: 16px; inline-size: 42px; block-size: 42px; font-size: 26px; line-height: 1; }
+.pm-lb-count { position: absolute; inset-block-end: 18px; inset-inline: 0; margin-inline: auto; width: max-content; font-size: 13px; font-weight: 700; color: var(--muted); z-index: 3; }
+@media (max-width: 520px) {
+  .pm-lb-nav { inline-size: 38px; block-size: 38px; font-size: 22px; }
+  .pm-lb-nav.prev { inset-inline-start: 7px; }
+  .pm-lb-nav.next { inset-inline-end: 7px; }
+  .pm-lb-x { inline-size: 36px; block-size: 36px; font-size: 22px; inset-block-start: 10px; inset-inline-start: 10px; }
+}
+/* ================= الفئات والوسوم في غرفة الإدارة ================= */
+.acats-list { gap: 8px; }
+.acat {
+  display: grid; grid-template-columns: 34px minmax(90px, 1fr) minmax(96px, 132px) auto;
+  gap: 8px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--card);
+}
+.acat-ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+.acat-ico svg { width: 19px; height: 19px; }
+.acat-name, .acat-icon {
+  width: 100%; min-width: 0; padding: 8px 10px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--bg-2); color: var(--text); font: inherit; font-size: 14px;
+}
+.acat-name:focus, .acat-icon:focus { border-color: var(--glow-line); box-shadow: var(--glow-ring); outline: none; }
+.acat .adel { margin-inline-start: 0; }
+.atags { display: flex; flex-wrap: wrap; gap: 8px; }
+.achk {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px;
+  border: 1px solid var(--line-2); background: var(--card); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.achk input { width: auto; accent-color: var(--accent); }
+.atag-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.atag-row input {
+  flex: 1 1 160px; min-width: 0; padding: 8px 10px; border-radius: 9px;
+  border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; font-size: 14px;
+}
+@media (max-width: 560px) {
+  .acat { grid-template-columns: 30px 1fr auto; }
+  .acat-icon { grid-column: 2 / 3; }
+}
+
+/* ================= شاشة أوّل زيارة: اختر فئتك ================= */
+.catpick {
+  position: fixed; inset: 0; z-index: 120; display: grid; place-items: center;
+  padding: 22px; overflow: auto;
+  background: color-mix(in srgb, var(--bg) 88%, #000);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.catpick[hidden] { display: none; }
+.catpick-in {
+  inline-size: min(880px, 100%); margin: auto; text-align: center;
+  background: var(--card); border: 1px solid var(--line-2); border-radius: 22px;
+  padding: clamp(22px, 4vw, 44px);
+}
+.catpick-eyebrow {
+  display: inline-block; margin-bottom: 12px; padding: 6px 14px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 13px;
+}
+.catpick-title { font-size: clamp(30px, 6vw, 58px); line-height: 1.15; font-weight: 800; margin: 0 0 10px; }
+.catpick-sub { color: var(--muted); font-size: clamp(15px, 1.8vw, 18px); margin: 0 auto 26px; max-width: 46ch; }
+.catpick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.catpick-card {
+  display: grid; gap: 8px; place-items: center; padding: 26px 18px; border-radius: 18px;
+  border: 1px solid var(--line-2); background: var(--bg-2); color: var(--text); cursor: pointer;
+  transition: border-color .18s, transform .18s;
+}
+.catpick-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.catpick-card .ico { display: grid; place-items: center; width: 46px; height: 46px; font-size: 32px; color: var(--accent); }
+.catpick-card .ico svg { width: 30px; height: 30px; }
+.catpick-card b { font-size: clamp(20px, 2.6vw, 28px); font-weight: 800; }
+.catpick-card span { font-size: 13px; color: var(--faint); }
+.catpick-all {
+  margin-top: 24px; padding: 13px 30px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 15px;
+  border: 1px solid var(--line-2); background: var(--bg-2); color: var(--text);
+}
+.catpick-all:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ===== الباقات ===================== */
+.pack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.pack-card {
+  display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  border: 1px solid var(--line-2); border-radius: 20px; background: var(--bg); padding: 18px;
+  transition: border-color .18s, transform .18s, box-shadow .18s;
+}
+.pack-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(20,40,90,.10); }
+.pack-media { position: relative; border-radius: 14px; overflow: hidden; background: var(--bg-2); aspect-ratio: 16 / 10; display: grid; place-items: center; }
+.pack-media img { width: 100%; height: 100%; object-fit: cover; }
+.pack-media .ico { color: var(--accent); }
+.pack-media .ico svg { width: 56px; height: 56px; }
+.pack-save {
+  position: absolute; inset-inline-start: 12px; inset-block-start: 12px; z-index: 2;
+  background: var(--accent); color: #fff; font-weight: 800; font-size: 12.5px;
+  padding: 5px 11px; border-radius: 999px;
+}
+.pack-card h3 { margin: 0; font-size: 20px; font-weight: 800; }
+.pack-card p.pack-desc { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+.pack-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pack-items li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.pack-items li::before { content: "\2713"; color: var(--accent); font-weight: 800; }
+.pack-foot { margin-top: auto; padding-top: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+.pack-price { display: flex; align-items: baseline; gap: 8px; }
+.pack-price b { font-size: 20px; font-weight: 800; }
+.pack-price s { color: var(--faint); font-size: 13.5px; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 /* ===== ربط قاعدة البيانات: الصق إعداد Firebase هنا (أو Supabase بدلاً منه). Firebase له الأولوية ===== */
 window.KP_FIREBASE = { apiKey: "", authDomain: "", projectId: "", storageBucket: "", messagingSenderId: "", appId: "" };
-window.KP_SUPABASE = { url: "", anonKey: "" };
+window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey: "sb_publishable_y0eAoOjFF960hokozGZFOw_9-OKO6h2" };
 </script>
 </head>
 <body>
-<svg width="1" height="1" style="position:absolute;left:-9999px;top:0;overflow:hidden" aria-hidden="true" focusable="false"><defs><linearGradient id="wGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0D9AE"/><stop offset=".5" stop-color="#D4AF7C"/><stop offset="1" stop-color="#9C7A45"/></linearGradient><linearGradient id="wGold2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#F0D9AE"/><stop offset=".5" stop-color="#D4AF7C"/><stop offset="1" stop-color="#9C7A45"/></linearGradient><linearGradient id="wBeige" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#F8EEDA"/><stop offset="1" stop-color="#E0CDA6"/></linearGradient><linearGradient id="wGold3" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#E2C48C"/><stop offset=".55" stop-color="#C39A57"/><stop offset="1" stop-color="#94703A"/></linearGradient><linearGradient id="wTan" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#DCC592"/><stop offset="1" stop-color="#B58E52"/></linearGradient><linearGradient id="wEmerald" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#2F8068"/><stop offset="1" stop-color="#0F3B30"/></linearGradient><linearGradient id="wGoldBright" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#F6E4BE"/><stop offset=".5" stop-color="#DDB878"/><stop offset="1" stop-color="#B58E55"/></linearGradient></defs></svg>
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none" aria-hidden="true" focusable="false"><defs><linearGradient id="wGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0D9AE"/><stop offset=".5" stop-color="#D4AF7C"/><stop offset="1" stop-color="#9C7A45"/></linearGradient><linearGradient id="wGold2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#F0D9AE"/><stop offset=".5" stop-color="#D4AF7C"/><stop offset="1" stop-color="#9C7A45"/></linearGradient><linearGradient id="wBeige" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#F8EEDA"/><stop offset="1" stop-color="#E0CDA6"/></linearGradient><linearGradient id="wGold3" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#E2C48C"/><stop offset=".55" stop-color="#C39A57"/><stop offset="1" stop-color="#94703A"/></linearGradient><linearGradient id="wTan" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#DCC592"/><stop offset="1" stop-color="#B58E52"/></linearGradient><linearGradient id="wEmerald" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="120"><stop offset="0" stop-color="#2F8068"/><stop offset="1" stop-color="#0F3B30"/></linearGradient><linearGradient id="wGoldBright" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="120"><stop offset="0" stop-color="#F6E4BE"/><stop offset=".5" stop-color="#DDB878"/><stop offset="1" stop-color="#B58E55"/></linearGradient></defs></svg>
 
 <!-- ================= شاشة الدخول: الاسم وشريط التحميل ثم الدخول ================= -->
 <div id="splash" aria-hidden="false">
@@ -2662,8 +2951,8 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
     <nav class="nav-links" id="navLinks" aria-label="التنقل الرئيسي">
       <a href="#products" data-i18n="navShop">المتجر</a>
       <a href="#cats" data-i18n="navCats">الفئات</a>
+      <a href="#packages" data-i18n="navPackages">الباقات</a>
       <a href="#why" data-i18n="navWhy">لماذا نحن</a>
-      <a href="#reviews" data-i18n="navReviews">الآراء</a>
       <a href="#footer" data-i18n="navContact">تواصل</a>
     </nav>
 
@@ -2690,9 +2979,6 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
   </div>
 </header>
 
-<!-- ================= شريط الفئات ================= -->
-<div class="cat-strip" id="catStrip" aria-label="الفئات"></div>
-
 <main id="top">
 
   <!-- ================= البطل ================= -->
@@ -2707,7 +2993,7 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
         <p class="lead" id="heroLead"></p>
         <div class="hero-cta">
           <a href="#products" class="btn btn-primary btn-lg" data-i18n="heroCta1">تسوّق الآن</a>
-          <a href="#cats" class="btn btn-ghost btn-lg" data-i18n="heroCta2">استكشف الفئات</a>
+          <a href="#packages" class="btn btn-ghost btn-lg" data-i18n="heroCta2">استكشف العروض</a>
         </div>
         <div class="hero-badges">
           <span class="hbadge"><i class="hbi hbi-ok" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.6 12.4l4.8 4.8L19.4 6.6"/></svg></i> <span data-i18n="f1t">ضمان على كل قطعة</span></span>
@@ -2738,50 +3024,6 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
           <span><b id="heroStock">—</b> <span data-i18n="heroStock">قطعة في المخزون</span></span>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ================= المزايا ================= -->
-  <section class="section" id="why" style="background:var(--bg-2);border-block:1px solid var(--line)">
-    <div class="wrap">
-      <div class="section-head reveal" style="max-width:620px;text-align:center;margin-inline:auto">
-        <span class="eyebrow" data-i18n="whyEyebrow">لماذا نحن</span>
-        <h2 data-i18n="whyTitle">شراء أسهل، ووصول أقرب</h2>
-        <p data-i18n="whyLead">أربع مبادئ نلتزم بها في كل طلب.</p>
-      </div>
-      <div class="feat-grid">
-        <div class="feat reveal">
-          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 2.6l7.6 3v6.1c0 4.6-3.1 8.2-7.6 9.7-4.5-1.5-7.6-5.1-7.6-9.7V5.6z"/><path d="M8.9 12.1l2.2 2.2 4-4.4"/></svg></div>
-          <h3 data-i18n="f1t">ضمان على كل قطعة</h3>
-          <p data-i18n="f1d">منتجات مفحوصة وحدةً وحدة، مع ضمان يغطي عيوب التصنيع.</p>
-        </div>
-        <div class="feat reveal">
-          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M2.6 6.4h11.2v9.2H2.6z"/><path d="M13.8 9.6h3.9l3.7 3.4v2.6h-7.6z"/><circle cx="6.6" cy="18" r="2.1"/><circle cx="17.4" cy="18" r="2.1"/></svg></div>
-          <h3 data-i18n="f2t">توصيل 48 ولاية</h3>
-          <p data-i18n="f2d">إلى المنزل أو مكتب التوصيل الأقرب إليك، بمدة وصلية واضحة.</p>
-        </div>
-        <div class="feat reveal">
-          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect x="2.4" y="6" width="19.2" height="12" rx="2.6"/><circle cx="12" cy="12" r="2.6"/><path d="M6.2 9.6v4.8M17.8 9.6v4.8"/></svg></div>
-          <h3 data-i18n="f3t">الدفع عند الاستلام</h3>
-          <p data-i18n="f3d">لا تدفع أي مبلغ مسبق — تدفع عند وصول الطلب بين يديك.</p>
-        </div>
-        <div class="feat reveal">
-          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M20.4 12a8.4 8.4 0 1 1-2.7-6.2"/><path d="M20.6 3.8v4.8h-4.8"/></svg></div>
-          <h3 data-i18n="f4t">استبدال خلال 7 أيام</h3>
-          <p data-i18n="f4d">إن لم يعجبك المنتج نستبدله أو نردّ لك قيمته كاملة.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= الفئات ================= -->
-  <section class="section" id="cats">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow" data-i18n="catsEyebrow">تصفّح حسب الفئة</span>
-        <h2 data-i18n="catsTitle">اختر فئتك</h2>
-      </div>
-      <div class="cat-grid" id="catGrid"></div>
     </div>
   </section>
 
@@ -2827,6 +3069,7 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
           <div class="result-bar">
             <div class="result-count" id="resultCount"></div>
             <div class="chips" id="chips"></div>
+            <button class="view-toggle" id="viewToggle" type="button" aria-pressed="false" title="عرض قائمة" aria-label="تبديل طريقة عرض المنتجات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
           </div>
           <div class="prod-grid" id="grid"></div>
         </div>
@@ -2834,14 +3077,59 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
     </div>
   </section>
 
-  <!-- ================= الآراء ================= -->
-  <section class="section" id="reviews">
+  <!-- ================= الباقات ================= -->
+  <section class="section" id="packages" hidden>
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow" data-i18n="revEyebrow">ثقة زبائننا</span>
-        <h2 data-i18n="revTitle">آراء العملاء</h2>
+        <span class="eyebrow" data-i18n="packEyebrow">وفّر أكثر</span>
+        <h2 data-i18n="packTitle">الباقات</h2>
+        <p data-i18n="packSub">مجموعة منتجات مختارة بسعر واحد مخفّض.</p>
       </div>
-      <div class="rev-grid" id="revGrid"></div>
+      <div class="pack-grid" id="packGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= الفئات ================= -->
+  <section class="section" id="cats" style="background:var(--bg-2);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="catsEyebrow">تصفّح حسب الفئة</span>
+        <h2 data-i18n="catsTitle">اختر فئتك</h2>
+      </div>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= المزايا ================= -->
+  <section class="section" id="why">
+    <div class="wrap">
+      <div class="section-head reveal" style="max-width:620px;text-align:center;margin-inline:auto">
+        <span class="eyebrow" data-i18n="whyEyebrow">لماذا نحن</span>
+        <h2 data-i18n="whyTitle">شراء أسهل، ووصول أقرب</h2>
+        <p data-i18n="whyLead">أربع مبادئ نلتزم بها في كل طلب.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat reveal">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 2.6l7.6 3v6.1c0 4.6-3.1 8.2-7.6 9.7-4.5-1.5-7.6-5.1-7.6-9.7V5.6z"/><path d="M8.9 12.1l2.2 2.2 4-4.4"/></svg></div>
+          <h3 data-i18n="f1t">ضمان على كل قطعة</h3>
+          <p data-i18n="f1d">منتجات مفحوصة وحدةً وحدة، مع ضمان يغطي عيوب التصنيع.</p>
+        </div>
+        <div class="feat reveal">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M2.6 6.4h11.2v9.2H2.6z"/><path d="M13.8 9.6h3.9l3.7 3.4v2.6h-7.6z"/><circle cx="6.6" cy="18" r="2.1"/><circle cx="17.4" cy="18" r="2.1"/></svg></div>
+          <h3 data-i18n="f2t">توصيل 48 ولاية</h3>
+          <p data-i18n="f2d">إلى المنزل أو مكتب التوصيل الأقرب إليك، بمدة وصلية واضحة.</p>
+        </div>
+        <div class="feat reveal">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect x="2.4" y="6" width="19.2" height="12" rx="2.6"/><circle cx="12" cy="12" r="2.6"/><path d="M6.2 9.6v4.8M17.8 9.6v4.8"/></svg></div>
+          <h3 data-i18n="f3t">الدفع عند الاستلام</h3>
+          <p data-i18n="f3d">لا تدفع أي مبلغ مسبق — تدفع عند وصول الطلب بين يديك.</p>
+        </div>
+        <div class="feat reveal">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M20.4 12a8.4 8.4 0 1 1-2.7-6.2"/><path d="M20.6 3.8v4.8h-4.8"/></svg></div>
+          <h3 data-i18n="f4t">استبدال خلال 7 أيام</h3>
+          <p data-i18n="f4d">إن لم يعجبك المنتج نستبدله أو نردّ لك قيمته كاملة.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2879,7 +3167,7 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
         <ul>
           <li><a href="#products" data-i18n="navShop">المتجر</a></li>
           <li><a href="#cats" data-i18n="navCats">الفئات</a></li>
-          <li><a href="#reviews" data-i18n="navReviews">الآراء</a></li>
+          <li><a href="#packages" data-i18n="navPackages">الباقات</a></li>
           <li><a href="#why" data-i18n="navWhy">لماذا نحن</a></li>
         </ul>
       </div>
@@ -2914,7 +3202,19 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
 
 <!-- ================= زرّ الإدارة ================= -->
 <!-- بابٌ في الزاوية المقابلة لركن التواصل يفتح لوحة الإدارة -->
-<button class="gear-float" id="adminBtn" aria-label="لوحة الإدارة" data-i18n-aria="adminOpen"></button>
+<button class="gear-float" id="adminBtn" aria-label="لوحة الإدارة" data-i18n-aria="adminOpen"><b class="gear-badge" id="gearBadge" hidden>0</b></button>
+
+<!-- ================= شاشة أول زيارة: اختر فئتك ================= -->
+<!-- تظهر مرّة واحدة عند أوّل زيارة، وتُعرض فيها أسماء الفئات بخطّ كبير واضح -->
+<div class="catpick" id="catPick" hidden role="dialog" aria-modal="true" aria-labelledby="catPickTitle">
+  <div class="catpick-in">
+    <span class="catpick-eyebrow" id="catPickEyebrow"></span>
+    <h2 class="catpick-title" id="catPickTitle"></h2>
+    <p class="catpick-sub" id="catPickSub"></p>
+    <div class="catpick-grid" id="catPickGrid"></div>
+    <button type="button" class="catpick-all" id="catPickAll"></button>
+  </div>
+</div>
 
 <!-- ================= نافذة المنتج ================= -->
 <div class="ov" id="prodOv"></div>
@@ -2924,15 +3224,17 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
   </button>
   <div class="pm">
     <div class="pm-img">
-      <div class="pm-stage" id="pmStage">
-        <div id="pmArt"></div>
+      <div class="pm-gal">
+        <div class="pm-stage" id="pmStage">
+          <div id="pmArt"></div>
+        </div>
+        <button type="button" class="pm-zoom" id="pmZoom" data-i18n-aria="zoomIn" aria-label="تكبير الصورة" title="تكبير الصورة"></button>
+        <button type="button" class="pm-nav pm-prev" id="pmPrev" hidden></button>
+        <button type="button" class="pm-nav pm-next" id="pmNext" hidden></button>
+        <span class="pm-dots" id="pmDots" hidden></span>
+        <span class="pm-count" id="pmCount" hidden></span>
       </div>
-      <div class="pm-zoom" role="group" aria-label="تكبير الصورة">
-        <button type="button" class="pz-btn" id="pmZoomIn" data-i18n-aria="zoomIn" aria-label="تكبير"></button>
-        <button type="button" class="pz-btn" id="pmZoomOut" data-i18n-aria="zoomOut" aria-label="تصغير"></button>
-        <button type="button" class="pz-btn" id="pmZoomReset" data-i18n-aria="zoomReset" aria-label="إعادة الحجم"></button>
-        <output class="pm-zpct" id="pmZoomPct" aria-live="off">100%</output>
-      </div>
+      <div class="pm-thumbs" id="pmThumbs" role="tablist" hidden></div>
     </div>
     <div class="pm-body">
       <span class="pcat" id="pmCat"></span>
@@ -2953,9 +3255,13 @@ window.KP_SUPABASE = { url: "", anonKey: "" };
         <button class="btn btn-primary btn-lg btn-glow pm-add" id="pmAdd"></button>
         <button class="btn btn-ghost btn-lg pm-now" id="pmBuy"></button>
       </div>
-      <p class="pm-note" id="pmWarranty"></p>
     </div>
   </div>
+</div>
+
+<!-- ================= عرض صورة المنتج على كامل الشاشة ================= -->
+<div class="pm-light" id="pmLight">
+  <div class="pm-light-box" id="pmLightBox"></div>
 </div>
 
 <!-- ================= السلة ================= -->
@@ -3074,15 +3380,15 @@ window.I18N = (function () {
     ar: {
       dir: "rtl", lang: "ar",
 
-      navShop: "المتجر", navCats: "الفئات", navWhy: "لماذا نحن",
-      navReviews: "الآراء", navContact: "تواصل",
+      navShop: "المتجر", navCats: "الفئات", navPackages: "الباقات", navWhy: "لماذا نحن",
+      navContact: "تواصل",
 
       /* البطل */
       heroEyebrow: "إكسسوارات هاتف أصلية فقط · لا هواتف · الدفع عند الاستلام",
       heroTitle1: "كل ما تحتاجه",
       heroTitle2: "في مكان واحد",
       heroLead: "شواحن، باور بانك، سماعات، أغطية واقيات — مختارة بعناية وبأسعار مباشرة من المورد. توصيل إلى 48 ولاية والدفع عند الاستلام.",
-      heroCta1: "تسوّق الآن", heroCta2: "استكشف الفئات",
+      heroCta1: "تسوّق الآن", heroCta2: "استكشف العروض",
       heroStock: "قطعة في المخزون",
 
       /* قائمة الزاوية (ثلاثة خطوط) */
@@ -3100,6 +3406,14 @@ window.I18N = (function () {
       /* الفئات */
       catsEyebrow: "تصفّح حسب الفئة", catsTitle: "اختر فئتك",
       catsAll: "الكل",
+      pickTitle: "اختر فئتك", pickSub: "حدّد الفئة التي تهمّك أو اعرض كل المنتجات.",
+      pickAll: "عرض الكل", pickAria: "شاشة اختيار الفئة",
+
+      /* الباقات */
+      packEyebrow: "وفّر أكثر", packTitle: "الباقات",
+      packSub: "مجموعة منتجات مختارة بسعر واحد مخفّض.",
+      packOrder: "اطلب الباقة", packSave: "وفّر", packItems: "تشمل الباقة",
+      packEmpty: "لا توجد باقات حالياً.", packNoItems: "باقة عرض بسعر خاص.",
 
       /* المتجر */
       shopEyebrow: "متوفر الآن", shopTitle: "متجر المنتجات",
@@ -3141,7 +3455,7 @@ window.I18N = (function () {
       adminPass: "كلمة السر", adminEnter: "دخول", adminWrong: "كلمة السر غير صحيحة", adminLogout: "خروج",
       adminTabOrders: "الطلبات", adminTabProducts: "المنتجات", adminTabDelivery: "التوصيل", adminTabSettings: "الإعدادات",
       adminNoOrders: "لا توجد طلبات بعد.",
-      adminStatus: "الحالة", adminStNew: "جديد", adminStConfirmed: "مؤكّد", adminStShipped: "مشحون", adminStDone: "مُسلَّم",
+      adminStatus: "الحالة", adminStNew: "جديد", adminStConfirmed: "مؤكّد", adminStShipped: "مشحون", adminStDone: "مُسلَّم", adminStCancelled: "ملغي",
       adminDelete: "حذف",
       adminPrice: "السعر", adminOld: "السعر القديم", adminStock: "المخزون", adminActive: "معروض",
       adminSave: "حفظ التغييرات", adminSaved: "تم الحفظ",
@@ -3185,6 +3499,13 @@ window.I18N = (function () {
       /* الآراء */
       revEyebrow: "ثقة زبائننا", revTitle: "آراء العملاء", revNone: "لا توجد آراء بعد",
 
+      /* التحديات */
+      chEyebrow: "من المتجر مباشرة", chTitle: "التحديات",
+      chLead: "تحديات وعروض يشاركها المتجر، وتظهر تلقائياً بلا تحديث الصفحة.",
+      chBadge: "تحدّي", chNone: "لا توجد تحديات منشورة بعد.",
+      chLoading: "جارٍ تحميل التحديات…", chError: "تعذّر جلب التحديات. تحقّق من اتصالك بالإنترنت.",
+      chOffline: "يُعرض آخر ما حُفظ محلياً لتعذّر الوصول إلى قاعدة التحديات.",
+
       /* النشرة */
       newsTitle: "اشترك لتصلك العروض الجديدة",
       newsD: "أرسل بريدك لتصلك عناوين التخفيضات والوصولات الجديدة قبل الجميع.",
@@ -3198,7 +3519,7 @@ window.I18N = (function () {
       /* رسائل عامة */
       addedToCart: "أُضيف إلى السلة: {n}", onlyStock: "المتوفر من هذا المنتج {n} فقط",
       outNow: "غير متوفر حالياً", buyNow: "شراء مباشرة",
-      zoomIn: "تكبير الصورة", zoomOut: "تصغير الصورة", zoomReset: "إعادة الحجم الأصلي",
+      zoomIn: "تكبير الصورة", zoomOut: "تصغير الصورة", zoomReset: "إعادة الحجم الأصلي", prevImg: "الصورة السابقة", nextImg: "الصورة التالية",
 
       /* النصوص القانونية */
       termsH: "شروط الاستخدام",
@@ -3217,14 +3538,14 @@ window.I18N = (function () {
     en: {
       dir: "ltr", lang: "en",
 
-      navShop: "Shop", navCats: "Categories", navWhy: "Why us",
-      navReviews: "Reviews", navContact: "Contact",
+      navShop: "Shop", navCats: "Categories", navPackages: "Bundles", navWhy: "Why us",
+      navContact: "Contact",
 
       heroEyebrow: "Phone accessories only, no handsets \u00b7 Cash on delivery",
       heroTitle1: "Everything you need",
       heroTitle2: "in one place",
       heroLead: "Chargers, power banks, earbuds, cases and screen guards — carefully selected at direct supplier prices. Delivered to 48 wilayas, paid on arrival.",
-      heroCta1: "Shop now", heroCta2: "Explore categories",
+      heroCta1: "Shop now", heroCta2: "Explore offers",
       heroStock: "units in stock",
 
       /* Corner menu (three lines) */
@@ -3240,6 +3561,14 @@ window.I18N = (function () {
 
       catsEyebrow: "Browse by category", catsTitle: "Pick your category",
       catsAll: "All",
+      pickTitle: "Pick your category", pickSub: "Choose the category you care about, or browse everything.",
+      pickAll: "Browse all", pickAria: "Category chooser",
+
+      /* Bundles */
+      packEyebrow: "Save more", packTitle: "Bundles",
+      packSub: "A hand-picked set of products at one reduced price.",
+      packOrder: "Order bundle", packSave: "Save", packItems: "Included",
+      packEmpty: "No bundles yet.", packNoItems: "A special-price offer bundle.",
 
       shopEyebrow: "Available now", shopTitle: "Product store",
       shopSub: "Genuine phone accessories with live stock control",
@@ -3278,7 +3607,7 @@ window.I18N = (function () {
       adminPass: "Password", adminEnter: "Enter", adminWrong: "Wrong password", adminLogout: "Log out",
       adminTabOrders: "Orders", adminTabProducts: "Products", adminTabDelivery: "Delivery", adminTabSettings: "Settings",
       adminNoOrders: "No orders yet.",
-      adminStatus: "Status", adminStNew: "New", adminStConfirmed: "Confirmed", adminStShipped: "Shipped", adminStDone: "Delivered",
+      adminStatus: "Status", adminStNew: "New", adminStConfirmed: "Confirmed", adminStShipped: "Shipped", adminStDone: "Delivered", adminStCancelled: "Cancelled",
       adminDelete: "Delete",
       adminPrice: "Price", adminOld: "Old price", adminStock: "Stock", adminActive: "Visible",
       adminSave: "Save changes", adminSaved: "Saved",
@@ -3319,6 +3648,13 @@ window.I18N = (function () {
 
       revEyebrow: "Customer trust", revTitle: "Customer reviews", revNone: "No reviews yet",
 
+      /* Challenges */
+      chEyebrow: "Live from the store", chTitle: "Challenges",
+      chLead: "Challenges and offers the store shares; they appear automatically without refreshing.",
+      chBadge: "Challenge", chNone: "No published challenges yet.",
+      chLoading: "Loading challenges…", chError: "Could not load the challenges. Check your connection.",
+      chOffline: "Showing the last locally saved copy because the challenges backend is unreachable.",
+
       newsTitle: "Subscribe for new offers",
       newsD: "Get discount headlines and new arrivals in your inbox before anyone else.",
       newsPh: "Your email address", newsBtn: "Subscribe", newsOk: "You are subscribed, thank you.", newsBad: "Invalid email.",
@@ -3329,7 +3665,7 @@ window.I18N = (function () {
 
       addedToCart: "Added to cart: {n}", onlyStock: "Only {n} in stock for this product",
       outNow: "Not available right now", buyNow: "Buy now",
-      zoomIn: "Zoom in", zoomOut: "Zoom out", zoomReset: "Reset size",
+      zoomIn: "Zoom in", zoomOut: "Zoom out", zoomReset: "Reset size", prevImg: "Previous image", nextImg: "Next image",
 
       termsH: "Terms of use",
       termsP: "By using this store you agree to:",
@@ -3894,6 +4230,9 @@ window.ART = (function () {
     zoomOut:
       '<circle cx="10.8" cy="10.8" r="7.2"/>' +
       '<path d="M20.6 20.6 16.2 16.2M7.9 10.8h5.8"/>',
+    chevL: '<path d="M14.5 5.5 8 12l6.5 6.5"/>',
+    chevR: '<path d="M9.5 5.5 16 12l-6.5 6.5"/>',
+    expand: '<path d="M9.6 3.6H3.6v6"/><path d="M14.4 3.6h6v6"/><path d="M20.4 14.4v6h-6"/><path d="M3.6 14.4v6h6"/>',
 
     sun:
       '<circle cx="12" cy="12" r="4.7"/>' +
@@ -4053,6 +4392,11 @@ window.DB = (function () {
       desc: { ar: "موزعات USB-C ومحولات OTG", en: "USB-C hubs and OTG adapters" } }
   ];
 
+  /* ---------------- الباقات ----------------
+     باقة = تجميع مجموعة منتجات بسعر واحد مخفّض. تُدار من غرفة الإدارة
+     وتظهر قسماً أساسياً في الموقع. حقل items يحمل معرّفات المنتجات. */
+  const PKGS = [];
+
   /* ---------------- الفلاتر (على طريقة Anker) ---------------- */
   const FACETS = {
     capacity: [
@@ -4091,6 +4435,7 @@ window.DB = (function () {
 
   /* ---------------- شارات المنتجات ---------------- */
   const TAGS = [
+    { id: "sale", label: { ar: "خصم", en: "Sale" }, cls: "fire" },
     { id: "new", label: { ar: "جديد", en: "New" }, cls: "new" },
     { id: "best", label: { ar: "الأكثر مبيعاً", en: "Best seller" }, cls: "fire" },
     { id: "top", label: { ar: "عرض مميز", en: "Top offer" }, cls: "top" },
@@ -4645,6 +4990,9 @@ window.DB = (function () {
     return {
       settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
       products: JSON.parse(JSON.stringify(SEED)),
+      cats: JSON.parse(JSON.stringify(CATS)),
+      tags: JSON.parse(JSON.stringify(TAGS)),
+      packages: JSON.parse(JSON.stringify(PKGS)),
       reviews: SEED_REVIEWS.map((r, i) => Object.assign({ id: "r" + (i + 1), at: Date.now() - (i + 1) * 864e5 * 6, active: true }, r)),
       seq: 100
     };
@@ -4675,15 +5023,55 @@ window.DB = (function () {
           state = parsed;
           /* ضمان اكتمال الحقول بعد أي تحديث مستقبلي للاشتقاق */
           if (!state.settings) state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+          if (!state.settings) state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
           if (!state.reviews) state.reviews = [];
           if (!state.seq) state.seq = 100;
+          if (!Array.isArray(state.cats) || !state.cats.length) state.cats = JSON.parse(JSON.stringify(CATS));
+          if (!Array.isArray(state.tags) || !state.tags.length) state.tags = JSON.parse(JSON.stringify(TAGS));
+          if (!Array.isArray(state.packages)) state.packages = [];
+          syncCats();
+          syncTags();
+          syncPkgs();
           return state;
         }
       } catch (e) { /* بيانات تالفة: نعيد البناء */ }
     }
     state = seedState();
+    syncCats();
+    syncTags();
+    syncPkgs();
     persist();
     return state;
+  }
+
+  /* مزامنة الفئات المخزّنة داخل مصفوفة CATS نفسها ليقرأها كل المتجر */
+  function syncCats() {
+    if (!state || !Array.isArray(state.cats)) return;
+    CATS.length = 0;
+    state.cats.forEach((c) => CATS.push(c));
+  }
+  /* مزامنة الوسوم داخل مصفوفة TAGS نفسها */
+  function syncTags() {
+    if (!state || !Array.isArray(state.tags)) return;
+    TAGS.length = 0;
+    state.tags.forEach((c) => TAGS.push(c));
+  }
+  /* مزامنة الباقات داخل مصفوفة PKGS نفسها */
+  function syncPkgs() {
+    if (!state || !Array.isArray(state.packages)) return;
+    PKGS.length = 0;
+    state.packages.forEach((c) => PKGS.push(c));
+  }
+  /* تطبيق بيانات الموقع المشتركة (الفئات والوسوم والباقات) الواردة من السحابة */
+  function applySite(patch) {
+    if (!patch) return false;
+    const s = load();
+    if (Array.isArray(patch.cats) && patch.cats.length) s.cats = patch.cats;
+    if (Array.isArray(patch.tags) && patch.tags.length) s.tags = patch.tags;
+    if (Array.isArray(patch.packages)) s.packages = patch.packages;
+    syncCats(); syncTags(); syncPkgs();
+    persist();
+    return true;
   }
 
   /* ---------------- أدوات مساعدة ---------------- */
@@ -4880,7 +5268,7 @@ window.DB = (function () {
   function setProduct(id, patch) {
     const p = getProduct(id);
     if (!p) return false;
-    ["price", "old", "stock", "active"].forEach((k) => { if (patch[k] !== undefined) p[k] = patch[k]; });
+    ["price", "old", "stock", "active", "tags", "name", "desc"].forEach((k) => { if (patch[k] !== undefined) p[k] = patch[k]; });
     persist();
     return true;
   }
@@ -4889,6 +5277,52 @@ window.DB = (function () {
     Object.keys(patch).forEach((k) => { if (patch[k] !== undefined) s[k] = patch[k]; });
     persist();
     return true;
+  }
+  /* كتابة قائمة الفئات كاملة (إضافة/تعديل/حذف) */
+  function saveCats(list) {
+    const s = load();
+    s.cats = (list || []).map((c) => ({
+      id: c.id,
+      name: { ar: c.name.ar, en: c.name.en || c.name.ar },
+      icon: c.icon || "sparkle",
+      desc: { ar: (c.desc && c.desc.ar) || "", en: (c.desc && c.desc.en) || "" }
+    }));
+    syncCats();
+    persist();
+    return true;
+  }
+  /* كتابة قائمة الوسوم كاملة (إضافة وسوم جديدة) */
+  function saveTags(list) {
+    const s = load();
+    s.tags = (list || []).map((t) => ({
+      id: t.id,
+      label: { ar: t.label.ar, en: t.label.en || t.label.ar },
+      cls: t.cls || "new"
+    }));
+    syncTags();
+    persist();
+    return true;
+  }
+  /* كتابة قائمة الباقات كاملة (إضافة/تعديل/حذف) */
+  function savePackages(list) {
+    const s = load();
+    s.packages = (list || []).map((p) => ({
+      id: p.id,
+      name: { ar: p.name.ar, en: p.name.en || p.name.ar },
+      desc: { ar: (p.desc && p.desc.ar) || "", en: (p.desc && p.desc.en) || "" },
+      price: Number(p.price) || 0,
+      old: Number(p.old) || 0,
+      image: p.image || "",
+      items: Array.isArray(p.items) ? p.items.slice() : [],
+      active: p.active !== false
+    }));
+    syncPkgs();
+    persist();
+    return true;
+  }
+  /* الباقات الظاهرة في الموقع */
+  function activePackages() {
+    return (load().packages || []).filter((p) => p.active !== false);
   }
   function setOrder(id, patch) {
     try {
@@ -4909,11 +5343,12 @@ window.DB = (function () {
   }
 
   return {
-    CATS: CATS, FACETS: FACETS, TAGS: TAGS,
+    CATS: CATS, FACETS: FACETS, TAGS: TAGS, PKGS: PKGS,
     products: products, activeProducts: activeProducts, getProduct: getProduct,
     stockOf: stockOf, reviews: reviews, settings: settings, rates: rates,
     stats: stats, createOrder: createOrder, orders: orders, subscribe: subscribe,
-    setProduct: setProduct, saveSettings: saveSettings, setOrder: setOrder,
+    packages: activePackages, savePackages: savePackages, applySite: applySite,
+    setProduct: setProduct, saveSettings: saveSettings, saveCats: saveCats, saveTags: saveTags, setOrder: setOrder,
     removeOrder: removeOrder, rateMap: rateMap, setRate: setRate,
     navCount: navCount, fmt: fmt, esc: esc, normAr: normAr, fmtDate: fmtDate, toLatin: toLatin, toNum: toNum, normPhone: normPhone,
     load: load, persist: persist,
@@ -4934,21 +5369,28 @@ window.DB = (function () {
   const ENABLED = useFB || !!SB;
   const BUCKET = "product-images";
   let session = null, remoteOrders = [];
+  /* هل جدول البيانات المشتركة (site_data) جاهز في السحابة؟ null = لم نتحقّق بعد */
+  let siteTableOk = null;
   const lOrders = DB.orders, lSetOrder = DB.setOrder, lRemoveOrder = DB.removeOrder;
   const lSetProduct = DB.setProduct, lCreate = DB.createOrder;
   const log = (r) => { if (r && r.error) console.error(r.error); };
   const logE = (e) => console.error(e);
 
-  const row = (p) => ({
-    id: p.id, cat: p.cat, name_ar: p.name.ar, name_en: p.name.en || p.name.ar,
-    price: p.price | 0, old_price: p.old | 0, stock: p.stock | 0, active: p.active !== false,
-    image_url: p.image || null, desc_ar: (p.desc && p.desc.ar) || "", desc_en: (p.desc && p.desc.en) || ""
-  });
+  const row = (p) => {
+    const o = {
+      id: p.id, cat: p.cat, name_ar: p.name.ar, name_en: p.name.en || p.name.ar,
+      price: p.price | 0, old_price: p.old | 0, stock: p.stock | 0, active: p.active !== false, tags: Array.isArray(p.tags) ? p.tags : [],
+      image_url: p.image || null, desc_ar: (p.desc && p.desc.ar) || "", desc_en: (p.desc && p.desc.en) || ""
+    };
+    /* عمود images (jsonb) لا يُرسَل إلا مع أكثر من صورة، فتبقى المنتجات ذات الصورة الواحدة تعمل حتى قبل إضافته */
+    if (Array.isArray(p.images) && p.images.length > 1) o.images = p.images;
+    return o;
+  };
   const fromRow = (r) => ({
     id: r.id, custom: true, remote: true, cat: r.cat, art: "", tint: "",
     name: { ar: r.name_ar, en: r.name_en || r.name_ar },
-    price: r.price, old: r.old_price || 0, stock: r.stock, active: r.active, image: r.image_url || "", rating: 5,
-    warranty: { ar: "", en: "" }, color: "", capacity: "", power: "", port: "", features: [], tags: [],
+    price: r.price, old: r.old_price || 0, stock: r.stock, active: r.active, image: r.image_url || "", images: Array.isArray(r.images) ? r.images : [], rating: 5,
+    warranty: { ar: "", en: "" }, color: "", capacity: "", power: "", port: "", features: [], tags: Array.isArray(r.tags) ? r.tags : [],
     desc: { ar: r.desc_ar || "", en: r.desc_en || r.desc_ar || "" }, specs: []
   });
   const toOrder = (r) => Object.assign({}, r.data, { id: r.id, status: r.status, trashed: !!r.trashed });
@@ -4981,7 +5423,10 @@ window.DB = (function () {
     },
     async putProduct(rw, isNew) {
       if (useFB) { await fbReady; return fb.F.setDoc(ref("products", rw.id), isNew ? Object.assign({}, rw, { created_at: Date.now() }) : rw, { merge: true }); }
-      const r = isNew ? await SB.from("products").insert(rw) : await SB.from("products").upsert(rw);
+      const send = (d) => (isNew ? SB.from("products").insert(d) : SB.from("products").upsert(d));
+      let r = await send(rw);
+      /* إن لم يكن عمود tags/images موجوداً بعد في الجدول، نُعيد الإرسال بلا هذين العمودين */
+      if (r.error) { const slim = Object.assign({}, rw); delete slim.tags; delete slim.images; r = await send(slim); }
       if (r.error) throw r.error;
     },
     async delProduct(id) {
@@ -5027,6 +5472,31 @@ window.DB = (function () {
     if (!ENABLED || !session) return;
     try { remoteOrders = (await BE.orders()).map(toOrder); } catch (e) { logE(e); }
   }
+
+  /* ---- البيانات المشتركة (الفئات/الوسوم/الباقات): صف واحد لكل نوع ---- */
+  async function siteGet(id) {
+    if (!ENABLED) return null;
+    if (useFB) {
+      await fbReady;
+      const d = await fb.F.getDoc(ref("site_data", id));
+      return d.exists() ? (d.data() || {}).value : null;
+    }
+    const r = await SB.from("site_data").select("value").eq("id", id).maybeSingle();
+    if (r.error) { siteTableOk = false; return null; }
+    siteTableOk = true;
+    return r.data ? r.data.value : null;
+  }
+  async function sitePut(id, value) {
+    if (!ENABLED || !session) return false;
+    if (useFB) {
+      await fbReady;
+      await fb.F.setDoc(ref("site_data", id), { value: value, updated_at: Date.now() });
+      return true;
+    }
+    const r = await SB.from("site_data").upsert({ id: id, value: value, updated_at: new Date().toISOString() });
+    if (r.error) throw r.error;
+    return true;
+  }
   const ready = (async function () {
     if (!ENABLED) return;
     try {
@@ -5053,10 +5523,23 @@ window.DB = (function () {
       if (!x) return;
       p.price = x.price; p.old = x.old_price || 0; p.stock = x.stock; p.active = x.active;
       if (x.image_url) p.image = x.image_url;
+      if (Array.isArray(x.images) && x.images.length) p.images = x.images;
+      if (Array.isArray(x.tags)) p.tags = x.tags;
       p.remote = true; delete byId[p.id];
     });
     s.products.unshift.apply(s.products, data.filter((x) => byId[x.id]).map(fromRow));
     DB.persist();
+    /* الفئات والوسوم والباقات المشتركة: تظهر لكل الزوار لا للمدير وحده */
+    try {
+      const parts = await Promise.all([siteGet("cats"), siteGet("tags"), siteGet("packages")]);
+      const patch = {};
+      if (Array.isArray(parts[0]) && parts[0].length) patch.cats = parts[0];
+      if (Array.isArray(parts[1]) && parts[1].length) patch.tags = parts[1];
+      if (Array.isArray(parts[2])) patch.packages = parts[2];
+      if (Object.keys(patch).length) DB.applySite(patch);
+    } catch (e) { logE(e); }
+    /* نُعلم غرفة الإدارة بتحديث حالة السحابة (الموديولان منفصلان) */
+    try { document.dispatchEvent(new CustomEvent("kp:cloud")); } catch (e) { /* لا شيء */ }
     return true;
   }
 
@@ -5099,21 +5582,71 @@ window.DB = (function () {
     }
   };
   DB.syncRemote = sync;
+  /* فحص جاهزية جدول site_data (يُستدعى عند فتح غرفة الإدارة) */
+  DB.probeSite = () => Promise.all([siteGet("cats"), siteGet("tags"), siteGet("packages")]);
+  /* حالة السحابة: تعرض في غرفة الإدارة ليعرف المدير إن كانت إضافته تظهر للزوار */
+  DB.cloud = {
+    enabled: ENABLED,
+    provider: useFB ? "firebase" : "supabase",
+    signedIn: () => !!session,
+    siteTable: () => siteTableOk
+  };
 
-  DB.orders = () => (ENABLED && session ? remoteOrders : lOrders());
-  DB.setOrder = (id, patch) => {
-    if (!(ENABLED && session)) return lSetOrder(id, patch);
+  /* رفع صورة واحدة (تُستعمل للباقات) */
+  DB.uploadPhoto = async function (id, file) {
+    if (!file) return "";
+    if (ENABLED && session && !useFB) return BE.uploadImage(id, await shrink(file, 900));
+    return blobToData(await shrink(file, 700));
+  };
+
+  /* ---- دفعات السحابة: كل حفظ للإدارة يرفع القائمة المشتركة ---- */
+  const lSaveCats = DB.saveCats, lSaveTags = DB.saveTags, lSavePackages = DB.savePackages;
+  function pushSite(id, key) {
+    if (!ENABLED) return;
+    const done = () => { try { document.dispatchEvent(new CustomEvent("kp:cloud")); } catch (e) { /* لا شيء */ } };
+    const run = () => {
+      if (!session) { done(); return; }
+      return sitePut(id, DB.load()[key])
+        .then(() => { siteTableOk = true; done(); })
+        .catch(() => { siteTableOk = false; done(); });
+    };
+    /* ننتظر استعادة الجلسة (getSession) قبل الرفع حتى لا يضيع الحفظ بعد إعادة التحميل */
+    if (session) run(); else ready.then(run, run);
+  }
+  DB.saveCats = function (list) { const ok = lSaveCats(list); if (ok) pushSite("cats", "cats"); return ok; };
+  DB.saveTags = function (list) { const ok = lSaveTags(list); if (ok) pushSite("tags", "tags"); return ok; };
+  DB.savePackages = function (list) { const ok = lSavePackages(list); if (ok) pushSite("packages", "packages"); return ok; };
+
+  /* طلبات الغرفة = المحلّية + السحابية مدموجةً.
+     مهمّ جداً: الطلب الذي أنشأه الزائر يُحفظ محلّياً فوراً، ورفعه للسحابة
+     قد يتأخّر أو يفشل — فلو عرضنا السحابية وحدها لاختفى الطلب من غرفة
+     الإدارة (وبالتالي يختفي العميل من قائمة العملاء). */
+  DB.orders = function () {
+    if (!(ENABLED && session)) return lOrders();
+    const map = {};
+    remoteOrders.forEach((o) => { if (o && o.id) map[o.id] = o; });
+    lOrders().forEach((o) => { if (o && o.id && !map[o.id]) map[o.id] = o; });
+    return Object.keys(map).map((k) => map[k])
+      .sort((a, b) => (Number(b.at) || 0) - (Number(a.at) || 0));
+  };
+  DB.setOrder = function (id, patch) {
+    const local = lOrders().some((x) => x.id === id);
+    if (local) lSetOrder(id, patch);
+    if (!(ENABLED && session)) return local;
     const o = remoteOrders.find((x) => x.id === id);
-    if (!o) return false;
-    Object.assign(o, patch);
+    if (o) Object.assign(o, patch);
     const up = {};
     if (patch.status !== undefined) up.status = patch.status;
     if (patch.trashed !== undefined) up.trashed = patch.trashed;
-    BE.setOrder(id, up).then(log, logE);
+    if (Object.keys(up).length) BE.setOrder(id, up).then(log, logE);
     return true;
   };
-  DB.removeOrder = (id) => {
-    if (!(ENABLED && session)) return lRemoveOrder(id);
+  DB.removeOrder = function (id) {
+    const local = lOrders().some((x) => x.id === id);
+    if (local) lRemoveOrder(id);
+    if (!(ENABLED && session)) return local;
+    /* الحذف يُرسل للسحابة دائماً: قد يكون الطلب في السحابة ولم يصل بعد
+       إلى القائمة المحمّلة، فيبقى ظاهراً للجميع إن لم نحذفه هناك. */
     remoteOrders = remoteOrders.filter((x) => x.id !== id);
     BE.delOrder(id).then(log, logE);
     return true;
@@ -5131,33 +5664,43 @@ window.DB = (function () {
   };
   DB.setProduct = function (id, patch) {
     const p0 = DB.getProduct(id);
-    const before = p0 ? JSON.stringify([p0.price, p0.old, p0.stock, p0.active]) : "";
+    const sig = (x) => x ? JSON.stringify([x.price, x.old, x.stock, x.active, (x.name && x.name.ar) || "", (x.desc && x.desc.ar) || ""]) : "";
+    const before = sig(p0);
     const ok = lSetProduct(id, patch);
     const p = DB.getProduct(id);
-    if (ok && ENABLED && session && p && (!p.remote || before !== JSON.stringify([p.price, p.old, p.stock, p.active]))) {
+    if (ok && ENABLED && session && p && (!p.remote || before !== sig(p))) {
       BE.putProduct(row(p), false).then(() => { p.remote = true; }, logE);
     }
     return ok;
   };
-  DB.addProduct = async function (d, file) {
+  DB.addProduct = async function (d, fileOrFiles) {
+    const files = Array.isArray(fileOrFiles) ? fileOrFiles : (fileOrFiles ? [fileOrFiles] : []);
     const remote = !!(ENABLED && session), id = "u" + Date.now().toString(36);
     const p = {
       id: id, custom: true, cat: d.cat, art: "", tint: "", name: { ar: d.nameAr, en: d.nameEn || d.nameAr },
-      price: d.price, old: d.old, stock: d.stock, active: true, image: "", rating: 5,
-      warranty: { ar: "", en: "" }, color: "", capacity: "", power: "", port: "", features: [], tags: [],
+      price: d.price, old: d.old || 0, stock: d.stock, active: true, image: "", rating: 5,
+      warranty: { ar: "", en: "" }, color: "", capacity: "", power: "", port: "", features: [], tags: Array.isArray(d.tags) ? d.tags : [],
       desc: { ar: d.descAr, en: d.descAr }, specs: []
     };
-    if (file) {
+    if (files.length) {
+      const list = [];
       if (remote && useFB) {
-        /* Firestore: الصورة تُخزَّن مضغوطة داخل وثيقة المنتج (لا حاجة لـ Storage) */
-        let m = 800, data = await blobToData(await shrink(file, m));
-        while (data.length > 700000 && m > 360) { m -= 160; data = await blobToData(await shrink(file, m)); }
-        p.image = data;
+        /* Firestore: الصور تُخزَّن مضغوطة داخل وثيقة المنتج (حدّ الوثيقة ~1MB) */
+        let m = files.length > 1 ? 560 : 800, datas;
+        for (;;) {
+          datas = [];
+          for (const f of files) datas.push(await blobToData(await shrink(f, m)));
+          if (datas.reduce((a, d) => a + d.length, 0) <= 700000 || m <= 320) break;
+          m -= 120;
+        }
+        list.push.apply(list, datas);
       } else if (remote) {
-        p.image = await BE.uploadImage(id, await shrink(file, 1000));
+        for (let k = 0; k < files.length; k++) list.push(await BE.uploadImage(id + (k ? "-" + k : ""), await shrink(files[k], 1000)));
       } else {
-        p.image = await blobToData(await shrink(file, 600));
+        for (const f of files) list.push(await blobToData(await shrink(f, 600)));
       }
+      p.image = list[0];
+      if (list.length > 1) p.images = list;
     }
     if (remote) { await BE.putProduct(row(p), true); p.remote = true; }
     DB.load().products.unshift(p);
@@ -5169,12 +5712,50 @@ window.DB = (function () {
     if (!p || !p.custom) return false;
     if (ENABLED && session && p.remote) {
       await BE.delProduct(id);
-      const k = !useFB && String(p.image || "").split("/" + BUCKET + "/")[1];
-      if (k) SB.storage.from(BUCKET).remove([k]).then(log);
+      const ks = useFB ? [] : [p.image].concat(Array.isArray(p.images) ? p.images : []).map((u) => String(u || "").split("/" + BUCKET + "/")[1]).filter((k, n, a) => k && a.indexOf(k) === n);
+      if (ks.length) SB.storage.from(BUCKET).remove(ks).then(log);
     }
     const s = DB.load();
     s.products = s.products.filter((x) => x.id !== id);
     DB.persist();
+    return true;
+  };
+  /* إضافة صور إلى منتج قائم (حتى 6 صور)، مع معالجة الصورة الأولى كصورة رئيسية */
+  DB.setProductImages = async function (id, fileOrFiles) {
+    const p = DB.getProduct(id);
+    if (!p) return false;
+    const files = Array.isArray(fileOrFiles) ? fileOrFiles : (fileOrFiles ? [fileOrFiles] : []);
+    if (!files.length) return false;
+    const cur = Array.isArray(p.images) && p.images.length ? p.images.slice() : (p.image ? [p.image] : []);
+    const take = files.slice(0, Math.max(0, 6 - cur.length));
+    if (!take.length) return false;
+    const remote = !!(ENABLED && session);
+    const added = [];
+    if (remote && useFB) {
+      let m = take.length > 1 ? 500 : 600;
+      for (const f of take) added.push(await blobToData(await shrink(f, m)));
+    } else if (remote) {
+      for (let k = 0; k < take.length; k++) added.push(await BE.uploadImage(id + "-" + Date.now().toString(36) + (k ? "-" + k : ""), await shrink(take[k], 1000)));
+    } else {
+      for (const f of take) added.push(await blobToData(await shrink(f, 800)));
+    }
+    const list = cur.concat(added);
+    p.images = list;
+    p.image = list[0];
+    if (remote) { await BE.putProduct(row(p), false); p.remote = true; }
+    DB.persist();
+    return true;
+  };
+  DB.removeProductImage = function (id, idx) {
+    const p = DB.getProduct(id);
+    if (!p) return false;
+    const list = Array.isArray(p.images) && p.images.length ? p.images.slice() : (p.image ? [p.image] : []);
+    if (idx < 0 || idx >= list.length) return false;
+    list.splice(idx, 1);
+    p.image = list[0] || "";
+    if (list.length > 1) p.images = list; else delete p.images;
+    DB.persist();
+    if (ENABLED && session && p.remote) BE.putProduct(row(p), false).then(() => { p.remote = true; }, logE);
     return true;
   };
 })();
@@ -5193,6 +5774,8 @@ window.DB = (function () {
 
   const CART_KEY = "kp-cart";
   const THEME_KEY = "kp-theme";
+  /* يُكتب فقط عندما يبدّل الزائر المظهر بنفسه، فنحترم اختياره */
+  const THEME_CHOICE_KEY = "kp-theme-choice";
 
   let cart = loadCart();
   /* كل مجموعة فلتر مستقلة، والقيم داخلها OR — مثل Anker */
@@ -5202,8 +5785,6 @@ window.DB = (function () {
   /* طريقة التوصيل ثابتة الآن: إلى المنزل. حقل اختيارها أُزيل مؤقتاً */
   let delivery = { mode: "home", wilaya: "16", commune: "" };
   let openId = null;
-  /* تكبير صورة المنتج: معامل كِبْر وإزاحة، ويُضبطان من جديد في كل فتح */
-  const zoom = { k: 1, x: 0, y: 0 };
 
   function emptyFilters() {
     return { cats: [], caps: [], pow: [], port: [], color: [], feat: [], min: null, max: null, instock: false, sale: false };
@@ -5227,10 +5808,14 @@ window.DB = (function () {
     const v = document.documentElement.getAttribute("data-theme");
     return THEMES.indexOf(v) >= 0 ? v : "light";
   }
-  function setTheme(v) {
+  function setTheme(v, chosen) {
     if (THEMES.indexOf(v) < 0) v = "light";
     document.documentElement.setAttribute("data-theme", v);
-    try { localStorage.setItem(THEME_KEY, v); } catch (e) { /* لا شيء */ }
+    try {
+      localStorage.setItem(THEME_KEY, v);
+      /* المظهر الفاتح هو الافتراضي؛ الداكن يُحفظ إن اختاره الزائر بنفسه */
+      if (chosen) localStorage.setItem(THEME_CHOICE_KEY, "1");
+    } catch (e) { /* لا شيء */ }
     const meta = document.querySelector('meta[name="theme-color"]:not([media])');
     if (meta) meta.setAttribute("content", THEME_COLOR[v]);
     /* الزرّ يحمل حالة الوضع: مضغوط في الداكن، وإلا فاتح */
@@ -5332,93 +5917,119 @@ window.DB = (function () {
     }, life);
   }
 
-  /* ---------------- تكبير صورة المنتج ---------------- */
-  /* يدور حول مسرح الصورة في نافذة المنتج: عجلة الفأرة، والسحب
-     بالفأرة والإصبع، والقرص باللمس، والأزرار الثلاثة، ونقرة مزدوجة.
-     نكتب التحويل على المسرح لا على الرسمة نفسها حتى لا تتأثّر
-     قياسات الـart. الإزاحة تسبق الكِبْر في الترتيب، فهي ببكسلات
-     التخطيط لا بمقياسها، فيسهل تقييدها بقياس المسرح غير المُحوَّل. */
-  const Z_MIN = 1, Z_MAX = 4;
-  function zoomApply() {
-    const st = $("#pmStage");
-    if (st) st.style.transform = "translate(" + zoom.x + "px," + zoom.y + "px) scale(" + zoom.k + ")";
-    const out = $("#pmZoomPct");
-    if (out) out.textContent = Math.round(zoom.k * 100) + "%";
-    /* المؤشّر يقول إن كان السحب له معنى الآن أم لا */
-    if (st) st.classList.toggle("zoomed", zoom.k > Z_MIN);
+  /* ---------------- عرض الصورة على كامل الشاشة ---------------- */
+  /* كما في X Store: الصورة كاملة الشاشة، أسهم للتنقّل، عدّاد، وإغلاق،
+     والجرّ بالإصبع أو بالفأرة يبدّل الصورة. ونزيد عليه: عجلة الفأرة
+     والقرص باللمس للتكبير، ثم السحب لتحريك الصورة المكبَّرة. */
+  const LB = { i: 0, k: 1, x: 0, y: 0, sx: 0, sy: 0, px: 0, py: 0, drag: false, moved: false };
+  function lbImg() { return $("#pmLbImg"); }
+  function lbApply() {
+    const im = lbImg();
+    if (!im) return;
+    im.style.transform = "translate(" + LB.x + "px," + LB.y + "px) scale(" + LB.k + ")";
+    im.classList.toggle("zoomed", LB.k > 1.01);
   }
-  function zoomSet(k, x, y) {
-    zoom.k = Math.max(Z_MIN, Math.min(Z_MAX, k));
-    const st = $("#pmStage");
-    const art = $("#pmArt");
-    if (st) {
-      /* القياسات لا تتأثّر بالتحويل لأنها من offset*، فنقيس صُورة
-         الرسم المصبَغة، وحدّ السحب = نصف الرسم ناقص نصف المسرح. لو قِسنا
-         بالمسرح وحده لعُدلت الإزاحة صفراً أو ضاعت منها، فالصورة
-         كانت تُزاح خارج إطارها وهي تكبر. */
-      const aw = (art && art.offsetWidth) || st.offsetWidth;
-      const ah = (art && art.offsetHeight) || st.offsetHeight;
-      const limX = Math.max(0, (aw * zoom.k - st.offsetWidth) / 2);
-      const limY = Math.max(0, (ah * zoom.k - st.offsetHeight) / 2);
-      zoom.x = Math.max(-limX, Math.min(limX, x || 0));
-      zoom.y = Math.max(-limY, Math.min(limY, y || 0));
-    } else { zoom.x = x || 0; zoom.y = y || 0; }
-    zoomApply();
+  function lbClamp() {
+    const im = lbImg();
+    if (!im) return;
+    const limX = Math.max(0, (im.offsetWidth * (LB.k - 1)) / 2);
+    const limY = Math.max(0, (im.offsetHeight * (LB.k - 1)) / 2);
+    LB.x = Math.max(-limX, Math.min(limX, LB.x));
+    LB.y = Math.max(-limY, Math.min(limY, LB.y));
   }
-  function zoomReset() { zoomSet(Z_MIN, 0, 0); }
-  function zoomStep(dir) { zoomSet(zoom.k * (dir > 0 ? 1.35 : 1 / 1.35), zoom.x, zoom.y); }
-  function zoomToggle() { if (zoom.k > Z_MIN) zoomReset(); else zoomSet(2, 0, 0); }
-  function wireZoom() {
-    const box = $(".pm-img");
-    if (!box) return;
-    /* عجلة الفأرة فوق الصورة فقط، ونمنع الصفحة من التصفّح تحتها */
-    box.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      zoomStep(e.deltaY < 0 ? 1 : -1);
-    }, { passive: false });
-    box.addEventListener("dblclick", zoomToggle);
-
-    /* السحب بإزاحة مقدارها ما تغيّر بين نقطتَي المؤشّر */
-    let dragId = null, lastX = 0, lastY = 0;
+  function lbZoom(k, x, y) {
+    LB.k = Math.max(1, Math.min(4, k));
+    if (x != null) LB.x = x;
+    if (y != null) LB.y = y;
+    lbClamp(); lbApply();
+  }
+  function lbResetZoom() { LB.k = 1; LB.x = 0; LB.y = 0; lbApply(); }
+  function lbShow(i) {
+    const n = gal.list.length;
+    if (!n) return;
+    LB.i = ((i % n) + n) % n;
+    const im = lbImg();
+    if (im) im.src = gal.list[LB.i];
+    lbResetZoom();
+    const c = $("#pmLight .pm-lb-count");
+    if (c) c.textContent = (LB.i + 1) + " / " + n;
+  }
+  function lbOpen(i) {
+    if (!gal.list.length) return;
+    LB.i = i == null ? gal.i : ((i % gal.list.length) + gal.list.length) % gal.list.length;
+    const many = gal.list.length > 1;
+    $("#pmLightBox").innerHTML =
+      (many ? '<button type="button" class="pm-lb-nav prev" data-lb="-1" aria-label="' + esc(t("prevImg")) + '">‹</button>' +
+              '<button type="button" class="pm-lb-nav next" data-lb="1" aria-label="' + esc(t("nextImg")) + '">›</button>' : "") +
+      '<img class="pm-lb-img" id="pmLbImg" src="' + esc(gal.list[LB.i]) + '" alt="" decoding="async">' +
+      '<button type="button" class="pm-lb-x" data-lbc aria-label="إغلاق">×</button>' +
+      (many ? '<span class="pm-lb-count">' + (LB.i + 1) + " / " + gal.list.length + "</span>" : "");
+    lbResetZoom();
+    $("#pmLight").classList.add("open");
+  }
+  function lbClose() {
+    $("#pmLight").classList.remove("open");
+    $("#pmLightBox").innerHTML = "";
+  }
+  function wireLight() {
+    const light = $("#pmLight"), box = $("#pmLightBox");
+    if (!light || !box) return;
+    light.addEventListener("click", (e) => {
+      if (e.target.closest("[data-lbc]") || e.target === light) { lbClose(); return; }
+      const nav = e.target.closest("[data-lb]");
+      if (nav) lbShow(LB.i + Number(nav.getAttribute("data-lb")));
+    });
+    /* إصبع أو فأرة: الصورة المكبَّرة تُزاح، وغير المكبَّرة تُبدَّل بالجرّ */
     box.addEventListener("pointerdown", (e) => {
-      if (zoom.k <= Z_MIN) return;
-      if (e.pointerType === "touch" && e.isPrimary === false) return;
-      dragId = e.pointerId; lastX = e.clientX; lastY = e.clientY;
+      if (e.target.closest("button")) return;
+      LB.drag = true; LB.moved = false;
+      LB.sx = e.clientX; LB.sy = e.clientY;
+      LB.px = LB.x; LB.py = LB.y;
+      try { box.setPointerCapture(e.pointerId); } catch (err) { /* لا شيء */ }
     });
     box.addEventListener("pointermove", (e) => {
-      if (dragId === null || e.pointerId !== dragId) return;
-      zoomSet(zoom.k, zoom.x + (e.clientX - lastX), zoom.y + (e.clientY - lastY));
-      lastX = e.clientX; lastY = e.clientY;
+      if (!LB.drag) return;
+      const dx = e.clientX - LB.sx, dy = e.clientY - LB.sy;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) LB.moved = true;
+      if (LB.k > 1.01) { LB.x = LB.px + dx; LB.y = LB.py + dy; lbClamp(); lbApply(); }
     });
-    const endDrag = (e) => { if (e.pointerId === dragId) dragId = null; };
+    const endDrag = (e) => {
+      if (!LB.drag) return;
+      LB.drag = false;
+      const dx = e.clientX - LB.sx, dy = e.clientY - LB.sy;
+      if (LB.k <= 1.01 && LB.moved && Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy) * 1.3 && gal.list.length > 1) {
+        const rtl = document.documentElement.dir === "rtl";
+        lbShow(LB.i + ((dx > 0) === rtl ? 1 : -1));
+      }
+    };
     box.addEventListener("pointerup", endDrag);
-    box.addEventListener("pointercancel", endDrag);
-
-    /* القرص باللمس: المسافة بين إصبعين مضروبة في نسبة التغيّر */
-    let pinch0 = 0, pinchK = 1;
+    box.addEventListener("pointercancel", () => { LB.drag = false; });
+    box.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      lbZoom(LB.k * (e.deltaY < 0 ? 1.25 : 1 / 1.25));
+    }, { passive: false });
+    box.addEventListener("dblclick", (e) => { e.preventDefault(); lbZoom(LB.k > 1.01 ? 1 : 2); });
+    /* القرص بإصبعين: النسبة بين المسافتين */
+    let p0 = 0, k0 = 1;
     box.addEventListener("touchstart", (e) => {
       if (e.touches.length !== 2) return;
-      pinch0 = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY);
-      pinchK = zoom.k;
+      p0 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      k0 = LB.k;
     }, { passive: true });
     box.addEventListener("touchmove", (e) => {
-      if (e.touches.length !== 2 || pinch0 <= 0) return;
-      const d = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY);
-      zoomSet(pinchK * (d / pinch0), zoom.x, zoom.y);
+      if (e.touches.length !== 2 || p0 <= 0) return;
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      lbZoom(k0 * (d / p0));
     }, { passive: true });
-    box.addEventListener("touchend", (e) => { if (e.touches.length < 2) pinch0 = 0; }, { passive: true });
-
-    /* الأدوات ثلاث أيقونات من السجلّ، فلا تبقى فارغة على الشاشة */
-    [["#pmZoomIn", "zoomIn"], ["#pmZoomOut", "zoomOut"], ["#pmZoomReset", "reset"]]
-      .forEach((p) => { const b = $(p[0]); if (b) b.innerHTML = ART.icon(p[1]); });
-
-    $("#pmZoomIn").addEventListener("click", () => zoomStep(1));
-    $("#pmZoomOut").addEventListener("click", () => zoomStep(-1));
-    $("#pmZoomReset").addEventListener("click", zoomReset);
+    box.addEventListener("touchend", (e) => { if (e.touches.length < 2) p0 = 0; }, { passive: true });
+    document.addEventListener("keydown", (e) => {
+      if (!$("#pmLight").classList.contains("open")) return;
+      if (e.key === "Escape") { e.preventDefault(); lbClose(); return; }
+      if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && gal.list.length > 1) {
+        const rtl = document.documentElement.dir === "rtl";
+        lbShow(LB.i + ((e.key === "ArrowLeft") === rtl ? 1 : -1));
+      }
+    });
   }
 
   /* ---------------- النوافذ ---------------- */
@@ -5445,8 +6056,8 @@ window.DB = (function () {
      المفعّلة، فلا حاجة لتخزين نسخة منها في مكان آخر. */
   function renderMenu() {
     const nav = [
-      ["navShop", "#products"], ["navCats", "#cats"], ["navWhy", "#why"],
-      ["navReviews", "#reviews"], ["navContact", "#footer"]
+      ["navShop", "#products"], ["navCats", "#cats"], ["navPackages", "#packages"], ["navWhy", "#why"],
+      ["navContact", "#footer"]
     ];
     const CHEV = '<svg class="mchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
     $("#menuNav").innerHTML = nav.map(([k, href]) =>
@@ -5470,14 +6081,6 @@ window.DB = (function () {
   }
 
   /* ---------------- الفئات ---------------- */
-  function renderCatStrip() {
-    $("#catStrip").innerHTML = '<div class="wrap">' +
-      '<a href="#products" data-sc="all">' + esc(t("catsAll")) + "</a>" +
-      DB.CATS.map((c) =>
-        '<a href="#products" data-sc="' + esc(c.id) + '">' + esc(pick(c.name)) + "</a>").join("") +
-      "</div>";
-  }
-
   function renderCatGrid() {
     const counts = {};
     DB.activeProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
@@ -5494,8 +6097,105 @@ window.DB = (function () {
 
   function syncCatActive() {
     const sel = filters.cats[0] || "all";
-    $$("#catStrip a").forEach((a) => a.classList.toggle("on", a.dataset.sc === sel));
+    $$("#catGrid .cat-card").forEach((b) => b.classList.toggle("on", (b.dataset.cat || "all") === sel));
   }
+
+  /* ---------------- الباقات ---------------- */
+  function renderPackages() {
+    const sec = $("#packages"), grid = $("#packGrid");
+    if (!sec || !grid) return;
+    const list = DB.packages();
+    sec.hidden = !list.length;
+    grid.innerHTML = list.map((p) => {
+      const items = (p.items || []).map((id) => DB.getProduct(id)).filter(Boolean);
+      const save = p.old && p.old > p.price ? p.old - p.price : 0;
+      const media = p.image
+        ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" decoding="async">'
+        : '<span class="ico">' + ART.icon("bag") + "</span>";
+      return '<article class="pack-card reveal">' +
+        '<div class="pack-media">' +
+        (save ? '<span class="pack-save">' + esc(t("packSave")) + " " + money(save) + "</span>" : "") +
+        media + "</div>" +
+        "<h3>" + esc(pick(p.name)) + "</h3>" +
+        (p.desc && pick(p.desc) ? '<p class="pack-desc">' + esc(pick(p.desc)) + "</p>" : "") +
+        (items.length ? '<ul class="pack-items">' + items.map((x) => "<li>" + esc(pick(x.name)) + "</li>").join("") + "</ul>" : "") +
+        '<div class="pack-foot"><div class="pack-price">' + money(p.price) +
+        (save ? "<s>" + money(p.old) + "</s>" : "") + "</div>" +
+        '<button type="button" class="btn btn-primary btn-glow" data-pack="' + esc(p.id) + '">' + esc(t("packOrder")) + "</button>" +
+        "</div></article>";
+    }).join("");
+  }
+
+  /* طلب باقة: نضيف منتجاتها إلى السلة، أو نفتح واتساب إن كانت باقة عرض مستقلة */
+  function orderPackage(id) {
+    const p = DB.packages().find((x) => x.id === id);
+    if (!p) return;
+    const items = (p.items || []).map((x) => DB.getProduct(x)).filter(Boolean);
+    if (items.length) {
+      items.forEach((x) => {
+        const stock = DB.stockOf(x.id);
+        if (stock <= 0) return;
+        const row = cart.find((i) => i.id === x.id);
+        if (row) row.qty = Math.min(row.qty + 1, stock);
+        else cart.push({ id: x.id, qty: 1 });
+      });
+      saveCart(); renderCartBadge(); renderCart();
+      toast(t("addedToCart", { n: pick(p.name) }), "ok");
+      const cb = $("#cartBtn"); if (cb) cb.click();
+      return;
+    }
+    const s = DB.settings();
+    const phone = String(s.whatsapp || s.phone || "").replace(/\D/g, "");
+    const msg = pick(p.name) + " — " + DB.fmt(p.price) + " " + currency();
+    const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+    try { window.open(url, "_blank", "noopener"); } catch (e) { location.href = url; }
+  }
+
+  /* ---------------- شاشة أوّل زيارة: اختر فئتك ---------------- */
+  const CAT_PICK_KEY = "kp-cat-picked";
+  function catPickShow() {
+    const box = $("#catPick");
+    if (!box) return;
+    const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+    set("#catPickEyebrow", t("catsEyebrow"));
+    set("#catPickTitle", t("pickTitle"));
+    set("#catPickSub", t("pickSub"));
+    set("#catPickAll", t("pickAll"));
+    const grid = $("#catPickGrid");
+    if (grid) grid.innerHTML = DB.CATS.map((c) =>
+      '<button type="button" class="catpick-card" data-pick="' + esc(c.id) + '">' +
+      '<span class="ico">' + ART.icon(c.icon) + "</span>" +
+      "<b>" + esc(pick(c.name)) + "</b>" +
+      "<span>" + esc(pick(c.desc) || "") + "</span></button>").join("");
+    box.hidden = false;
+  }
+  function catPickChoose(id) {
+    const box = $("#catPick");
+    if (box) box.hidden = true;
+    try { localStorage.setItem(CAT_PICK_KEY, id || "all"); } catch (e) { /* لا شيء */ }
+    filters.cats = id ? [id] : [];
+    renderCatGrid();
+    syncCatActive();
+    renderGrid();
+    renderChips();
+    const el = $("#products");
+    if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (x) { /* لا شيء */ } }
+  }
+  function catPickInit() {
+    const box = $("#catPick");
+    if (!box) return;
+    let picked = null;
+    try { picked = localStorage.getItem(CAT_PICK_KEY); } catch (e) { /* لا شيء */ }
+    if (picked) return;
+    catPickShow();
+  }
+  document.addEventListener("click", function (e) {
+    const t2 = e.target;
+    if (!t2 || !t2.closest) return;
+    const card = t2.closest("#catPick .catpick-card");
+    if (card) { catPickChoose(card.getAttribute("data-pick")); return; }
+    if (t2.closest("#catPickAll")) { catPickChoose(""); return; }
+  });
 
   /* ---------------- المطابقة مع الفلاتر ---------------- */
   function passes(p, skip) {
@@ -5518,7 +6218,7 @@ window.DB = (function () {
     }
     if (skip !== "avail") {
       if (filters.instock && DB.stockOf(p.id) <= 0) return false;
-      if (filters.sale && !(p.old && p.old > p.price)) return false;
+      if (filters.sale && !(((p.tags || []).indexOf("sale") >= 0) || (p.old && p.old > p.price))) return false;
     }
     return true;
   }
@@ -5722,6 +6422,119 @@ window.DB = (function () {
     $("#resultCount").innerHTML = "<b>" + list.length + "</b> / " + DB.activeProducts().length;
   }
 
+  /* ---------------- تبديل عرض المنتجات: شبكة / قائمة ---------------- */
+  const ICON_LIST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>';
+  const ICON_GRIDVIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>';
+  let viewMode = "grid";
+  try { if (localStorage.getItem("kp-view") === "list") viewMode = "list"; } catch (e) { /* لا شيء */ }
+  function applyViewMode() {
+    const g = $("#grid"), b = $("#viewToggle");
+    if (g) g.classList.toggle("grid-list", viewMode === "list");
+    if (b) {
+      const list = viewMode === "list";
+      b.setAttribute("aria-pressed", list ? "true" : "false");
+      b.innerHTML = list ? ICON_GRIDVIEW : ICON_LIST;
+      b.title = list ? "عرض شبكي" : "عرض قائمة";
+    }
+  }
+  function setViewMode(m) {
+    viewMode = m === "list" ? "list" : "grid";
+    try { localStorage.setItem("kp-view", viewMode); } catch (e) { /* لا شيء */ }
+    applyViewMode();
+  }
+
+  /* ---------------- معرض صور المنتج ---------------- */
+  const gal = { p: null, list: [], i: 0 };
+  function productImages(p) {
+    const a = Array.isArray(p.images) ? p.images.filter(Boolean) : [];
+    if (p.image && a.indexOf(p.image) < 0) a.unshift(p.image);
+    return a;
+  }
+  function galleryShow(i) {
+    const n = gal.list.length;
+    if (n) gal.i = ((i % n) + n) % n;
+    const p = gal.p;
+    $("#pmArt").innerHTML = ART.render(n ? Object.assign({}, p, { image: gal.list[gal.i] }) : p);
+    const multi = n > 1;
+    ["#pmPrev", "#pmNext", "#pmCount", "#pmThumbs", "#pmDots"].forEach((q) => { const el = $(q); if (el) el.hidden = !multi; });
+    /* بلا صور لا شيء يُكبَّر */
+    const zb = $("#pmZoom");
+    if (zb) zb.hidden = !n;
+    if (!multi) return;
+    $("#pmCount").textContent = (gal.i + 1) + " / " + n;
+    const dots = $("#pmDots");
+    if (dots) {
+      if (dots.children.length !== n) dots.innerHTML = gal.list.map(function () { return "<i></i>"; }).join("");
+      Array.prototype.forEach.call(dots.children, (el, k) => el.classList.toggle("on", k === gal.i));
+    }
+    const th = $("#pmThumbs");
+    if (th.getAttribute("data-for") !== p.id) {
+      th.setAttribute("data-for", p.id);
+      th.innerHTML = gal.list.map((u, k) =>
+        '<button type="button" class="pm-thumb" role="tab" data-k="' + k + '" aria-label="' + (k + 1) + ' / ' + n + '">' +
+        '<img alt="" loading="lazy" src="' + esc(u) + '"></button>').join("");
+    }
+    th.querySelectorAll(".pm-thumb").forEach((b) => {
+      const on = Number(b.getAttribute("data-k")) === gal.i;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      if (on && th.scrollWidth > th.clientWidth) {
+        /* تمرير الشريط أفقياً فقط (scrollIntoView كان يحرّك النافذة عمودياً) */
+        const br = b.getBoundingClientRect(), tr = th.getBoundingClientRect();
+        th.scrollLeft += (br.left + br.width / 2) - (tr.left + tr.width / 2);
+      }
+    });
+  }
+  function galleryOpen(p) {
+    gal.p = p; gal.list = productImages(p); gal.i = 0;
+    const th = $("#pmThumbs"); if (th) th.removeAttribute("data-for");
+    galleryShow(0);
+  }
+  function wireGallery() {
+    const box = $(".pm-img");
+    if (!box) return;
+    const pv = $("#pmPrev"), nx = $("#pmNext");
+    pv.innerHTML = ART.icon("chevL"); nx.innerHTML = ART.icon("chevR");
+    pv.setAttribute("aria-label", t("prevImg")); nx.setAttribute("aria-label", t("nextImg"));
+    pv.addEventListener("click", () => galleryShow(gal.i - 1));
+    nx.addEventListener("click", () => galleryShow(gal.i + 1));
+    $("#pmThumbs").addEventListener("click", (e) => {
+      const b = e.target.closest(".pm-thumb");
+      if (b) galleryShow(Number(b.getAttribute("data-k")));
+    });
+    const zoomBtn = $("#pmZoom");
+    if (zoomBtn) { zoomBtn.innerHTML = ART.icon("expand"); }
+    const stage = $(".pm-gal");
+    /* سحب جانبي على الصورة: الصورة التالية؛ ونقرة: على كامل الشاشة */
+    let sx = null, sy = 0, suppress = false;
+    stage.addEventListener("pointerdown", (e) => {
+      suppress = false;
+      if (e.target.closest("button") || gal.list.length < 2) { sx = null; return; }
+      sx = e.clientX; sy = e.clientY;
+    });
+    stage.addEventListener("pointerup", (e) => {
+      if (sx === null) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+      if (Math.abs(dx) < 46 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+      suppress = true;
+      const rtl = document.documentElement.dir === "rtl";
+      galleryShow(gal.i + ((dx > 0) === rtl ? 1 : -1));
+    });
+    stage.addEventListener("pointercancel", () => { sx = null; });
+    stage.addEventListener("click", (e) => {
+      if (suppress) { suppress = false; return; }
+      if (e.target.closest("#pmZoom") || e.target.closest("#pmStage") || e.target === stage) lbOpen(gal.i);
+    });
+    document.addEventListener("keydown", (e) => {
+      const m = $("#prodModal");
+      if (!m || !m.classList.contains("open")) return;
+      if ($("#pmLight").classList.contains("open") || gal.list.length < 2) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const rtl = document.documentElement.dir === "rtl";
+      galleryShow(gal.i + ((e.key === "ArrowLeft") === rtl ? 1 : -1));
+    });
+  }
+
   /* ---------------- نافذة المنتج ---------------- */
   function openProduct(id) {
     const p = DB.getProduct(id);
@@ -5731,9 +6544,7 @@ window.DB = (function () {
     const rate = Number(p.rating || 5);
     const cat = DB.CATS.find((c) => c.id === p.cat) || {};
 
-    $("#pmArt").innerHTML = ART.render(p);
-    /* كل فتح يبدأ من الحجم الأصلي: لا تَرِث نافذةٌ نافذةً تكبيرَها */
-    zoomReset();
+    galleryOpen(p);
     $("#pmCat").textContent = pick(cat.name);
     $("#pmName").textContent = pick(p.name);
     $("#pmRate").innerHTML = ART.stars(Math.round(rate)) + rate.toFixed(1);
@@ -5761,9 +6572,6 @@ window.DB = (function () {
     const now = $("#pmBuy");
     now.disabled = stock <= 0;
     now.innerHTML = ART.icon("bolt", "btn-ico") + "<span>" + esc(t("buyNow")) + "</span>";
-
-    const w = pick(p.warranty);
-    $("#pmWarranty").textContent = (w && w !== "—" ? t("warranty") + ": " + w + " · " : "") + pick(DB.settings().warrantyNote);
 
     openOv("#prodOv", "#prodModal");
   }
@@ -5876,6 +6684,8 @@ window.DB = (function () {
       '<form id="coForm" novalidate autocomplete="on">' +
       "<h3>" + esc(t("coTitle")) + "</h3>" +
       '<div class="form-err" id="coErr"></div>' +
+      '<div class="co-grid">' +
+      '<div class="co-col">' +
       '<div class="field two">' +
       '<div class="field"><label>' + esc(t("coName")) + " *</label>" +
       '<input id="fName" autocomplete="name" enterkeyhint="next" autocapitalize="words" placeholder=""></div>' +
@@ -5909,7 +6719,9 @@ window.DB = (function () {
       '<div class="field" id="fPickupWrap" hidden>' +
       '<p class="pickup-note">' + ART.icon("pin", "pickup-ico") + "<span>" + esc(t("dPickupNote")) + "</span></p></div>" +
       '<div class="field"><label>' + esc(t("coNotes")) + '</label><input id="fNotes"></div>' +
+      "</div>" +
 
+      '<aside class="co-col co-side">' +
       '<div class="order-sum">' +
       cart.map((i) => {
         const p = DB.getProduct(i.id);
@@ -5923,6 +6735,8 @@ window.DB = (function () {
       ART.icon("cash", "btn-ico") + "<span>" + esc(t("coConfirm")) + "</span>" +
       '<b class="btn-amt">' + money(cartTotal() + ship) + "</b></button>" +
       '<p class="co-terms">' + esc(t("f3d")) + ' · <a href="#" id="coTerms">' + esc(t("terms")) + "</a></p>" +
+      "</aside>" +
+      "</div>" +
       "</form>";
 
     openOv("#checkoutOv", "#checkoutModal");
@@ -6026,6 +6840,7 @@ window.DB = (function () {
         renderGrid();
         renderFilters();
         renderCart();
+        markNewOrder();
         showDone(order);
       } catch (ex) {
         err(ex && ex.message && ex.message.indexOf("stock:") === 0 ? t("onlyStock", { n: DB.stockOf(ex.message.slice(6)) }) : t("eCart"));
@@ -6101,11 +6916,11 @@ window.DB = (function () {
      • الأقسام: الطلبات، السجل، السلة، العملاء، المنتجات، الآراء،
        التوصيل، الإعدادات، الأمان.
      ============================================================ */
-  const ORDER_STATES = ["new", "confirmed", "shipped", "done"];
+  const ORDER_STATES = ["new", "confirmed", "shipped", "done", "cancelled"];
   const ADM_TABS = [
     ["orders", "adminTabOrders"], ["history", "adminTabHistory"], ["trash", "adminTabTrash"],
-    ["customers", "adTabCustomers"], ["products", "adminTabProducts"], ["reviews", "adTabReviews"],
-    ["delivery", "adminTabDelivery"], ["settings", "adminTabSettings"], ["security", "adTabSecurity"]
+    ["customers", "adTabCustomers"], ["products", "adminTabProducts"], ["packages", "adTabPackages"],
+    ["cats", "adTabCats"], ["delivery", "adminTabDelivery"], ["settings", "adminTabSettings"]
   ];
   const ADM_SAVE_TABS = ["products", "delivery", "settings"];
 
@@ -6113,13 +6928,23 @@ window.DB = (function () {
   const AT = {
     ar: {
       roomTitle: "غرفة الإدارة", loginSub: "أدخل كلمة السرّ للدخول إلى غرفة الإدارة.",
+      homeLead: "اختر القسم الذي تريد إدارته.", backHome: "رجوع إلى الرئيسية",
+      adHintOrders: "الطلبات الجديدة الواردة", adHintHistory: "الطلبات المؤكَّدة والمنتهية",
+      adHintTrash: "الطلبات الملغاة والمحذوفة", adHintCustomers: "زبائن المتجر ومراسلتهم",
+      adHintProducts: "إضافة المنتجات وتعديلها وحذفها", adHintPackages: "العروض والباقات المجمّعة",
+      adHintCats: "فئات المتجر", adHintDelivery: "أسعار التوصيل لكل ولاية",
+      adHintSettings: "اسم المتجر وبيانات التواصل",
       remember: "تذكّرني على هذا الجهاز", back: "رجوع إلى المتجر",
-      defaultHint: "كلمة السرّ الافتراضية 1234 — غيّرها من قسم الأمان.",
+      defaultHint: "كلمة السرّ الافتراضية 123456 — غيّرها من قسم الأمان.",
       theme: "المظهر", close: "إغلاق", email: "البريد الإلكتروني",
       localNote: "تُحفظ التغييرات في هذا المتصفّح.",
       cloudNote: "المنتجات تُحفظ في السحابة وتظهر لكل الزوار.",
+      cloudOk: "السحابة متّصلة — كل ما تضيفه يظهر لكل الزوار، وكل طلب جديد يصل إلى هنا.",
+      cloudNeedLogin: "السحابة مفعّلة لكنّك غير مسجَّل الدخول: الإضافة الآن محليّة فقط. سجّل الدخول بحساب المدير لتظهر للجميع.",
+      cloudNeedSql: "السحابة مفعّلة وأنت مسجَّل، لكن جدول البيانات المشتركة غير مهيّأ. نفّذ ملف supabase-setup.sql مرة واحدة.",
+      cloudOff: "السحابة غير مفعّلة: الإضافة تبقى في هذا المتصفّح فقط.",
       loggedOut: "تم تسجيل الخروج",
-      adTabCustomers: "العملاء", adTabReviews: "الآراء", adTabSecurity: "الأمان",
+      adTabCustomers: "العملاء",
       cEmpty: "لا يوجد عملاء بعد — يظهر الزبائن هنا بعد أوّل طلب.",
       cOrders: "طلبات", cTotal: "الإجمالي", cLast: "آخر طلب", cMsg: "مراسلة على واتساب",
       noReviews: "لا توجد آراء بعد.", shown: "ظاهر في الموقع", delRev: "حذف هذا الرأي؟",
@@ -6133,20 +6958,41 @@ window.DB = (function () {
       stProducts: "منتج", stOrders: "طلب", stCustomers: "عميل", stRate: "ولاية بأسعار مخصّصة",
       newProd: "إضافة منتج جديد", pNameAr: "اسم المنتج", pNameEn: "الاسم بالإنجليزية (اختياري)",
       pCat: "الفئة", pPrice: "السعر (دج)", pOld: "السعر القديم (اختياري)", pStock: "الكمية المتوفرة",
-      pDesc: "الوصف", pImg: "صورة المنتج", imgHint: "تُصغَّر الصورة تلقائياً قبل الرفع.",
+      pDesc: "الوصف", pImg: "صور المنتج", imgHint: "تُصغَّر الصور تلقائياً قبل الرفع. اختر حتى 6 صور (الأولى هي الرئيسية).",
       publish: "نشر المنتج", publishing: "جارٍ الرفع…", added: "تمت إضافة المنتج",
-      needName: "اكتب اسم المنتج.", needPrice: "اكتب السعر.", needImg: "الملف المختار ليس صورة.",
-      fail: "تعذّر الحفظ", confirmDel: "حذف هذا المنتج نهائياً؟", del: "حذف"
+      needName: "اكتب اسم المنتج.", needPrice: "اكتب السعر.", needCat: "اختر الفئة.", needImg: "الملف المختار ليس صورة.",
+      fail: "تعذّر الحفظ", confirmDel: "حذف هذا المنتج نهائياً؟", del: "حذف",
+      /* الفئات والوسوم */
+      adTabCats: "الفئات", catsNew: "إضافة فئة جديدة", catsAdd: "إضافة الفئة",
+      catsIcon: "الأيقونة", catsList: "الفئات الحالية",
+      catsHint: "عدّل الاسم أو الأيقونة ثم اضغط «حفظ». الفئات الجديدة تظهر في الموقع فوراً.",
+      catsNeed: "اكتب اسم الفئة.", catsDel: "حذف هذه الفئة؟ المنتجات المرتبطة بها ستبقى بلا فئة.",
+      pTags: "الوسوم", pTagNew: "وسم جديد", pTagAdd: "إضافة وسم", pTagNeed: "اكتب اسم الوسم.",
+      pDiscPrice: "السعر بعد الخصم (دج)", pBeforeDisc: "السعر قبل الخصم (دج)",
+      /* الباقات */
+      adTabPackages: "الباقات", packNew: "إضافة باقة جديدة", packAdd: "إضافة الباقة",
+      packItems: "منتجات الباقة", packNoProds: "أضف منتجات أولاً لتضمينها في الباقة.",
+      packEmpty: "لا توجد باقات بعد.", packHint: "اختر منتجات الباقة وحدّد سعرها، ثم اضغط «حفظ». تظهر الباقة في الموقع فوراً."
     },
     en: {
       roomTitle: "Admin room", loginSub: "Enter the password to open the admin room.",
+      homeLead: "Choose the section you want to manage.", backHome: "Back to home",
+      adHintOrders: "New incoming orders", adHintHistory: "Confirmed and finished orders",
+      adHintTrash: "Cancelled and deleted orders", adHintCustomers: "Your store customers",
+      adHintProducts: "Add, edit and delete products", adHintPackages: "Offers and bundles",
+      adHintCats: "Store categories", adHintDelivery: "Delivery rates per wilaya",
+      adHintSettings: "Store name and contact details",
       remember: "Remember me on this device", back: "Back to the store",
-      defaultHint: "Default password is 1234 — change it in the Security tab.",
+      defaultHint: "Default password is 123456 — change it in the Security tab.",
       theme: "Theme", close: "Close", email: "Email",
       localNote: "Changes are saved in this browser.",
       cloudNote: "Products are stored in the cloud and visible to all visitors.",
+      cloudOk: "Cloud connected — everything you add shows to all visitors.",
+      cloudNeedLogin: "Cloud is on but you are not signed in: additions are local only. Sign in with the admin account.",
+      cloudNeedSql: "Cloud is on and you are signed in, but the shared data table is missing. Run supabase-setup.sql once.",
+      cloudOff: "Cloud is off: additions stay in this browser only.",
       loggedOut: "Logged out",
-      adTabCustomers: "Customers", adTabReviews: "Reviews", adTabSecurity: "Security",
+      adTabCustomers: "Customers",
       cEmpty: "No customers yet — they appear after the first order.",
       cOrders: "orders", cTotal: "Total", cLast: "Last order", cMsg: "Message on WhatsApp",
       noReviews: "No reviews yet.", shown: "Shown on the site", delRev: "Delete this review?",
@@ -6160,10 +7006,21 @@ window.DB = (function () {
       stProducts: "products", stOrders: "orders", stCustomers: "customers", stRate: "wilayas with custom rates",
       newProd: "Add a new product", pNameAr: "Product name", pNameEn: "English name (optional)",
       pCat: "Category", pPrice: "Price (DZD)", pOld: "Old price (optional)", pStock: "Stock",
-      pDesc: "Description", pImg: "Product image", imgHint: "The image is resized automatically before upload.",
+      pDesc: "Description", pImg: "Product images", imgHint: "Images are resized automatically before upload. Pick up to 6 (the first is the main one).",
       publish: "Publish product", publishing: "Uploading…", added: "Product added",
-      needName: "Enter the product name.", needPrice: "Enter the price.", needImg: "The chosen file is not an image.",
-      fail: "Could not save", confirmDel: "Delete this product permanently?", del: "Delete"
+      needName: "Enter the product name.", needPrice: "Enter the price.", needCat: "Choose a category.", needImg: "The chosen file is not an image.",
+      fail: "Could not save", confirmDel: "Delete this product permanently?", del: "Delete",
+      /* Categories & tags */
+      adTabCats: "Categories", catsNew: "Add a new category", catsAdd: "Add category",
+      catsIcon: "Icon", catsList: "Current categories",
+      catsHint: "Edit the name or icon then press Save. New categories appear on the site immediately.",
+      catsNeed: "Enter the category name.", catsDel: "Delete this category? Products using it will keep working without a category.",
+      pTags: "Tags", pTagNew: "New tag", pTagAdd: "Add tag", pTagNeed: "Enter the tag name.",
+      pDiscPrice: "Price after discount (DZD)", pBeforeDisc: "Price before discount (DZD)",
+      /* Bundles */
+      adTabPackages: "Bundles", packNew: "Add a new bundle", packAdd: "Add bundle",
+      packItems: "Bundle products", packNoProds: "Add products first to include them.",
+      packEmpty: "No bundles yet.", packHint: "Pick the products and set a price, then press Save. The bundle appears on the site at once."
     }
   };
   const at = function (k, vars) {
@@ -6173,14 +7030,29 @@ window.DB = (function () {
     return s;
   };
 
-  let adminTab = "orders";
+  /* أيقونة ووصف مختصر لكل قسم — تُستعمل في لوحة الإدارة الرئيسية */
+  const ADM_META = {
+    orders: ["bag", "adHintOrders"],
+    history: ["refresh", "adHintHistory"],
+    trash: ["warn", "adHintTrash"],
+    customers: ["chat", "adHintCustomers"],
+    products: ["sparkle", "adHintProducts"],
+    packages: ["bolt", "adHintPackages"],
+    cats: ["hub", "adHintCats"],
+    delivery: ["truck", "adHintDelivery"],
+    settings: ["gear", "adHintSettings"]
+  };
+
+  let adminTab = "home";
   let adminUnlocked = false;
 
   /* ---------- الأمان: كلمة السرّ تُخزَّن مشفّرة (PBKDF2)، لا نصّ صريح ---------- */
   const ADM_CRED_KEY = "kp-admin-cred";
   const ADM_SESS_KEY = "kp-admin-session";
   const ADM_REM_KEY = "kp-admin-remember";
-  const ADM_DEFAULT = "1234";
+  /* حساب غرفة الإدارة: البريد ثابت، وكلمة السرّ الافتراضية 123456 (تُخزَّن مشفّرة). */
+  const ADM_EMAIL = "alwathiqg@mail.com";
+  const ADM_DEFAULT = "123456";
   const ADM_ITER = 120000;
   const TE = new TextEncoder();
   function toHex(buf) {
@@ -6208,7 +7080,9 @@ window.DB = (function () {
   function writeCred(c) { try { localStorage.setItem(ADM_CRED_KEY, JSON.stringify(c)); return true; } catch (e) { return false; } }
   async function ensureCred() {
     let c = readCred();
-    if (c && c.salt && c.hash && c.iter) return c;
+    /* إن كانت كلمة السرّ ما زالت الافتراضية، نعيد كتابتها لتتبع القيمة الحالية
+       (هكذا تُطبَّق 123456 على من كانت كلمته الافتراضية 1234). */
+    if (c && c.salt && c.hash && c.iter && c.def !== true) return c;
     const salt = toB64(crypto.getRandomValues(new Uint8Array(16)));
     c = { v: 1, salt: salt, iter: ADM_ITER, hash: await admHash(ADM_DEFAULT, salt, ADM_ITER), def: true };
     writeCred(c);
@@ -6230,31 +7104,31 @@ window.DB = (function () {
   function sessionClear() {
     try { sessionStorage.removeItem(ADM_SESS_KEY); localStorage.removeItem(ADM_REM_KEY); } catch (e) { /* لا شيء */ }
   }
-  function isUnlocked() { return DB.auth.enabled ? DB.auth.isAdmin() : adminUnlocked; }
+  function isUnlocked() { return adminUnlocked || (DB.auth.enabled && DB.auth.isAdmin()); }
 
   function adminStatusLabel(s) {
     if (s === "confirmed") return t("adminStConfirmed");
     if (s === "shipped") return t("adminStShipped");
     if (s === "done") return t("adminStDone");
+    if (s === "cancelled") return t("adminStCancelled");
     return t("adminStNew");
   }
 
   /* ---------- شاشة الدخول ---------- */
   function adminLoginHTML() {
-    const cloud = DB.auth.enabled;
     return '<div class="adroom-login"><div class="alogin">' +
       '<span class="alogin-ico" aria-hidden="true">' + ART.icon("gear") + "</span>" +
       "<h3>" + esc(at("roomTitle")) + "</h3>" +
       '<p class="a-note">' + esc(at("loginSub")) + "</p>" +
       '<form data-adm="login" novalidate>' +
-      (cloud ? '<label class="afield wide"><span>' + esc(at("email")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr"></label>' : "") +
+      '<label class="afield wide"><span>' + esc(at("email")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr" value="' + esc(ADM_EMAIL) + '" required></label>' +
       '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" autocomplete="current-password" dir="ltr" required></label>' +
-      (cloud ? "" : '<label class="afield check"><input type="checkbox" name="remember" checked><span>' + esc(at("remember")) + "</span></label>") +
+      '<label class="afield check"><input type="checkbox" name="remember" checked><span>' + esc(at("remember")) + "</span></label>" +
       '<p class="aerr" role="alert" hidden></p>' +
       '<button type="submit" class="btn btn-primary btn-block">' + esc(t("adminEnter")) + "</button>" +
       '<button type="button" class="adroom-act" data-adm="close" style="justify-self:center">' + esc(at("back")) + "</button>" +
       "</form>" +
-      (cloud ? "" : (passIsDefault() ? '<p class="a-note adroom-hint">' + esc(at("defaultHint")) + "</p>" : "")) +
+      (passIsDefault() ? '<p class="a-note adroom-hint">' + esc(at("defaultHint")) + "</p>" : "") +
       "</div></div>";
   }
 
@@ -6283,8 +7157,8 @@ window.DB = (function () {
 
   function adminOrdersHTML(mode) {
     const list = DB.orders().filter((o) =>
-      mode === "trash" ? !!o.trashed
-        : !o.trashed && (mode === "history" ? (o.status && o.status !== "new") : (o.status === "new" || !o.status)));
+      mode === "trash" ? (!!o.trashed || o.status === "cancelled")
+        : !o.trashed && o.status !== "cancelled" && (mode === "history" ? (o.status && o.status !== "new") : (o.status === "new" || !o.status)));
     const empty = mode === "trash" ? t("adminNoTrash") : mode === "history" ? t("adminNoHistory") : t("adminNoOrders");
     if (!list.length) return '<p class="a-note">' + esc(empty) + "</p>";
     return list.map((o) => adminOrderCard(o, mode)).join("");
@@ -6293,7 +7167,7 @@ window.DB = (function () {
   /* ---------- العملاء (مستخرجون من الطلبات) ---------- */
   function adminCustomers() {
     const map = {};
-    DB.orders().filter((o) => !o.trashed).forEach((o) => {
+    DB.orders().filter((o) => !o.trashed && o.status !== "cancelled").forEach((o) => {
       const c = o.customer || {};
       const key = c.phone || c.name || ("anon-" + (o.id || ""));
       let g = map[key];
@@ -6327,19 +7201,40 @@ window.DB = (function () {
   }
 
   /* ---------- المنتجات ---------- */
+  /* صناديق اختيار الوسوم: تُستعمل في نموذج الإضافة وفي صفوف المنتجات */
+  function tagChecks(selected, attr) {
+    const sel = selected || [];
+    const a = attr || "data-tf";
+    return DB.TAGS.map((tg) =>
+      '<label class="achk"><input type="checkbox" ' + a + '="' + esc(tg.id) + '"' + (sel.indexOf(tg.id) >= 0 ? " checked" : "") + '><span>' + esc(pick(tg.label)) + "</span></label>").join("");
+  }
+
+  function prodImgsHTML(p) {
+    const list = Array.isArray(p.images) && p.images.length ? p.images : (p.image ? [p.image] : []);
+    const cells = list.map((u, i) =>
+      '<span class="aprev-cell"><img alt="" src="' + esc(u) + '">' +
+      '<button type="button" class="aprev-x" data-adm="pimgdel" data-id="' + esc(p.id) + '" data-i="' + i + '" title="' + esc(at("del")) + '">\u00D7</button></span>'
+    ).join("");
+    const add = list.length < 6
+      ? '<label class="aprev-add" title="' + esc(at("pImg")) + '"><input type="file" accept="image/*" multiple data-pimg="' + esc(p.id) + '" style="display:none"><span>+</span></label>'
+      : "";
+    return '<span class="a-note" style="margin:0;flex-basis:100%">' + esc(at("pImg")) + " (" + list.length + " / 6)</span>" + cells + add;
+  }
+
   function adminProductsHTML() {
     const cats = DB.CATS.map((c) => '<option value="' + esc(c.id) + '">' + esc(pick(c.name)) + "</option>").join("");
     const fld = (label, inner, wide) => '<label class="afield' + (wide ? " wide" : "") + '"><span>' + esc(at(label)) + "</span>" + inner + "</label>";
     const form = '<details class="anew"><summary>' + esc(at("newProd")) + "</summary>" +
       '<form data-adm="newprod" novalidate>' +
       fld("pNameAr", '<input name="nameAr" maxlength="120">', 1) +
-      fld("pNameEn", '<input name="nameEn" maxlength="120" dir="ltr">') +
       fld("pCat", '<select name="cat">' + cats + "</select>") +
       fld("pPrice", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="price">') +
-      fld("pOld", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="old">') +
       fld("pStock", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="stock" value="10">') +
       fld("pDesc", '<textarea name="descAr" maxlength="600"></textarea>', 1) +
-      fld("pImg", '<input type="file" name="img" accept="image/*" data-img>', 1) +
+      '<div class="afield wide"><span>' + esc(at("pTags")) + '</span><div class="atags">' + tagChecks([], 'name="tag" value') + "</div></div>" +
+      '<label class="afield disc-field" hidden><span>' + esc(at("pDiscPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" name="discPrice"></label>' +
+      '<div class="afield wide atag-new"><span>' + esc(at("pTagNew")) + '</span><div class="atag-row"><input name="newTagName" maxlength="40" autocomplete="off"><button type="button" class="adroom-act" data-adm="addtag">' + esc(at("pTagAdd")) + "</button></div></div>" +
+      fld("pImg", '<input type="file" name="img" accept="image/*" multiple data-img>', 1) +
       '<div class="apreview wide"></div><p class="a-note wide" style="grid-column:1/-1;margin:0">' + esc(at("imgHint")) + "</p>" +
       '<p class="aerr" role="alert" hidden style="grid-column:1/-1"></p>' +
       '<button type="submit" class="btn btn-primary">' + esc(at("publish")) + "</button></form></details>";
@@ -6348,10 +7243,13 @@ window.DB = (function () {
       '<div class="aprod-name">' + (p.image ? '<img class="athumb" alt="" src="' + esc(p.image) + '">' : "") +
       "<span>" + esc(pick(p.name)) + "</span>" +
       (p.custom ? '<button type="button" class="aprod-del" data-adm="pdel" data-id="' + esc(p.id) + '">' + esc(at("del")) + "</button>" : "") + "</div>" +
+      (p.custom ? '<label class="afield wide"><span>' + esc(at("pNameAr")) + '</span><input type="text" maxlength="90" autocomplete="off" data-pf="name" value="' + esc(p.name.ar) + '"></label>' : "") +
       '<label class="afield"><span>' + esc(t("adminPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="price" value="' + esc(p.price) + '"></label>' +
-      '<label class="afield"><span>' + esc(t("adminOld")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="old" value="' + esc(p.old || 0) + '"></label>' +
+      '<label class="afield disc-field"' + ((p.tags || []).indexOf("sale") >= 0 ? "" : " hidden") + '><span>' + esc(at("pBeforeDisc")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="old" value="' + esc(p.old || 0) + '"></label>' +
       '<label class="afield"><span>' + esc(t("adminStock")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="stock" value="' + esc(DB.stockOf(p.id)) + '"></label>' +
       '<label class="afield check"><input type="checkbox" data-pf="active"' + (p.active === false ? "" : " checked") + "><span>" + esc(t("adminActive")) + "</span></label>" +
+      '<div class="aprev">' + prodImgsHTML(p) + "</div>" +
+      '<div class="afield wide"><span>' + esc(at("pTags")) + '</span><div class="atags">' + tagChecks(p.tags || []) + "</div></div>" +
       "</div>").join("") + "</div>";
   }
 
@@ -6363,11 +7261,15 @@ window.DB = (function () {
     err.hidden = true;
     if (!g("nameAr")) return fail(at("needName"));
     if (!num("price")) return fail(at("needPrice"));
-    const file = f.elements.img.files[0];
-    if (file && !/^image\//.test(file.type)) return fail(at("needImg"));
+    if (!g("cat")) return fail(at("needCat"));
+    const tags = Array.from(f.querySelectorAll('input[name="tag"]:checked')).map((x) => x.value);
+    const base = num("price"), disc = num("discPrice");
+    const onSale = tags.indexOf("sale") >= 0 && disc > 0 && disc < base;
+    const files = Array.from(f.elements.img.files || []).slice(0, 6);
+    if (files.some((x) => !/^image\//.test(x.type))) return fail(at("needImg"));
     btn.disabled = true; btn.textContent = at("publishing");
     try {
-      await DB.addProduct({ nameAr: g("nameAr"), nameEn: g("nameEn"), cat: g("cat"), price: num("price"), old: num("old"), stock: num("stock"), descAr: g("descAr") }, file);
+      await DB.addProduct({ nameAr: g("nameAr"), nameEn: "", cat: g("cat"), price: onSale ? disc : base, old: onSale ? base : 0, stock: num("stock"), descAr: g("descAr"), tags: tags }, files);
       renderAll(); renderAdmin(); toast(at("added"), "ok");
     } catch (x) {
       console.error(x);
@@ -6375,19 +7277,156 @@ window.DB = (function () {
     }
   }
 
-  /* ---------- الآراء ---------- */
-  function adminReviewsHTML() {
-    const list = DB.reviews();
-    if (!list.length) return '<p class="a-note">' + esc(at("noReviews")) + "</p>";
-    return '<div class="alist">' + list.map((r) =>
-      '<div class="arev">' +
-      '<div class="arev-top">' + ART.stars(Number(r.rate) || 5) + "<b>" + esc(pick(r.name)) + "</b>" +
-      '<span class="aorder-date">' + esc(DB.fmtDate(r.at)) + "</span></div>" +
-      "<p>" + esc(pick(r.text)) + "</p>" +
-      '<div class="arev-acts">' +
-      '<label class="afield check"><input type="checkbox" data-adm="rshow" data-id="' + esc(r.id) + '"' + (r.active === false ? "" : " checked") + "><span>" + esc(at("shown")) + "</span></label>" +
-      '<button type="button" class="adel" data-adm="rdel" data-id="' + esc(r.id) + '">' + esc(at("del")) + "</button>" +
-      "</div></div>").join("") + "</div>";
+  /* ---------- الفئات ---------- */
+  const CAT_ICONS = ["sparkle", "plug", "cable", "battery", "wireless", "earbuds", "speaker", "shield", "watch", "holder", "hub", "bag", "bolt", "pin"];
+  function catIconOpts(sel) {
+    return CAT_ICONS.map((n) => '<option value="' + n + '"' + (n === sel ? " selected" : "") + ">" + n + "</option>").join("");
+  }
+  function adminCatsHTML() {
+    const form = '<div class="adroom-card"><h4>' + esc(at("catsNew")) + "</h4>" +
+      '<form data-adm="newcat" novalidate style="display:grid;gap:12px">' +
+      '<label class="afield wide"><span>' + esc(at("pCat")) + '</span><input name="catName" maxlength="60" autocomplete="off" required></label>' +
+      '<label class="afield wide"><span>' + esc(at("catsIcon")) + '</span><select name="catIcon">' + catIconOpts("sparkle") + "</select></label>" +
+      '<p class="aerr" role="alert" hidden></p>' +
+      '<button type="submit" class="btn btn-primary" style="justify-self:start">' + esc(at("catsAdd")) + "</button></form></div>";
+    const rows = DB.CATS.map((c) =>
+      '<div class="acat" data-cat="' + esc(c.id) + '">' +
+      '<span class="acat-ico" aria-hidden="true">' + ART.icon(c.icon) + "</span>" +
+      '<input class="acat-name" data-cf="name" maxlength="60" value="' + esc(pick(c.name)) + '">' +
+      '<select class="acat-icon" data-cf="icon">' + catIconOpts(c.icon) + "</select>" +
+      '<button type="button" class="adel" data-adm="catdel" data-id="' + esc(c.id) + '">' + esc(at("del")) + "</button>" +
+      "</div>").join("");
+    return '<div class="adroom-grid">' + form +
+      '<div class="adroom-card"><h4>' + esc(at("catsList")) + '</h4><div class="alist acats-list">' +
+      (rows || '<p class="a-note">—</p>') + "</div>" +
+      '<p class="a-note">' + esc(at("catsHint")) + "</p>" +
+      '<div style="margin-top:10px"><button type="button" class="btn btn-primary" data-adm="savecats">' + esc(t("adminSave")) + "</button></div>" +
+      "</div></div>";
+  }
+
+  async function addCategory(f) {
+    const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
+    const name = String(f.elements.catName.value || "").trim();
+    const icon = String((f.elements.catIcon && f.elements.catIcon.value) || "sparkle");
+    err.hidden = true;
+    if (!name) { err.hidden = false; err.textContent = at("catsNeed"); return; }
+    btn.disabled = true;
+    try {
+      const list = DB.CATS.slice();
+      list.push({ id: "c" + Date.now().toString(36), name: { ar: name, en: name }, icon: icon, desc: { ar: "", en: "" } });
+      DB.saveCats(list);
+      renderAll(); renderAdmin(); toast(t("adminSaved"), "ok");
+    } catch (x) { console.error(x); err.hidden = false; err.textContent = at("fail"); btn.disabled = false; }
+  }
+
+  /* \"الفئات\" tab: حفظ تعديلات الأسماء/الأيقونات من الحقول */
+  function saveCatsPane() {
+    const rows = Array.from(document.querySelectorAll("#admPane .acat"));
+    const list = rows.map((r) => {
+      const id = r.getAttribute("data-cat");
+      const cur = DB.CATS.find((c) => c.id === id) || { id: id, name: {}, desc: {} };
+      const nm = r.querySelector('[data-cf="name"]');
+      const ic = r.querySelector('[data-cf="icon"]');
+      return {
+        id: id,
+        name: { ar: nm ? nm.value.trim() || nm.placeholder : cur.name.ar, en: (nm ? nm.value.trim() : cur.name.en) || cur.name.ar },
+        icon: ic ? ic.value : (cur.icon || "sparkle"),
+        desc: cur.desc || { ar: "", en: "" }
+      };
+    });
+    DB.saveCats(list);
+    renderAll(); renderAdmin(); toast(t("adminSaved"), "ok");
+  }
+
+  /* ---------- الباقات ---------- */
+  function adminPackagesHTML() {
+    const prods = DB.products();
+    const fld = (label, inner, wide) => '<label class="afield' + (wide ? " wide" : "") + '"><span>' + esc(at(label)) + "</span>" + inner + "</label>";
+    const itemChecks = (sel) => prods.map((x) =>
+      '<label class="achk"><input type="checkbox" name="' + (sel === null ? "item" : "pitem") + '" value="' + esc(x.id) + '"' +
+      (sel && sel.indexOf(x.id) >= 0 ? " checked" : "") + "><span>" + esc(pick(x.name)) + "</span></label>").join("");
+    const form = '<details class="anew"><summary>' + esc(at("packNew")) + "</summary>" +
+      '<form data-adm="newpack" novalidate>' +
+      fld("pNameAr", '<input name="packName" maxlength="90" autocomplete="off">', 1) +
+      fld("pPrice", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="packPrice">') +
+      fld("pOld", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="packOld">') +
+      fld("pDesc", '<textarea name="packDesc" maxlength="400"></textarea>', 1) +
+      '<div class="afield wide"><span>' + esc(at("packItems")) + '</span><div class="atags">' +
+      (prods.length ? itemChecks(null) : '<span class="a-note">' + esc(at("packNoProds")) + "</span>") + "</div></div>" +
+      fld("pImg", '<input type="file" name="img" accept="image/*" data-img>', 1) +
+      '<div class="apreview wide"></div>' +
+      '<p class="aerr" role="alert" hidden style="grid-column:1/-1"></p>' +
+      '<button type="submit" class="btn btn-primary">' + esc(at("packAdd")) + "</button></form></details>";
+    const rows = DB.PKGS.map((p) => {
+      const sel = Array.isArray(p.items) ? p.items : [];
+      return '<div class="apack" data-apk="' + esc(p.id) + '">' +
+        '<div class="aprod-name">' + (p.image ? '<img class="athumb" alt="" src="' + esc(p.image) + '">' : "") +
+        '<input class="acat-name" data-qf="name" maxlength="90" value="' + esc(pick(p.name)) + '">' +
+        '<button type="button" class="adel" data-adm="packdel" data-id="' + esc(p.id) + '">' + esc(at("del")) + "</button></div>" +
+        '<label class="afield"><span>' + esc(at("pPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-qf="price" value="' + esc(p.price) + '"></label>' +
+        '<label class="afield"><span>' + esc(at("pOld")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-qf="old" value="' + esc(p.old || 0) + '"></label>' +
+        '<label class="afield check"><input type="checkbox" data-qf="active"' + (p.active === false ? "" : " checked") + '><span>' + esc(t("adminActive")) + "</span></label>" +
+        '<div class="afield wide"><span>' + esc(at("packItems")) + '</span><div class="atags">' + (prods.length ? itemChecks(sel) : "") + "</div></div>" +
+        "</div>";
+    }).join("");
+    return form + '<div class="alist">' + (rows || '<p class="a-note">' + esc(at("packEmpty")) + "</p>") + "</div>" +
+      '<div class="adroom-foot"><button type="button" class="btn btn-primary" data-adm="savepacks">' + esc(t("adminSave")) + "</button>" +
+      '<p class="a-note">' + esc(at("packHint")) + "</p></div>";
+  }
+
+  async function addPackage(f) {
+    const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
+    const g = (n) => (f.elements[n] ? String(f.elements[n].value).trim() : "");
+    const num = (n) => Math.max(0, Math.round(Number(toNum(g(n))) || 0));
+    const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
+    err.hidden = true;
+    if (!g("packName")) return fail(at("needName"));
+    if (!num("packPrice")) return fail(at("needPrice"));
+    const items = Array.from(f.querySelectorAll('input[name="item"]:checked')).map((x) => x.value);
+    const file = f.elements.img && f.elements.img.files ? f.elements.img.files[0] : null;
+    if (file && !/^image\//.test(file.type)) return fail(at("needImg"));
+    btn.disabled = true;
+    try {
+      const pkg = {
+        id: "k" + Date.now().toString(36),
+        name: { ar: g("packName"), en: g("packName") },
+        desc: { ar: g("packDesc"), en: g("packDesc") },
+        price: num("packPrice"), old: num("packOld"), image: "", items: items, active: true
+      };
+      if (file && DB.uploadPhoto) pkg.image = await DB.uploadPhoto(pkg.id, file);
+      const list = DB.PKGS.slice(); list.push(pkg);
+      DB.savePackages(list);
+      renderAll(); renderAdmin(); toast(at("added"), "ok");
+    } catch (x) {
+      console.error(x);
+      fail(at("fail") + (x && x.message ? " (" + x.message + ")" : ""));
+    }
+  }
+
+  function savePacksPane() {
+    const rows = Array.from(document.querySelectorAll("#admPane .apack"));
+    const list = rows.map((r) => {
+      const id = r.getAttribute("data-apk");
+      const cur = DB.PKGS.find((x) => x.id === id) || { id: id, name: {}, desc: {}, items: [] };
+      const nm = r.querySelector('[data-qf="name"]');
+      const pr = r.querySelector('[data-qf="price"]');
+      const od = r.querySelector('[data-qf="old"]');
+      const ac = r.querySelector('[data-qf="active"]');
+      const items = Array.from(r.querySelectorAll('input[name="pitem"]:checked')).map((x) => x.value);
+      const nmv = nm ? nm.value.trim() : "";
+      return {
+        id: id,
+        name: { ar: nmv || cur.name.ar, en: cur.name.en || nmv || cur.name.ar },
+        desc: cur.desc || { ar: "", en: "" },
+        price: Math.max(0, Math.round(Number(toNum(pr ? pr.value : 0)) || 0)),
+        old: Math.max(0, Math.round(Number(toNum(od ? od.value : 0)) || 0)),
+        image: cur.image || "",
+        items: items,
+        active: ac ? ac.checked : true
+      };
+    });
+    DB.savePackages(list);
+    renderAll(); renderAdmin(); toast(t("adminSaved"), "ok");
   }
 
   /* ---------- التوصيل ---------- */
@@ -6407,7 +7446,7 @@ window.DB = (function () {
   function adminSettingsHTML() {
     const s = DB.settings();
     const g = (k, label, val, area) =>
-      '<label class="afield wide"><span>' + esc(t(label)) + "</span>" +
+      '<label class="afield' + (area ? " wide" : "") + '"><span>' + esc(t(label)) + "</span>" +
       (area ? '<textarea data-sf="' + esc(k) + '">' + esc(val) + "</textarea>"
             : '<input data-sf="' + esc(k) + '" value="' + esc(val) + '">') + "</label>";
     return '<div class="aset">' +
@@ -6418,101 +7457,130 @@ window.DB = (function () {
       g("instagram", "adminInstagram", s.instagram) + g("facebook", "adminFacebook", s.facebook) +
       g("tiktok", "adminTikTok", s.tiktok) +
       g("address.ar", "adminAddress", s.address.ar) + g("address.en", "adminAddress", s.address.en) +
-      g("warrantyNote.ar", "adminWarranty", s.warrantyNote.ar) + g("warrantyNote.en", "adminWarranty", s.warrantyNote.en) +
       "</div>";
-  }
-
-  /* ---------- الأمان ---------- */
-  function adminSecurityHTML() {
-    const rateCount = Object.keys(DB.rateMap() || {}).length;
-    const stats = '<div class="adroom-stat"><b>' + DB.products().length + '</b><span>' + esc(at("stProducts")) + "</span></div>" +
-      '<div class="adroom-stat"><b>' + DB.orders().length + '</b><span>' + esc(at("stOrders")) + "</span></div>" +
-      '<div class="adroom-stat"><b>' + adminCustomers().length + '</b><span>' + esc(at("stCustomers")) + "</span></div>" +
-      '<div class="adroom-stat"><b>' + rateCount + '</b><span>' + esc(at("stRate")) + "</span></div>";
-    const dataCard = '<div class="adroom-card"><h4>' + esc(at("dataTitle")) + '</h4><div class="adroom-stat-grid">' + stats + "</div></div>";
-    if (DB.auth.enabled) {
-      return '<div class="adroom-grid">' +
-        '<div class="adroom-card"><h4>' + esc(at("cloudSec")) + "</h4><p class='a-note'>" + esc(at("cloudSecNote")) + "</p>" +
-        '<button type="button" class="adroom-act" data-adm="logout">' + esc(t("adminLogout")) + "</button></div>" +
-        dataCard + "</div>";
-    }
-    return '<div class="adroom-grid">' +
-      '<form class="adroom-card" data-adm="chpass" novalidate>' +
-      "<h4>" + esc(at("secTitle")) + "</h4>" +
-      '<label class="afield wide"><span>' + esc(at("curPass")) + '</span><input type="password" name="cur" autocomplete="current-password" dir="ltr"></label>' +
-      '<label class="afield wide"><span>' + esc(at("newPass")) + '</span><input type="password" name="nw" autocomplete="new-password" dir="ltr"></label>' +
-      '<label class="afield wide"><span>' + esc(at("confPass")) + '</span><input type="password" name="cf" autocomplete="new-password" dir="ltr"></label>' +
-      '<p class="aerr" role="alert" hidden></p>' +
-      '<button type="submit" class="btn btn-primary" style="justify-self:start">' + esc(t("adminSave")) + "</button>" +
-      "</form>" +
-      '<div class="adroom-card"><h4>' + esc(at("sessTitle")) + "</h4><p class='a-note'>" + esc(at("sessNote")) + "</p>" +
-      '<button type="button" class="adroom-act" data-adm="logout">' + esc(t("adminLogout")) + "</button></div>" +
-      dataCard + "</div>";
   }
 
   function adminPaneHTML() {
     if (adminTab === "history" || adminTab === "trash" || adminTab === "orders") return adminOrdersHTML(adminTab);
     if (adminTab === "customers") return adminCustomersHTML();
     if (adminTab === "products") return adminProductsHTML();
-    if (adminTab === "reviews") return adminReviewsHTML();
+    if (adminTab === "packages") return adminPackagesHTML();
+    if (adminTab === "cats") return adminCatsHTML();
     if (adminTab === "delivery") return adminDeliveryHTML();
     if (adminTab === "settings") return adminSettingsHTML();
-    if (adminTab === "security") return adminSecurityHTML();
     return adminOrdersHTML("orders");
   }
 
   /* اسم التبويب: من قاموس الواجهة إن وُجد، وإلا من نصوص الغرفة */
   function admTabLabel(key) { const v = t(key); return v === key ? at(key) : v; }
 
+  /* شريط حالة السحابة: يبيّن للمدير إن كانت إضافته ستظهر لكل الزوار */
+  function cloudBannerHTML() {
+    const c = DB.cloud;
+    if (!c || !c.enabled) return '<div class="acloud warn">' + esc(at("cloudOff")) + "</div>";
+    if (!c.signedIn()) return '<div class="acloud warn">' + esc(at("cloudNeedLogin")) + "</div>";
+    if (c.siteTable() === false) return '<div class="acloud warn">' + esc(at("cloudNeedSql")) + "</div>";
+    return '<div class="acloud ok">' + esc(at("cloudOk")) + "</div>";
+  }
+
+  function refreshCloudBanner() {
+    const b = document.querySelector("#admPane .acloud");
+    if (!b) return;
+    const wrap = document.createElement("div");
+    wrap.innerHTML = cloudBannerHTML();
+    const nb = wrap.firstElementChild;
+    if (!nb) return;
+    b.className = nb.className;
+    b.textContent = nb.textContent;
+  }
+  document.addEventListener("kp:cloud", function () { refreshCloudBanner(); refreshNewOrder(); });
+
+  /* تُعاد إلى true عند الانتقال بين اللوحة والأقسام حتى تبدأ الصفحة من الأعلى */
+  let admResetScroll = true;
+
+  function renderAdmin() {
+    const room = $("#adminRoom");
+    if (!room) return;
+    const keep = admResetScroll ? 0 : room.scrollTop;
+    admResetScroll = false;
+    room.innerHTML = isUnlocked() ? adminRoomShellHTML() : adminLoginHTML();
+    room.scrollTop = keep;
+  }
+
+  /* لوحة الإدارة: بطاقات تحمل أسماء الأقسام — والضغط عليها يفتح صفحة القسم وحدها */
+  function adminHomeHTML(counts) {
+    const tiles = ADM_TABS.map(([k, key]) => {
+      const meta = ADM_META[k] || ["sparkle", ""];
+      const n = counts[k] || 0;
+      return '<button type="button" class="adash-tile' + (k === "orders" && hasNewOrder() ? " has-new" : "") +
+        '" data-adm="open" data-view="' + k + '">' +
+        '<span class="adash-ico" aria-hidden="true">' + ART.icon(meta[0]) + "</span>" +
+        (n ? '<span class="adash-n">' + n + "</span>" : "") +
+        "<b>" + esc(admTabLabel(key)) + "</b>" +
+        '<small>' + esc(at(meta[1])) + "</small></button>";
+    }).join("");
+    return '<div class="adash">' +
+      '<div class="adash-head"><h2>' + esc(at("roomTitle")) + "</h2><p>" + esc(at("homeLead")) + "</p></div>" +
+      '<div class="adash-grid">' + tiles + "</div></div>";
+  }
+
+  function adminSectionHTML(counts) {
+    const row = ADM_TABS.filter((x) => x[0] === adminTab)[0] || ADM_TABS[0];
+    const n = counts[row[0]] || 0;
+    const foot = ADM_SAVE_TABS.indexOf(row[0]) >= 0
+      ? '<div class="adroom-foot"><button type="button" class="btn btn-primary" data-adm="save">' + esc(t("adminSave")) + "</button>" +
+        '<p class="a-note">' + esc(row[0] === "products" && DB.auth.enabled ? at("cloudNote") : at("localNote")) + "</p></div>"
+      : "";
+    return '<div class="asec-head">' +
+        '<button type="button" class="asec-back" data-adm="home">' + ART.icon("chevR") +
+          "<span>" + esc(at("backHome")) + "</span></button>" +
+        '<h2 class="asec-title">' + esc(admTabLabel(row[1])) + (n ? " <b>" + n + "</b>" : "") + "</h2>" +
+      "</div>" + adminPaneHTML() + foot;
+  }
+
+  /* هيكل الغرفة: ترويسة + اللوحة الرئيسية أو صفحة القسم المفتوح */
   function adminRoomShellHTML() {
     const counts = adminCounts();
     const s = DB.settings();
-    const tabs = ADM_TABS.map(([k, key]) => {
-      const n = counts[k];
-      return '<button type="button" role="tab" class="adroom-tab' + (adminTab === k ? " on" : "") +
-        '" data-adm="tab" data-tab="' + k + '" aria-selected="' + (adminTab === k) + '">' +
-        esc(admTabLabel(key)) + (n ? ' <b' + (k === "orders" ? "" : ' class="grey"') + ">" + n + "</b>" : "") + "</button>";
-    }).join("");
-    const foot = ADM_SAVE_TABS.indexOf(adminTab) >= 0
-      ? '<div class="adroom-foot"><button type="button" class="btn btn-primary" data-adm="save">' + esc(t("adminSave")) + "</button>" +
-        '<p class="a-note">' + esc(adminTab === "products" && DB.auth.enabled ? at("cloudNote") : at("localNote")) + "</p></div>"
-      : "";
+    const home = adminTab === "home";
     return '<header class="adroom-top">' +
         '<div class="adroom-brand"><span class="adroom-logo">' + ART.icon("gear") + "</span>" +
         "<div><b>" + esc(pick(s.brand)) + "</b><small>" + esc(at("roomTitle")) + "</small></div></div>" +
         '<span class="adroom-spacer"></span>' +
+        (home ? "" : '<button type="button" class="adroom-act" data-adm="home">' + esc(at("backHome")) + "</button>") +
         '<button type="button" class="adroom-act" data-adm="theme">' + esc(at("theme")) + "</button>" +
         '<button type="button" class="adroom-act" data-adm="logout">' + esc(t("adminLogout")) + "</button>" +
         '<button type="button" class="adroom-act" data-adm="close" aria-label="' + esc(at("close")) + '" title="' + esc(at("close")) + '">✕</button>' +
       "</header>" +
-      '<nav class="adroom-tabs" role="tablist">' + tabs + "</nav>" +
-      '<div class="adroom-wrap" id="admPane">' + adminPaneHTML() + foot + "</div>";
+      '<div class="adroom-wrap" id="admPane">' + cloudBannerHTML() +
+        (adminTab === "home" ? adminHomeHTML(counts) : adminSectionHTML(counts)) + "</div>";
   }
 
   function adminCounts() {
     const list = DB.orders();
     return {
-      orders: list.filter((o) => !o.trashed && (o.status === "new" || !o.status)).length,
-      trash: list.filter((o) => !!o.trashed).length,
+      orders: list.filter((o) => !o.trashed && o.status !== "cancelled" && (o.status === "new" || !o.status)).length,
+      trash: list.filter((o) => !!o.trashed || o.status === "cancelled").length,
       customers: adminCustomers().length
     };
-  }
-
-  function renderAdmin() {
-    const room = $("#adminRoom");
-    if (!room) return;
-    room.innerHTML = isUnlocked() ? adminRoomShellHTML() : adminLoginHTML();
   }
 
   function openAdmin() {
     const room = $("#adminRoom");
     if (!room) return;
+    /* فتح الغرفة يبدأ من اللوحة الرئيسية دائماً */
+    adminTab = "home";
+    admResetScroll = true;
     renderAdmin();
     room.hidden = false;
     room.setAttribute("aria-hidden", "false");
     try { document.documentElement.classList.add("adm-open"); } catch (e) { /* لا شيء */ }
     const first = room.querySelector("input, select, textarea");
     if (first) { try { first.focus(); } catch (e) { /* لا شيء */ } }
+    /* فتح الغرفة يعني اطّلاع المدير: نُطفئ نبض «طلب جديد» */
+    clearNewOrder();
+    /* فحص السحابة عند الفتح لتظهر حالة دقيقة في الأعلى */
+    if (DB.probeSite && DB.cloud && DB.cloud.enabled) Promise.resolve(DB.probeSite()).then(refreshCloudBanner, refreshCloudBanner);
   }
 
   function closeAdmin() {
@@ -6527,7 +7595,8 @@ window.DB = (function () {
     try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (x) { console.error(x); }
     adminUnlocked = false;
     sessionClear();
-    adminTab = "orders";
+    adminTab = "home";
+    admResetScroll = true;
     renderAdmin();
     toast(at("loggedOut"), "ok");
   }
@@ -6536,15 +7605,24 @@ window.DB = (function () {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
     err.hidden = true; btn.disabled = true;
+    const email = (f.elements.email ? f.elements.email.value : "").trim().toLowerCase();
+    const pass = f.elements.pass.value;
+    /* البريد ثابت: الحساب الوحيد المسموح لغرفة الإدارة. */
+    if (email !== ADM_EMAIL) return fail(t("adminWrong"));
     if (DB.auth.enabled) {
-      try { await DB.auth.signIn(f.elements.email.value.trim(), f.elements.pass.value); adminUnlocked = true; adminTab = "orders"; }
-      catch (x) { return fail(t("adminWrong")); }
-    } else {
-      const ok = await checkPass(f.elements.pass.value).catch(() => false);
-      if (!ok) return fail(t("adminWrong"));
-      adminUnlocked = true;
-      sessionSet(!!(f.elements.remember && f.elements.remember.checked));
+      try {
+        await DB.auth.signIn(email, pass);
+        adminUnlocked = true; adminTab = "home"; admResetScroll = true;
+        renderAdmin();
+        return;
+      } catch (x) { /* نُكمل إلى كلمة السرّ المحلية */ }
     }
+    const ok = await checkPass(pass).catch(() => false);
+    if (!ok) return fail(t("adminWrong"));
+    adminUnlocked = true;
+    adminTab = "home";
+    admResetScroll = true;
+    sessionSet(!!(f.elements.remember && f.elements.remember.checked));
     renderAdmin();
   }
 
@@ -6567,45 +7645,80 @@ window.DB = (function () {
   function saveAdmin() {
     const pane = $("#admPane");
     if (!pane) return;
-    const val = (row, attr, k) => { const el = row.querySelector('[' + attr + '="' + k + '"]'); if (!el) return ""; return (attr === "data-pf" || k === "home" || k === "desk") ? toNum(el.value) : el.value; };
-    if (adminTab === "products") {
-      $$("[data-product]", pane).forEach((row) => {
-        const box = row.querySelector('[data-pf="active"]');
-        DB.setProduct(row.getAttribute("data-product"), {
-          price: Math.max(0, Number(val(row, "data-pf", "price")) || 0),
-          old: Math.max(0, Number(val(row, "data-pf", "old")) || 0),
-          stock: Math.max(0, Math.round(Number(val(row, "data-pf", "stock")) || 0)),
-          active: box ? box.checked : true
-        });
+    const num = (el) => Math.max(0, Math.round(Number(toNum(el.value)) || 0));
+    $$("[data-product]", pane).forEach((row) => {
+      const box = row.querySelector('[data-pf="active"]');
+      const get = (k) => row.querySelector('[data-pf="' + k + '"]');
+      const patch = {
+        price: get("price") ? num(get("price")) : 0,
+        stock: get("stock") ? num(row.querySelector('[data-pf="stock"]')) : 0,
+        active: box ? box.checked : true,
+        tags: Array.from(row.querySelectorAll("[data-tf]:checked")).map((x) => x.getAttribute("data-tf"))
+      };
+      const oldEl = pane.querySelector('[data-product="' + row.getAttribute("data-product") + '"] [data-pf="old"]');
+      if (oldEl) patch.old = num(oldEl);
+      const nm = row.querySelector('[data-pf="name"]');
+      if (nm && nm.value.trim()) patch.name = { ar: nm.value.trim(), en: nm.value.trim() };
+      DB.setProduct(row.getAttribute("data-product"), patch);
+    });
+    $$("[data-rate]", pane).forEach((row) => {
+      const rv = (k) => { const el = row.querySelector('[data-rf="' + k + '"]'); return el ? el.value : ""; };
+      DB.setRate(row.getAttribute("data-rate"), {
+        home: Math.max(0, Number(toNum(rv("home"))) || 0),
+        desk: Math.max(0, Number(toNum(rv("desk"))) || 0),
+        delay: String(rv("delay")).trim()
       });
-    } else if (adminTab === "delivery") {
-      $$("[data-rate]", pane).forEach((row) => {
-        DB.setRate(row.getAttribute("data-rate"), {
-          home: Math.max(0, Number(val(row, "data-rf", "home")) || 0),
-          desk: Math.max(0, Number(val(row, "data-rf", "desk")) || 0),
-          delay: String(val(row, "data-rf", "delay")).trim()
-        });
-      });
-    } else if (adminTab === "settings") {
-      const g = (k) => { const el = pane.querySelector('[data-sf="' + k + '"]'); return el ? el.value.trim() : ""; };
-      DB.saveSettings({
-        brand: { ar: g("brand.ar"), en: g("brand.en") },
-        tagline: { ar: g("tagline.ar"), en: g("tagline.en") },
-        about: { ar: g("about.ar"), en: g("about.en") },
-        address: { ar: g("address.ar"), en: g("address.en") },
-        warrantyNote: { ar: g("warrantyNote.ar"), en: g("warrantyNote.en") },
-        phone: g("phone"), whatsapp: g("whatsapp"),
-        instagram: g("instagram"), facebook: g("facebook"), tiktok: g("tiktok")
-      });
-    }
+    });
+    const g = (k) => { const el = pane.querySelector('[data-sf="' + k + '"]'); return el ? el.value.trim() : ""; };
+    DB.saveSettings({
+      brand: { ar: g("brand.ar"), en: g("brand.en") },
+      tagline: { ar: g("tagline.ar"), en: g("tagline.en") },
+      about: { ar: g("about.ar"), en: g("about.en") },
+      address: { ar: g("address.ar"), en: g("address.en") },
+      phone: g("phone"), whatsapp: g("whatsapp"),
+      instagram: g("instagram"), facebook: g("facebook"), tiktok: g("tiktok")
+    });
     renderAll();
     renderAdmin();
     toast(t("adminSaved"), "ok");
   }
 
+  /* ---------- إشعار «طلب جديد»: نبض واضح كل 3 ثوانٍ ---------- */
+  /* العلم يُحفظ في المتصفّح، فيظهر النبض عند وصول طلب جديد حتى يُفتح
+     قسم الطلبات في غرفة الإدارة (أو تُفتح الغرفة) فيُصفَّر. */
+  const NEWORDER_KEY = "kp-neworder";
+
+  function hasNewOrder() {
+    try { return !!localStorage.getItem(NEWORDER_KEY); } catch (e) { return false; }
+  }
+
+  function markNewOrder() {
+    try { localStorage.setItem(NEWORDER_KEY, String(Date.now())); } catch (e) { /* لا شيء */ }
+    refreshNewOrder();
+  }
+
+  function clearNewOrder() {
+    try { localStorage.removeItem(NEWORDER_KEY); } catch (e) { /* لا شيء */ }
+    refreshNewOrder();
+  }
+
+  /* يضبط النبض والشارة على زرّ الترس: الشارة = عدد الطلبات الجديدة */
+  function refreshNewOrder() {
+    const on = hasNewOrder();
+    const b = $("#adminBtn");
+    if (b) b.classList.toggle("has-new", on);
+    const badge = $("#gearBadge");
+    if (badge) {
+      const n = adminCounts().orders;
+      badge.textContent = n > 99 ? "99+" : String(n);
+      badge.hidden = n === 0;
+    }
+  }
+
   function renderAdminEntry() {
     const b = $("#adminBtn");
-    if (b) b.innerHTML = ART.icon("gear", "gear-ico");
+    if (b) b.innerHTML = ART.icon("gear", "gear-ico") + '<b class="gear-badge" id="gearBadge" hidden>0</b>';
+    refreshNewOrder();
   }
 
   /* ---------- أحداث الغرفة ---------- */
@@ -6614,6 +7727,8 @@ window.DB = (function () {
     if (!f || !f.matches) return;
     if (f.matches('[data-adm="login"]')) { e.preventDefault(); doLogin(f); return; }
     if (f.matches('[data-adm="newprod"]')) { e.preventDefault(); submitNewProduct(f); return; }
+    if (f.matches('[data-adm="newcat"]')) { e.preventDefault(); addCategory(f); return; }
+    if (f.matches('[data-adm="newpack"]')) { e.preventDefault(); addPackage(f); return; }
     if (f.matches('[data-adm="chpass"]')) { e.preventDefault(); changePass(f); return; }
   }
 
@@ -6622,54 +7737,87 @@ window.DB = (function () {
     if (!hit) return;
     const act = hit.getAttribute("data-adm"), id = hit.getAttribute("data-id");
     if (act === "close") { closeAdmin(); return; }
-    if (act === "theme") { setTheme(theme() === "dark" ? "light" : "dark"); return; }
+    if (act === "theme") { setTheme(theme() === "dark" ? "light" : "dark", true); return; }
     if (act === "logout") { doLogout(); return; }
-    if (act === "tab") { adminTab = hit.getAttribute("data-tab") || "orders"; renderAdmin(); return; }
+    if (act === "open") {
+      adminTab = hit.getAttribute("data-view") || "home";
+      admResetScroll = true;
+      if (adminTab === "orders") clearNewOrder();
+      renderAdmin();
+      return;
+    }
+    if (act === "home") { adminTab = "home"; admResetScroll = true; renderAdmin(); return; }
     if (act === "save") { saveAdmin(); return; }
     if (act === "pdel") {
       if (confirm(at("confirmDel"))) DB.removeProduct(id).then(() => { renderAll(); renderAdmin(); toast(t("adminSaved"), "ok"); }).catch(() => toast(at("fail"), "err"));
       return;
     }
-    if (act === "odel") { DB.removeOrder(id); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-    if (act === "otrash") { DB.setOrder(id, { trashed: true }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-    if (act === "orestore") { DB.setOrder(id, { trashed: false }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-    if (act === "rdel") {
-      if (confirm(at("delRev"))) {
-        const s = DB.load();
-        s.reviews = (s.reviews || []).filter((r) => r.id !== id);
-        DB.persist(); renderReviews(); renderAdmin(); toast(t("adminSaved"), "ok");
+    if (act === "pimgdel") {
+      if (DB.removeProductImage(id, Number(hit.getAttribute("data-i")))) { renderAll(); renderAdmin(); toast(t("adminSaved"), "ok"); }
+      return;
+    }
+    if (act === "odel") { DB.removeOrder(id); renderAdmin(); refreshNewOrder(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "otrash") { DB.setOrder(id, { trashed: true }); renderAdmin(); refreshNewOrder(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "orestore") { DB.setOrder(id, { trashed: false, status: "new" }); renderAdmin(); refreshNewOrder(); toast(t("adminSaved"), "ok"); return; }
+    if (act === "savecats") { saveCatsPane(); return; }
+    if (act === "savepacks") { savePacksPane(); return; }
+    if (act === "packdel") {
+      const list = DB.PKGS.filter((x) => x.id !== id);
+      if (list.length !== DB.PKGS.length) { DB.savePackages(list); renderAll(); renderAdmin(); toast(t("adminSaved"), "ok"); }
+      return;
+    }
+    if (act === "catdel") {
+      const list = DB.CATS.filter((c) => c.id !== id);
+      if (list.length !== DB.CATS.length) { DB.saveCats(list); renderAll(); renderAdmin(); toast(t("adminSaved"), "ok"); }
+      return;
+    }
+    if (act === "addtag") {
+      const inp = $("#admPane [name=newTagName]");
+      const nm = inp ? String(inp.value || "").trim() : "";
+      if (!nm) { toast(at("pTagNeed"), "err"); return; }
+      const list = DB.TAGS.slice();
+      if (!list.some((x) => pick(x.label) === nm)) {
+        list.push({ id: "t" + Date.now().toString(36), label: { ar: nm, en: nm }, cls: "new" });
+        DB.saveTags(list);
       }
+      renderAll(); renderAdmin(); toast(t("adminSaved"), "ok");
       return;
     }
   }
 
   function onAdminChange(e) {
+    const tag = e.target.closest ? e.target.closest('input[data-tf], input[name="tag"]') : null;
+    if (tag) {
+      const scope = tag.closest("form, .aprod");
+      const field = scope ? scope.querySelector(".disc-field") : null;
+      if (field) {
+        const sale = scope.querySelector('input[data-tf="sale"], input[name="tag"][value="sale"]');
+        field.hidden = !(sale && sale.checked);
+      }
+      return;
+    }
+    const pim = e.target.closest("[data-pimg]");
+    if (pim) {
+      const id = pim.getAttribute("data-pimg");
+      const fls = Array.from(pim.files || []);
+      if (!fls.length) return;
+      if (fls.some((x) => !/^image\//.test(x.type))) { toast(at("needImg"), "err"); return; }
+      DB.setProductImages(id, fls).then((ok) => {
+        renderAll(); renderAdmin();
+        toast(ok ? t("adminSaved") : at("fail"), ok ? "ok" : "err");
+      }).catch((x) => { console.error(x); toast(at("fail"), "err"); });
+      return;
+    }
     const im = e.target.closest("[data-img]");
     if (im) {
-      const box = $("#admPane .apreview"), fl = im.files && im.files[0];
-      if (box) box.innerHTML = fl ? '<img alt="" src="' + URL.createObjectURL(fl) + '">' : "";
+      const box = $("#admPane .apreview"), fls = Array.from(im.files || []).slice(0, 6);
+      if (box) box.innerHTML = fls.map((fl) => '<img alt="" src="' + URL.createObjectURL(fl) + '">').join("");
       return;
     }
     const el = e.target.closest("[data-adm]");
     if (!el) return;
     const act = el.getAttribute("data-adm"), id = el.getAttribute("data-id");
-    if (act === "ostatus") { DB.setOrder(id, { status: el.value }); renderAdmin(); toast(t("adminSaved"), "ok"); return; }
-    if (act === "rshow") {
-      const s = DB.load();
-      const r = (s.reviews || []).find((x) => x.id === id);
-      if (r) { r.active = el.checked; DB.persist(); }
-      renderReviews(); renderAdmin(); toast(t("adminSaved"), "ok");
-    }
-  }
-
-  /* ---------------- الآراء والتذييل ---------------- */
-  function renderReviews() {
-    const list = DB.reviews().filter((r) => r.active !== false);
-    $("#revGrid").innerHTML = list.length
-      ? list.map((r) =>
-        '<div class="rev">' + ART.stars(Number(r.rate) || 5) +
-        "<p>" + esc(pick(r.text)) + "</p><b>" + esc(pick(r.name)) + "</b><small>" + esc(DB.fmtDate(r.at)) + "</small></div>").join("")
-      : '<div class="empty-note"><b>' + esc(t("revNone")) + "</b></div>";
+    if (act === "ostatus") { DB.setOrder(id, { status: el.value }); renderAdmin(); refreshNewOrder(); toast(t("adminSaved"), "ok"); return; }
   }
 
   /* كلمة الاسم «الوثيق» داخل جملة الوصف: تُغلَّف بخطّ غليظ بلون مميّز لتبرز */
@@ -6732,13 +7880,12 @@ window.DB = (function () {
 
   /* ---------------- رسم شامل ---------------- */
   function renderAll() {
-    renderCatStrip();
     renderCatGrid();
     renderFilters();
     renderChips();
     renderMenu();
     renderGrid();
-    renderReviews();
+    renderPackages();
     renderFooter();
     renderAdminEntry();
     renderCart();
@@ -6816,15 +7963,26 @@ window.DB = (function () {
       const ov = e.target.closest(".ov");
       if (ov) { closeAll(); return; }
     });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
+    document.addEventListener("keydown", (e) => {
+      /* الصورة المكبَّرة لها أولوية: Escape يُغلقها وحدها */
+      if (e.key !== "Escape") return;
+      if ($("#pmLight").classList.contains("open")) return;
+      closeAll();
+    });
 
     /* نافذة المنتج */
     document.addEventListener("click", (e) => {
+      /* لا تتفاعل نقرات غرفة الإدارة مع متجر الصفحة (خشية تعارض data-cat/data-pack) */
+      if (e.target.closest && e.target.closest("#adminRoom")) return;
+
       const open = e.target.closest("[data-open]");
       if (open) { openProduct(open.dataset.open); return; }
 
       const add = e.target.closest("[data-add]");
       if (add && !add.disabled) { addToCart(add.dataset.add, 1); return; }
+
+      const pk = e.target.closest("[data-pack]");
+      if (pk) { orderPackage(pk.dataset.pack); return; }
 
       /* الفئات */
       const cat = e.target.closest("[data-cat]");
@@ -6983,6 +8141,11 @@ window.DB = (function () {
 
     /* زرّ الفلاتر في شريط المتجر يفتح نفس الدرج على شاشة الفلاتر */
     $("#filterToggle").addEventListener("click", () => menuOpen("filters"));
+
+    /* تبديل عرض المنتجات: شبكة / قائمة */
+    const vt = $("#viewToggle");
+    if (vt) vt.addEventListener("click", () => setViewMode(viewMode === "list" ? "grid" : "list"));
+    applyViewMode();
     $("#applyFilters").addEventListener("click", () => {
       applyFiltersNow();
       closeAll();
@@ -7022,7 +8185,7 @@ window.DB = (function () {
 
     /* منتقي المظهر: خياران — فاتح وداكن */
     $("#themeBtn").addEventListener("click", () => {
-      setTheme(theme() === "dark" ? "light" : "dark");
+      setTheme(theme() === "dark" ? "light" : "dark", true);
     });
 
     /* غرفة الإدارة */
@@ -7037,15 +8200,16 @@ window.DB = (function () {
       if (e.key === "Escape" && admRoom && !admRoom.hidden) { e.preventDefault(); closeAdmin(); }
     });
     /* استعادة جلسة المدير المحلية بعد تحديث الصفحة */
-    if (!DB.auth.enabled && sessionOn()) adminUnlocked = true;
+    if (sessionOn()) adminUnlocked = true;
     /* رابط سري: ?admin أو #admin يفتح الغرفة مباشرة */
     try {
       const q = new URLSearchParams(location.search);
       if (q.has("admin") || location.hash === "#admin") setTimeout(openAdmin, 60);
     } catch (e) { /* لا شيء */ }
 
-    /* أدوات التكبير داخل نافذة المنتج */
-    wireZoom();
+    /* معرض صور المنتج: الأسهم والمصغّرات والنقرة على كامل الشاشة */
+    wireGallery();
+    wireLight();
   }
 
   function openCart() {
@@ -7085,7 +8249,9 @@ window.DB = (function () {
     } catch (e) { /* لا شيء */ }
 
     wire();
+    DB.load();
     renderAll();
+    if (typeof catPickInit === "function") catPickInit();
     if (DB.syncRemote) DB.syncRemote().then((ok) => { if (ok) renderAll(); });
   }
 
@@ -7124,5 +8290,18 @@ window.DB = (function () {
   });
 })();
 </script>
+<script>
+/* تسجيل عامل الخدمة (service worker) — يعمل فقط على https أو المضيف المحلي،
+   وإن غاب sw.js يبقى الموقع يعمل كما هو بلا أي خطأ. */
+(function () {
+  "use strict";
+  if (!("serviceWorker" in navigator)) return;
+  var h = location.hostname, ok = location.protocol === "https:" || h === "localhost" || h === "127.0.0.1";
+  if (!ok) return;
+  window.addEventListener("load", function () {
+    try { navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
+  });
+})();
+</script>
 </body>
-</html>
+</html> 
