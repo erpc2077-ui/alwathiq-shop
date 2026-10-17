@@ -31,12 +31,29 @@ create table if not exists public.orders (
   created_at  timestamptz not null default now()
 );
 
--- ---------- بيانات الموقع المشتركة (الفئات / الوسوم / الباقات) ----------
+-- ---------- بيانات الموقع المشتركة (الفئات / الوسوم / الباقات / الإعدادات / السياسات) ----------
+-- إصلاح: إن وُجد جدول site_data قديم بشكل مختلف (من ملف إعداد سابق) فلا يستطيع الموقع قراءته،
+-- فيُحذف ويُعاد إنشاؤه (محتواه نسخة من إعدادات الواجهة، وتعود بالضغط على «حفظ» في الإدارة).
+do $$
+begin
+  if to_regclass('public.site_data') is not null and not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'site_data'
+      and column_name = 'id' and data_type = 'text'
+  ) then
+    drop table public.site_data;
+  end if;
+end $$;
+
 create table if not exists public.site_data (
   id          text primary key,
   value       jsonb,
   updated_at  timestamptz not null default now()
 );
+alter table public.site_data add column if not exists value jsonb;
+alter table public.site_data add column if not exists updated_at timestamptz not null default now();
+grant select on public.site_data to anon, authenticated;
+grant insert, update, delete on public.site_data to authenticated;
 
 -- ---------- خصم المخزون ----------
 create or replace function public.decrement_stock(pid text, qty integer)
