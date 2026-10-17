@@ -1,0 +1,17 @@
+-- تشخيص مخزون المنتجات في Supabase: الصقه في SQL Editor ثم Run، وأرسل لي نتيجة العمود diag
+select jsonb_build_object(
+  'columns', (
+    select jsonb_agg(jsonb_build_object('col', c.column_name, 'type', c.data_type) order by c.ordinal_position)
+    from information_schema.columns c
+    where c.table_schema = 'public' and c.table_name = 'products'
+  ),
+  'latest_products', (
+    select jsonb_agg(jsonb_build_object('id', t.id, 'name', t.name_ar, 'stock', t.stock))
+    from (select id, name_ar, stock from public.products order by created_at desc limit 5) t
+  ),
+  'decrement_stock', (
+    select pg_get_functiondef(f.oid)
+    from pg_proc f join pg_namespace n on n.oid = f.pronamespace
+    where n.nspname = 'public' and f.proname = 'decrement_stock' limit 1
+  )
+) as diag;
