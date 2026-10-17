@@ -18,6 +18,19 @@ create table if not exists public.products (
   desc_en     text default '',
   created_at  timestamptz not null default now()
 );
+-- إصلاح: إن كان جدول products قد أُنشئ من ملف سابق بأنواع أصغر (مثل smallint لا تتسع لـ 2000000)
+-- نوسّع الأعمدة الرقمية إلى integer. لا يغيّر شيئاً إن كانت integer أصلاً.
+do $$
+declare col text;
+begin
+  foreach col in array array['stock', 'price', 'old_price'] loop
+    if exists (select 1 from information_schema.columns
+               where table_schema = 'public' and table_name = 'products' and column_name = col) then
+      execute format('alter table public.products alter column %I type integer using %I::integer', col, col);
+    end if;
+  end loop;
+end $$;
+
 -- أعمدة أُضيفت لاحقاً (صور متعددة + وسوم) — آمنة إن كانت موجودة
 alter table public.products add column if not exists images jsonb not null default '[]'::jsonb;
 alter table public.products add column if not exists tags   jsonb not null default '[]'::jsonb;
