@@ -1,0 +1,87 @@
+-- =====================================================================
+-- متجر الوثيق — قاعدة البيانات الكاملة (Supabase)
+-- الصقه كله في SQL Editor ثم Run. آمن للتشغيل أكثر من مرة.
+-- =====================================================================
+
+-- ---------- المنتجات ----------
+create table if not exists public.products (
+  id          text primary key,
+  cat         text,
+  name_ar     text not null,
+  name_en     text,
+  price       integer not null default 0,
+  old_price   integer not null default 0,
+  stock       integer not null default 0,
+  active      boolean not null default true,
+  image_url   text,
+  desc_ar     text default '',
+  desc_en     text default '',
+  created_at  timestamptz not null default now()
+);
+-- أعمدة أُضيفت لاحقاً (صور متعددة + وسوم) — آمنة إن كانت موجودة
+alter table public.products add column if not exists images jsonb not null default '[]'::jsonb;
+alter table public.products add column if not exists tags   jsonb not null default '[]'::jsonb;
+
+-- ---------- الطلبات ----------
+create table if not exists public.orders (
+  id          text primary key,
+  data        jsonb not null,
+  status      text default 'new',
+  trashed     boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+
+-- ---------- بيانات الموقع المشتركة (الفئات / الوسوم / الباقات) ----------
+create table if not exists public.site_data (
+  id          text primary key,
+  value       jsonb,
+  updated_at  timestamptz not null default now()
+);
+
+-- ---------- خصم المخزون ----------
+create or replace function public.decrement_stock(pid text, qty integer)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update public.products set stock = greatest(stock - qty, 0) where id = pid;
+$$;
+grant execute on function public.decrement_stock(text, integer) to anon, authenticated;
+
+-- ---------- الأمان (RLS) ----------
+alter table public.products  enable row level security;
+alter table public.orders    enable row level security;
+alter table public.site_data enable row level security;
+
+drop policy if exists "products read" on public.products;
+create policy "products read" on public.products for select to anon, authenticated using (true);
+drop policy if exists "products admin write" on public.products;
+create policy "products admin write" on public.products for all to authenticated using (true) with check (true);
+
+drop policy if exists "site_data read" on public.site_data;
+create policy "site_data read" on public.site_data for select to anon, authenticated using (true);
+drop policy if exists "site_data admin write" on public.site_data;
+create policy "site_data admin write" on public.site_data for all to authenticated using (true) with check (true);
+
+drop policy if exists "orders insert" on public.orders;
+create policy "orders insert" on public.orders for insert to anon, authenticated with check (true);
+drop policy if exists "orders admin read" on public.orders;
+create policy "orders admin read" on public.orders for select to authenticated using (true);
+drop policy if exists "orders admin update" on public.orders;
+create policy "orders admin update" on public.orders for update to authenticated using (true) with check (true);
+drop policy if exists "orders admin delete" on public.orders;
+create policy "orders admin delete" on public.orders for delete to authenticated using (true);
+
+-- ---------- صور المنتجات ----------
+insert into storage.buckets (id, name, public)
+values ('product-images', 'product-images', true)
+on conflict (id) do nothing;
+
+drop policy if exists "images public read" on storage.objects;
+create policy "images public read" on storage.objects
+  for select to anon, authenticated using (bucket_id = 'product-images');
+drop policy if exists "images admin write" on storage.objects;
+create policy "images admin write" on storage.objects
+  for all to authenticated
+  using (bucket_id = 'product-images') with check (bucket_id = 'product-images');
