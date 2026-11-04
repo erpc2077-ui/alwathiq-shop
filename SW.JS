@@ -1,5 +1,5 @@
 /* الوثيق: عامل الخدمة (كاشينغ). ارفع رقم VERSION عند كل تحديث كبير. */
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = "shell-" + VERSION, STATIC = "static-" + VERSION, IMG = "img-" + VERSION;
 const IMG_MAX = 150;
 
@@ -8,7 +8,8 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  e.waitUntil(caches.keys()
+  e.waitUntil((self.registration.navigationPreload ? self.registration.navigationPreload.enable() : Promise.resolve()).catch(() => {})
+    .then(() => caches.keys())
     .then((ks) => Promise.all(ks.filter((k) => ![SHELL, STATIC, IMG].includes(k)).map((k) => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
@@ -19,9 +20,9 @@ async function trim(name, max) {
 }
 
 /* الصفحة: الشبكة أولاً (تحديثات فورية) ثم النسخة المخزّنة عند ضعف/انقطاع الاتصال */
-async function page(req) {
+async function page(req, pre) {
   try {
-    const r = await fetch(req);
+    const r = (pre && (await pre)) || (await fetch(req));
     if (r && r.ok) (await caches.open(SHELL)).put("./", r.clone());
     return r;
   } catch (e) {
@@ -55,7 +56,7 @@ self.addEventListener("fetch", (e) => {
   /* بيانات Supabase (المخزون، الطلبات، الدخول): دائماً من الشبكة بلا كاش */
   if (u.hostname.endsWith(".supabase.co") && !u.pathname.startsWith("/storage/v1/object/public/")) return;
   if (u.hostname.endsWith(".supabase.co")) return void e.respondWith(img(req));
-  if (req.mode === "navigate") return void e.respondWith(page(req));
+  if (req.mode === "navigate") return void e.respondWith(page(req, e.preloadResponse));
   if (u.origin === location.origin && u.pathname.endsWith("/sw.js")) return;
   if (req.destination === "image") return void e.respondWith(img(req));
   if (/fonts\.(googleapis|gstatic)\.com|cdn\.jsdelivr\.net|cdnjs\.cloudflare\.com/.test(u.hostname) || u.origin === location.origin)
