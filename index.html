@@ -44,8 +44,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="الوثيق">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.webmanifest">
-<meta property="og:url" content="./">
+<link rel="canonical" href="https://alwathiq-shop.netlify.app/">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:url" content="https://alwathiq-shop.netlify.app/">
 <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23F5F5F5'/%3E%3Cg fill='%23B8924E' transform='translate(495 200) scale(1.75)'%3E%3Cpath d='M60 3l7 11-7 11-7-11z'/%3E%3Cpath d='M4 20h30l26 100L40 74z'/%3E%3Cpath d='M116 20H86L60 120l20-46z'/%3E%3Cpath d='M40 34h12l8 58-12-14z'/%3E%3Cpath d='M80 34H68l-8 58 12-14z'/%3E%3C/g%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://wlgitpkorbqegrocznwa.supabase.co" crossorigin>
@@ -972,6 +973,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .total-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 7px; font-size: 14.5px; color: var(--muted); }
 .total-row b { color: var(--text); font-weight: 700; }
+.promo-row, .promo-row b { color: var(--ok, #0b7a53); }
+.promo-hint { margin-top: 12px; padding: 9px 12px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 700; color: var(--ok, #0b7a53); background: color-mix(in srgb, var(--ok, #0b7a53) 10%, transparent); }
 .total-row.grand { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 13px; font-size: 16.5px; color: var(--text); }
 .total-row.grand span:last-child { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
 
@@ -1593,6 +1596,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 /* ---------------- 18. لوحة الإدارة ---------------- */
 /* زرّ الترس يقابل ركن التواصل في الزاوية الأخرى */
+.gear-float[hidden] { display: none !important; }
 .gear-float {
   position: fixed; inset-block-end: 22px; inset-inline-end: 22px;
   z-index: 55; width: 52px; height: 52px; border-radius: 50%;
@@ -3224,7 +3228,7 @@ window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey:
 
 <!-- ================= زرّ الإدارة ================= -->
 <!-- بابٌ في الزاوية المقابلة لركن التواصل يفتح لوحة الإدارة -->
-<button class="gear-float" id="adminBtn" aria-label="لوحة الإدارة" data-i18n-aria="adminOpen"><b class="gear-badge" id="gearBadge" hidden>0</b></button>
+<button class="gear-float" id="adminBtn" hidden aria-label="لوحة الإدارة" data-i18n-aria="adminOpen"><b class="gear-badge" id="gearBadge" hidden>0</b></button>
 
 <!-- شاشة «اختر فئتك» أُزيلت: كانت تظهر تلقائياً عند أوّل زيارة. -->
 
@@ -5237,6 +5241,10 @@ window.DB = (function () {
       return line;
     });
 
+    /* عروض السلة: تخفيض 10% إن تجاوز المجموع 6000 دج، وتوصيل مجاني إن تجاوز 8000 دج */
+    const discount = subtotal > 6000 ? Math.round(subtotal * 0.10) : 0;
+    const shipFinal = subtotal > 8000 ? 0 : (Number(data.shipping) || 0);
+
     load().seq += 1;
     const order = {
       id: "KP-" + Date.now().toString(36).toUpperCase().slice(-5) + Math.random().toString(36).slice(2, 4).toUpperCase(),
@@ -5244,8 +5252,9 @@ window.DB = (function () {
       customer: data.customer || {},
       items: lines,
       subtotal: subtotal,
-      shipping: Number(data.shipping) || 0,
-      total: subtotal + (Number(data.shipping) || 0),
+      discount: discount,
+      shipping: shipFinal,
+      total: subtotal - discount + shipFinal,
       delivery: data.delivery || "home",
       payment: "cod",
       status: "new"
@@ -5586,6 +5595,8 @@ window.DB = (function () {
 
   DB.auth = {
     enabled: ENABLED,
+    ready: ready,
+    email: () => (session && ((session.user && session.user.email) || (session.u && session.u.email))) || "",
     isAdmin: () => !!session,
     signIn: async (email, pass) => {
       if (useFB) {
@@ -6622,6 +6633,20 @@ window.DB = (function () {
     }, 0);
   }
 
+  /* تخفيض 10% عند تجاوز 6000 دج، وتوصيل مجاني عند تجاوز 8000 دج */
+  const DISC_MIN = 6000, FREE_SHIP_MIN = 8000, DISC_RATE = 0.10;
+  function cartDiscount() {
+    const sub = cartTotal();
+    return sub > DISC_MIN ? Math.round(sub * DISC_RATE) : 0;
+  }
+  function promoHint() {
+    const sub = cartTotal(), ar = I18N.lang === "ar";
+    let m = "";
+    if (sub <= DISC_MIN) m = ar ? "أضف " + fmt(DISC_MIN - sub + 1) + " دج لتحصل على تخفيض 10%" : "Add " + fmt(DISC_MIN - sub + 1) + " DZD to get 10% off";
+    else if (sub <= FREE_SHIP_MIN) m = ar ? "أضف " + fmt(FREE_SHIP_MIN - sub + 1) + " دج لتحصل على توصيل مجاني" : "Add " + fmt(FREE_SHIP_MIN - sub + 1) + " DZD for free delivery";
+    return m ? '<p class="promo-hint">' + esc(m) + "</p>" : "";
+  }
+
   function renderCartBadge() {
     const n = cartCount();
     const b = $("#cartCount");
@@ -6660,6 +6685,7 @@ window.DB = (function () {
 
   /* الشحن يُحتسب حسب طريقة التوصيل المختارة: المنزل أو نقطة الاستلام */
   function shippingCost() {
+    if (cartTotal() > FREE_SHIP_MIN) return 0;
     const r = DB.rates(delivery.wilaya);
     const v = delivery.mode === "desk" ? r.desk : r.home;
     return Number(v) || 0;
@@ -6700,11 +6726,13 @@ window.DB = (function () {
 
     foot.innerHTML =
       '<div class="total-row"><span>' + esc(t("subtotal")) + "</span><b>" + money(cartTotal()) + "</b></div>" +
+      (cartDiscount() ? '<div class="total-row promo-row"><span>' + esc(I18N.lang === "ar" ? "تخفيض 10%" : "10% discount") + "</span><b>-" + money(cartDiscount()) + "</b></div>" : "") +
       '<div class="total-row"><span>' + esc(t("shipping")) + (wlName ? " (" + esc(wlName) + ")" : "") + "</span><b>" +
       (ship === 0 ? esc(t("free")) : money(ship)) + "</b></div>" +
-      '<div class="total-row grand"><span>' + esc(t("total")) + "</span><span>" + money(cartTotal() + ship) + "</span></div>" +
+      '<div class="total-row grand"><span>' + esc(t("total")) + "</span><span>" + money(cartTotal() - cartDiscount() + ship) + "</span></div>" +
       '<button class="btn btn-primary btn-block btn-lg btn-glow" id="goCheckout" style="margin-top:16px">' +
-      ART.icon("bag", "btn-ico") + '<span>' + esc(t("checkout")) + '</span><b class="btn-amt">' + money(cartTotal() + ship) + "</b></button>" +
+      ART.icon("bag", "btn-ico") + '<span>' + esc(t("checkout")) + '</span><b class="btn-amt">' + money(cartTotal() - cartDiscount() + ship) + "</b></button>" +
+      promoHint() +
       '<p style="font-size:12.5px;color:var(--faint);text-align:center;margin-top:10px">' + esc(r.delay || "") + "</p>";
   }
 
@@ -6744,12 +6772,12 @@ window.DB = (function () {
       ART.icon("truck", "dopt-ico") +
       '<span class="dopt-tx"><b class="dopt-name">' + esc(t("dOptHome")) + "</b>" +
       '<small class="dopt-sub">' + esc(t("dOptHomeSub")) + "</small></span>" +
-      '<b class="dopt-price" data-price="home">' + money(r.home) + "</b></button>" +
+      '<b class="dopt-price" data-price="home">' + (cartTotal() > FREE_SHIP_MIN ? esc(t("free")) : money(r.home)) + "</b></button>" +
       '<button type="button" class="dopt" data-dmode="desk" role="radio" aria-checked="' + (delivery.mode === "desk" ? "true" : "false") + '">' +
       ART.icon("pin", "dopt-ico") +
       '<span class="dopt-tx"><b class="dopt-name">' + esc(t("dOptDesk")) + "</b>" +
       '<small class="dopt-sub">' + esc(t("dOptDeskSub")) + "</small></span>" +
-      '<b class="dopt-price" data-price="desk">' + money(r.desk) + "</b></button>" +
+      '<b class="dopt-price" data-price="desk">' + (cartTotal() > FREE_SHIP_MIN ? esc(t("free")) : money(r.desk)) + "</b></button>" +
       "</div>" +
       '<small class="field-hint" id="coDelay">' + esc(t("estDelivery")) + ": " + esc(r.delay || "—") + "</small></div>" +
       '<div class="field" id="fAddrWrap"><label>' + esc(t("coAddress")) + " *</label><textarea id=\"fAddr\"></textarea></div>" +
@@ -6764,13 +6792,14 @@ window.DB = (function () {
         const p = DB.getProduct(i.id);
         return p ? '<div class="total-row"><span>' + esc(pick(p.name)) + " × " + i.qty + "</span><b>" + money(p.price * i.qty) + "</b></div>" : "";
       }).join("") +
+      (cartDiscount() ? '<div class="total-row promo-row"><span>' + esc(I18N.lang === "ar" ? "تخفيض 10%" : "10% discount") + "</span><b>-" + money(cartDiscount()) + "</b></div>" : "") +
       '<div class="total-row"><span>' + esc(t("shipping")) + '</span><b id="coShip">' + (ship === 0 ? esc(t("free")) : money(ship)) + "</b></div>" +
-      '<div class="total-row grand"><span>' + esc(t("total")) + '</span><span id="coTotal">' + money(cartTotal() + ship) + "</span></div>" +
+      '<div class="total-row grand"><span>' + esc(t("total")) + '</span><span id="coTotal">' + money(cartTotal() - cartDiscount() + ship) + "</span></div>" +
       "</div>" +
 
       '<button class="btn btn-primary btn-block btn-lg btn-glow co-submit" type="submit">' +
       ART.icon("cash", "btn-ico") + "<span>" + esc(t("coConfirm")) + "</span>" +
-      '<b class="btn-amt">' + money(cartTotal() + ship) + "</b></button>" +
+      '<b class="btn-amt">' + money(cartTotal() - cartDiscount() + ship) + "</b></button>" +
       '<p class="co-terms">' + esc(t("f3d")) + ' · <a href="#" id="coTerms">' + esc(t("terms")) + "</a></p>" +
       "</aside>" +
       "</div>" +
@@ -6795,8 +6824,9 @@ window.DB = (function () {
       /* نحدّث سعري الطريقتين مع تغيّر الولاية */
       const pHome = document.querySelector('.dopt-price[data-price="home"]');
       const pDesk = document.querySelector('.dopt-price[data-price="desk"]');
-      if (pHome) pHome.innerHTML = money(rr.home);
-      if (pDesk) pDesk.innerHTML = money(rr.desk);
+      const freeS = cartTotal() > FREE_SHIP_MIN;
+      if (pHome) pHome.innerHTML = freeS ? esc(t("free")) : money(rr.home);
+      if (pDesk) pDesk.innerHTML = freeS ? esc(t("free")) : money(rr.desk);
 
       /* نُبرز الطريقة المختارة ونُظهر حقلها المناسب */
       document.querySelectorAll(".dopt").forEach((b) => {
@@ -6813,9 +6843,9 @@ window.DB = (function () {
       const se = $("#coShip");
       if (se) se.innerHTML = s2 === 0 ? esc(t("free")) : money(s2);
       const te = $("#coTotal");
-      if (te) te.innerHTML = money(cartTotal() + s2);
+      if (te) te.innerHTML = money(cartTotal() - cartDiscount() + s2);
       const bt = $(".co-submit .btn-amt");
-      if (bt) bt.innerHTML = money(cartTotal() + s2);
+      if (bt) bt.innerHTML = money(cartTotal() - cartDiscount() + s2);
     }
 
     refresh();
@@ -6908,7 +6938,9 @@ window.DB = (function () {
       (ar ? "التوصيل: " : "Delivery: ") + (order.delivery === "desk" ? (ar ? "نقطة استلام" : "Pickup point") : (ar ? "إلى المنزل" : "Home")),
       "", ar ? "الطلب:" : "Items:"
     ].concat(lines).concat([
-      "", (ar ? "المجموع: " : "Total: ") + fmt(order.total) + " " + currency()
+      "", order.discount ? (ar ? "تخفيض 10%: -" : "10% discount: -") + fmt(order.discount) + " " + currency() : "",
+      (ar ? "التوصيل: " : "Shipping: ") + (order.shipping ? fmt(order.shipping) + " " + currency() : (ar ? "مجاني" : "Free")),
+      (ar ? "المجموع: " : "Total: ") + fmt(order.total) + " " + currency()
     ]).filter((x, i, arr) => x !== "" || (arr[i - 1] !== "" && i < arr.length - 1)).join("\n");
 
     $("#coBody").innerHTML =
@@ -6973,7 +7005,7 @@ window.DB = (function () {
       adHintCats: "فئات المتجر", adHintDelivery: "أسعار التوصيل لكل ولاية",
       adHintSettings: "اسم المتجر وبيانات التواصل",
       remember: "تذكّرني على هذا الجهاز", back: "رجوع إلى المتجر",
-      defaultHint: "كلمة السرّ الحالية: 123456 — يمكنك تغييرها من الإعدادات ← الأمان.",
+      loginEmail: "البريد الإلكتروني",
       theme: "المظهر", close: "إغلاق", email: "البريد الإلكتروني",
       localNote: "تُحفظ التغييرات في هذا المتصفّح.",
       cloudNote: "المنتجات تُحفظ في السحابة وتظهر لكل الزوار.",
@@ -6987,10 +7019,10 @@ window.DB = (function () {
       cOrders: "طلبات", cTotal: "الإجمالي", cLast: "آخر طلب", cMsg: "مراسلة على واتساب",
       noReviews: "لا توجد آراء بعد.", shown: "ظاهر في الموقع", delRev: "حذف هذا الرأي؟",
       secTitle: "تغيير كلمة السرّ", curPass: "كلمة السرّ الحالية", newPass: "كلمة السرّ الجديدة",
-      confPass: "تأكيد كلمة السرّ الجديدة", chShort: "اجعل كلمة السرّ من 6 إلى 12 رقماً (أرقام فقط).",
+      confPass: "تأكيد كلمة السرّ الجديدة", chShort: "اجعل كلمة السرّ 8 أحرف على الأقل.",
       secNote: "أرقام فقط، من 6 إلى 12 رقماً. تتغيّر معها كلمة سرّ حساب السحابة حتى تبقى المزامنة تعمل، ولن تُطلب منك مرّة أخرى على هذا الجهاز حتى تسجيل الخروج.",
       secSave: "حفظ كلمة السرّ",
-      chOkLocal: "حُفظت في هذا المتصفّح، لكن تعذّر تحديث كلمة سرّ السحابة — تحقّق من الاتصال وحاول مرّة أخرى.",
+      chOkLocal: "تعذّر تغيير كلمة السرّ في Supabase — تحقّق من الاتصال وحاول مرّة أخرى.",
       chMismatch: "كلمتا السرّ غير متطابقتين.", chWrong: "كلمة السرّ الحالية غير صحيحة.",
       chOk: "تم تحديث كلمة السرّ.", cloudSec: "الدخول السحابي",
       cloudSecNote: "الحساب مربوط بالسحابة، وتُدار كلمة السرّ من مزوّد الخدمة. استخدم زرّ الخروج لإنهاء الجلسة.",
@@ -7024,7 +7056,7 @@ window.DB = (function () {
       adHintCats: "Store categories", adHintDelivery: "Delivery rates per wilaya",
       adHintSettings: "Store name and contact details",
       remember: "Remember me on this device", back: "Back to the store",
-      defaultHint: "Current password: 123456 — you can change it in Settings → Security.",
+      loginEmail: "Email",
       theme: "Theme", close: "Close", email: "Email",
       localNote: "Changes are saved in this browser.",
       cloudNote: "Products are stored in the cloud and visible to all visitors.",
@@ -7038,10 +7070,10 @@ window.DB = (function () {
       cOrders: "orders", cTotal: "Total", cLast: "Last order", cMsg: "Message on WhatsApp",
       noReviews: "No reviews yet.", shown: "Shown on the site", delRev: "Delete this review?",
       secTitle: "Change password", curPass: "Current password", newPass: "New password",
-      confPass: "Confirm new password", chShort: "Use 6 to 12 digits (numbers only).",
+      confPass: "Confirm new password", chShort: "Use at least 8 characters.",
       secNote: "Numbers only, 6 to 12 digits. Your cloud account password changes with it so syncing keeps working. You will not be asked again on this device until you log out.",
       secSave: "Save password",
-      chOkLocal: "Saved in this browser, but the cloud password could not be updated — check the connection and try again.",
+      chOkLocal: "Could not change the password in Supabase — check the connection and try again.",
       chMismatch: "The new passwords do not match.", chWrong: "The current password is wrong.",
       chOk: "Password updated.", cloudSec: "Cloud sign-in",
       cloudSecNote: "The account is cloud-linked; manage its password with the provider. Use Log out to end the session.",
@@ -7090,65 +7122,8 @@ window.DB = (function () {
   let adminTab = "home";
   let adminUnlocked = false;
 
-  /* ---------- الأمان: كلمة السرّ تُخزَّن مشفّرة (PBKDF2)، لا نصّ صريح ---------- */
-  const ADM_CRED_KEY = "kp-admin-cred";
-  const ADM_SESS_KEY = "kp-admin-session";
-  const ADM_REM_KEY = "kp-admin-remember";
-  /* حساب غرفة الإدارة: البريد ثابت، وكلمة السرّ الافتراضية 123456 (تُخزَّن مشفّرة). */
-  const ADM_EMAIL = "alwathiqg@mail.com";
-  const ADM_DEFAULT = "123456";
-  const ADM_ITER = 120000;
-  const TE = new TextEncoder();
-  function toHex(buf) {
-    const u = new Uint8Array(buf); let s = "";
-    for (let i = 0; i < u.length; i++) s += u[i].toString(16).padStart(2, "0");
-    return s;
-  }
-  function toB64(bytes) {
-    const u = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
-    let s = "";
-    for (let i = 0; i < u.length; i++) s += String.fromCharCode(u[i]);
-    return btoa(s);
-  }
-  function fromB64(s) {
-    const bin = atob(s), u = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
-    return u;
-  }
-  async function admHash(pass, saltB64, iter) {
-    const key = await crypto.subtle.importKey("raw", TE.encode(String(pass)), "PBKDF2", false, ["deriveBits"]);
-    const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: fromB64(saltB64), iterations: iter || ADM_ITER, hash: "SHA-256" }, key, 256);
-    return toHex(bits);
-  }
-  function readCred() { try { const r = localStorage.getItem(ADM_CRED_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
-  function writeCred(c) { try { localStorage.setItem(ADM_CRED_KEY, JSON.stringify(c)); return true; } catch (e) { return false; } }
-  async function ensureCred() {
-    let c = readCred();
-    /* إن كانت كلمة السرّ ما زالت الافتراضية، نعيد كتابتها لتتبع القيمة الحالية
-       (هكذا تُطبَّق 123456 على من كانت كلمته الافتراضية 1234). */
-    if (c && c.salt && c.hash && c.iter && c.def !== true) return c;
-    const salt = toB64(crypto.getRandomValues(new Uint8Array(16)));
-    c = { v: 1, salt: salt, iter: ADM_ITER, hash: await admHash(ADM_DEFAULT, salt, ADM_ITER), def: true };
-    writeCred(c);
-    return c;
-  }
-  async function checkPass(pass) { const c = await ensureCred(); return (await admHash(pass, c.salt, c.iter)) === c.hash; }
-  async function savePass(pass) {
-    const salt = toB64(crypto.getRandomValues(new Uint8Array(16)));
-    writeCred({ v: 1, salt: salt, iter: ADM_ITER, hash: await admHash(pass, salt, ADM_ITER), def: false });
-  }
-  function passIsDefault() { const c = readCred(); return !c || c.def === true; }
-  function sessionOn() { try { return sessionStorage.getItem(ADM_SESS_KEY) === "1" || localStorage.getItem(ADM_REM_KEY) === "1"; } catch (e) { return false; } }
-  function sessionSet(remember) {
-    try {
-      if (remember) localStorage.setItem(ADM_REM_KEY, "1");
-      else sessionStorage.setItem(ADM_SESS_KEY, "1");
-    } catch (e) { /* لا شيء */ }
-  }
-  function sessionClear() {
-    try { sessionStorage.removeItem(ADM_SESS_KEY); localStorage.removeItem(ADM_REM_KEY); } catch (e) { /* لا شيء */ }
-  }
-  function isUnlocked() { return adminUnlocked || (DB.auth.enabled && DB.auth.isAdmin()); }
+  /* الدخول عبر Supabase Auth فقط: لا كلمة سرّ ولا بريد داخل الكود */
+  function isUnlocked() { return !!(DB.auth.enabled && DB.auth.isAdmin()); }
 
   function adminStatusLabel(s) {
     if (s === "confirmed") return t("adminStConfirmed");
@@ -7165,12 +7140,12 @@ window.DB = (function () {
       "<h3>" + esc(at("roomTitle")) + "</h3>" +
       '<p class="a-note">' + esc(at("loginSub")) + "</p>" +
       '<form data-adm="login" novalidate>' +
-      '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" dir="ltr" maxlength="12" required></label>' +
+      '<label class="afield wide"><span>' + esc(at("loginEmail")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr" required></label>' +
+      '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" autocomplete="current-password" dir="ltr" maxlength="72" required></label>' +
       '<p class="aerr" role="alert" hidden></p>' +
       '<button type="submit" class="btn btn-primary btn-block">' + esc(t("adminEnter")) + "</button>" +
       '<button type="button" class="adroom-act" data-adm="close" style="justify-self:center">' + esc(at("back")) + "</button>" +
       "</form>" +
-      (passIsDefault() ? '<p class="a-note adroom-hint">' + esc(at("defaultHint")) + "</p>" : "") +
       "</div></div>";
   }
 
@@ -7505,9 +7480,9 @@ window.DB = (function () {
         "<h4>" + esc(at("secTitle")) + "</h4>" +
         '<p class="a-note" style="margin:0">' + esc(at("secNote")) + "</p>" +
         '<form data-adm="chpass" novalidate style="display:grid;gap:11px">' +
-        '<label class="afield wide"><span>' + esc(at("curPass")) + '</span><input type="password" name="cur" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" dir="ltr" maxlength="12" required></label>' +
-        '<label class="afield wide"><span>' + esc(at("newPass")) + '</span><input type="password" name="nw" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" dir="ltr" maxlength="12" required></label>' +
-        '<label class="afield wide"><span>' + esc(at("confPass")) + '</span><input type="password" name="cf" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" dir="ltr" maxlength="12" required></label>' +
+        '<label class="afield wide"><span>' + esc(at("curPass")) + '</span><input type="password" name="cur" autocomplete="current-password" dir="ltr" maxlength="72" required></label>' +
+        '<label class="afield wide"><span>' + esc(at("newPass")) + '</span><input type="password" name="nw" autocomplete="new-password" dir="ltr" maxlength="72" required></label>' +
+        '<label class="afield wide"><span>' + esc(at("confPass")) + '</span><input type="password" name="cf" autocomplete="new-password" dir="ltr" maxlength="72" required></label>' +
         '<p class="aerr" role="alert" hidden></p>' +
         '<button type="submit" class="btn btn-primary" style="justify-self:start">' + esc(at("secSave")) + "</button>" +
         "</form></div>";
@@ -7647,7 +7622,6 @@ window.DB = (function () {
   async function doLogout() {
     try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (x) { console.error(x); }
     adminUnlocked = false;
-    sessionClear();
     adminTab = "home";
     admResetScroll = true;
     renderAdmin();
@@ -7658,47 +7632,30 @@ window.DB = (function () {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
     err.hidden = true; btn.disabled = true;
-    const pass = String(f.elements.pass ? f.elements.pass.value : "").trim();
-    /* كلمة السرّ فقط — بدون بريد إلكتروني. */
-    if (!pass) return fail(t("adminWrong"));
-    if (DB.auth.enabled) {
-      try {
-        await DB.auth.signIn(ADM_EMAIL, pass);
-        adminUnlocked = true; adminTab = "home"; admResetScroll = true;
-        sessionSet(true);
-        renderAdmin();
-        return;
-      } catch (x) { /* نُكمل إلى كلمة السرّ المحلية */ }
-    }
-    const ok = await checkPass(pass).catch(() => false);
-    if (!ok) return fail(t("adminWrong"));
-    adminUnlocked = true;
-    adminTab = "home";
-    admResetScroll = true;
-    /* تذكّر الجهاز دائماً: لا تُطلب كلمة السرّ مرّة أخرى هنا حتى تسجيل الخروج */
-    sessionSet(true);
-    renderAdmin();
+    const email = String(f.elements.email ? f.elements.email.value : "").trim();
+    const pass = String(f.elements.pass ? f.elements.pass.value : "");
+    if (!email || !pass || !DB.auth.enabled) return fail(t("adminWrong"));
+    try {
+      await DB.auth.signIn(email, pass);
+      adminUnlocked = true; adminTab = "home"; admResetScroll = true;
+      renderAdmin();
+    } catch (x) { fail(t("adminWrong")); }
   }
 
   async function changePass(f) {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
-    const v = (n) => String(f.elements[n] ? f.elements[n].value : "").replace(/\D/g, "");
+    const v = (n) => String(f.elements[n] ? f.elements[n].value : "");
     err.hidden = true;
-    if (v("nw").length < 6 || v("nw").length > 12) return fail(at("chShort"));
+    if (v("nw").length < 8 || v("nw").length > 72) return fail(at("chShort"));
     if (v("nw") !== v("cf")) return fail(at("chMismatch"));
     btn.disabled = true;
-    const ok = await checkPass(v("cur")).catch(() => false);
-    if (!ok) return fail(at("chWrong"));
-    await savePass(v("nw"));
-    /* كلمة سرّ حساب السحابة تتغيّر معها حتى يبقى الدخول والمزامنة متطابقين */
-    let cloudOk = true;
-    if (DB.auth.enabled && DB.auth.isAdmin() && DB.auth.updatePass) {
-      try { await DB.auth.updatePass(v("nw")); } catch (e) { cloudOk = false; console.error(e); }
-    }
+    /* نتحقّق من كلمة السرّ الحالية بإعادة تسجيل الدخول، ثم نغيّرها في Supabase نفسه */
+    try { await DB.auth.signIn(DB.auth.email(), v("cur")); } catch (e) { return fail(at("chWrong")); }
+    try { await DB.auth.updatePass(v("nw")); } catch (e) { console.error(e); return fail(at("chOkLocal")); }
     f.reset();
     renderAdmin();
-    toast(cloudOk ? at("chOk") : at("chOkLocal"), cloudOk ? "ok" : "err");
+    toast(at("chOk"), "ok");
   }
 
   function saveAdmin() {
@@ -7776,6 +7733,7 @@ window.DB = (function () {
 
   function renderAdminEntry() {
     const b = $("#adminBtn");
+    if (b) b.hidden = true;
     if (b) b.innerHTML = ART.icon("gear", "gear-ico") + '<b class="gear-badge" id="gearBadge" hidden>0</b>';
     refreshNewOrder();
   }
@@ -8260,11 +8218,14 @@ window.DB = (function () {
       if (e.key === "Escape" && admRoom && !admRoom.hidden) { e.preventDefault(); closeAdmin(); }
     });
     /* استعادة جلسة المدير المحلية بعد تحديث الصفحة */
-    if (sessionOn()) adminUnlocked = true;
-    /* رابط سري: ?admin أو #admin يفتح الغرفة مباشرة */
+    /* رابط الإدارة الخاص: ‎/dadmin-alwathiq (لا زر ولا رابط ظاهر في الموقع العام) */
     try {
-      const q = new URLSearchParams(location.search);
-      if (q.has("admin") || location.hash === "#admin") setTimeout(openAdmin, 60);
+      const last = location.pathname.replace(/\/+$/, "").split("/").pop().replace(/\.html$/, "");
+      if (last === "dadmin-alwathiq") {
+        const m = document.createElement("meta"); m.name = "robots"; m.content = "noindex,nofollow"; document.head.appendChild(m);
+        document.title = "Admin";
+        Promise.resolve(DB.auth.ready).then(() => openAdmin(), () => openAdmin());
+      }
     } catch (e) { /* لا شيء */ }
 
     /* معرض صور المنتج: الأسهم والمصغّرات والنقرة على كامل الشاشة */
@@ -8359,7 +8320,7 @@ window.DB = (function () {
   var h = location.hostname, ok = location.protocol === "https:" || h === "localhost" || h === "127.0.0.1";
   if (!ok) return;
   window.addEventListener("load", function () {
-    try { navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
+    try { navigator.serviceWorker.register("/sw.js").catch(function () {}); } catch (e) {}
   });
 })();
 </script>
