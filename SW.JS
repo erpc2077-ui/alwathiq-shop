@@ -1,5 +1,5 @@
 /* الوثيق: عامل الخدمة (كاشينغ). ارفع رقم VERSION عند كل تحديث كبير. */
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL = "shell-" + VERSION, STATIC = "static-" + VERSION, IMG = "img-" + VERSION;
 const IMG_MAX = 150;
 
