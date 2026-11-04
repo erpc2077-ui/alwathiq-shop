@@ -8218,13 +8218,15 @@ window.DB = (function () {
       if (e.key === "Escape" && admRoom && !admRoom.hidden) { e.preventDefault(); closeAdmin(); }
     });
     /* استعادة جلسة المدير المحلية بعد تحديث الصفحة */
-    /* رابط الإدارة الخاص: ‎/dadmin-alwathiq (لا زر ولا رابط ظاهر في الموقع العام) */
+    /* رابط الإدارة الخاص: /admin (لا زر ولا رابط ظاهر في الموقع العام) */
     try {
       const last = location.pathname.replace(/\/+$/, "").split("/").pop().replace(/\.html$/, "");
-      if (last === "dadmin-alwathiq") {
+      if (last === "admin") {
         const m = document.createElement("meta"); m.name = "robots"; m.content = "noindex,nofollow"; document.head.appendChild(m);
         document.title = "Admin";
-        Promise.resolve(DB.auth.ready).then(() => openAdmin(), () => openAdmin());
+        /* نفتح اللوحة فوراً دون انتظار السحابة، ثم نعيد رسمها عند جاهزية الجلسة */
+        setTimeout(() => { try { openAdmin(); } catch (e) { console.error(e); } }, 0);
+        Promise.resolve(DB.auth.ready).then(() => { try { renderAdmin(); } catch (e) { /* لا شيء */ } }, () => { /* لا شيء */ });
       }
     } catch (e) { /* لا شيء */ }
 
