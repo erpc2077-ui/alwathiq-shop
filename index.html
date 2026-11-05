@@ -816,6 +816,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 .pm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
 .pm-actions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .pm-actions .btn-ico { width: 18px; height: 18px; }
+.pm-share { width: 100%; margin-top: 10px; }
+.pm-share:hover { border-color: var(--accent); box-shadow: var(--glow-btn); }
 .pm-now { background: var(--grad-soft); border-color: var(--line-2); color: var(--accent); }
 .pm-now:hover { border-color: var(--accent); box-shadow: var(--glow-btn); }
 /* ---------- نبض واضح على زرّ «شراء مباشرة» ---------- */
@@ -3271,6 +3273,7 @@ window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey:
         <button class="btn btn-primary btn-lg btn-glow pm-add" id="pmAdd"></button>
         <button class="btn btn-ghost btn-lg pm-now" id="pmBuy"></button>
       </div>
+      <button class="btn btn-ghost btn-lg pm-share" id="pmShare" type="button" data-i18n="copyProductLink" data-i18n-aria="copyProductLink"></button>
     </div>
   </div>
 </div>
@@ -3449,6 +3452,7 @@ window.I18N = (function () {
       /* بطاقة المنتج */
       outOfStock: "نفد المخزون", addToCart: "أضف إلى السلة",
       onlyLeft: "بقي {n} فقط", inStock: "متوفر: {n}",
+      copyProductLink: "نسخ رابط المنتج", productLinkCopied: "تم نسخ رابط المنتج", productLinkCopyFailed: "تعذّر نسخ الرابط",
 
       /* النافذة */
       specs: "المواصفات", warranty: "الضمان",
@@ -3602,6 +3606,7 @@ window.I18N = (function () {
 
       outOfStock: "Out of stock", addToCart: "Add to cart",
       onlyLeft: "Only {n} left", inStock: "In stock: {n}",
+      copyProductLink: "Copy product link", productLinkCopied: "Product link copied", productLinkCopyFailed: "Could not copy the link",
 
       specs: "Specifications", warranty: "Warranty",
       noResults: "No matching products", noResultsD: "Try a different category, keyword, or remove some filters.",
@@ -5392,8 +5397,36 @@ window.DB = (function () {
   "use strict";
   const FBC = window.KP_FIREBASE || {}, SBC = window.KP_SUPABASE || {};
   const useFB = !!(FBC.apiKey && FBC.projectId);
+  const ADMIN_EMAIL_KEY = "kp-admin-email";
+  function savedAdminEmail() {
+    try { return String(localStorage.getItem(ADMIN_EMAIL_KEY) || "").trim(); } catch (e) { return ""; }
+  }
+  function rememberAdminEmail(email) {
+    try { if (email) localStorage.setItem(ADMIN_EMAIL_KEY, String(email).trim()); } catch (e) { /* لا شيء */ }
+  }
   let SB = null, fb = null;
-  if (!useFB) { try { if (SBC.url && SBC.anonKey && window.supabase) SB = window.supabase.createClient(SBC.url, SBC.anonKey); } catch (e) { SB = null; } }
+  if (!useFB) {
+    try {
+      if (SBC.url && SBC.anonKey && window.supabase) {
+        SB = window.supabase.createClient(SBC.url, SBC.anonKey, {
+          auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: false }
+        });
+        /* إزالة جلسة Supabase القديمة التي كانت تُحفظ في المتصفح قبل هذا التحديث. */
+        try {
+          const ref = new URL(SBC.url).hostname.split(".")[0];
+          const authKey = "sb-" + ref + "-auth-token";
+          const previous = JSON.parse(localStorage.getItem(authKey) || "null");
+          const previousEmail = previous && (
+            (previous.user && previous.user.email) ||
+            (previous.currentSession && previous.currentSession.user && previous.currentSession.user.email) ||
+            (previous.session && previous.session.user && previous.session.user.email)
+          );
+          if (previousEmail) rememberAdminEmail(previousEmail);
+          localStorage.removeItem(authKey);
+        } catch (e) { /* لا شيء */ }
+      }
+    } catch (e) { SB = null; }
+  }
   const ENABLED = useFB || !!SB;
   const BUCKET = "product-images";
   let session = null, remoteOrders = [];
@@ -5430,6 +5463,8 @@ window.DB = (function () {
     const m = await Promise.all([sdk("firebase-app"), sdk("firebase-auth"), sdk("firebase-firestore")]);
     const a = m[0].initializeApp(FBC);
     fb = { A: m[1], F: m[2], auth: m[1].getAuth(a), db: m[2].getFirestore(a) };
+    await fb.A.setPersistence(fb.auth, fb.A.inMemoryPersistence);
+    await fb.A.signOut(fb.auth);
     await new Promise((res) => {
       let first = true;
       fb.A.onAuthStateChanged(fb.auth, (u) => { session = u ? { u: u } : null; if (!u) remoteOrders = []; if (first) { first = false; res(); } });
@@ -5596,7 +5631,8 @@ window.DB = (function () {
   DB.auth = {
     enabled: ENABLED,
     ready: ready,
-    email: () => (session && ((session.user && session.user.email) || (session.u && session.u.email))) || "",
+    email: () => (session && ((session.user && session.user.email) || (session.u && session.u.email))) ||
+      savedAdminEmail() || String((DB.settings() || {}).email || "").trim(),
     isAdmin: () => !!session,
     signIn: async (email, pass) => {
       if (useFB) {
@@ -5608,10 +5644,11 @@ window.DB = (function () {
         if (r.error) throw r.error;
         session = r.data.session;
       }
+      rememberAdminEmail(email);
       await loadOrders();
     },
     signOut: async () => {
-      if (useFB) { await fbReady; await fb.A.signOut(fb.auth); } else await SB.auth.signOut();
+      if (useFB) { await fbReady; await fb.A.signOut(fb.auth); } else await SB.auth.signOut({ scope: "local" });
       session = null; remoteOrders = [];
     },
     /* تغيير كلمة سرّ حساب السحابة أيضاً حتى تبقى كلمة السرّ واحدة والدخول متطابقاً */
@@ -5926,6 +5963,23 @@ window.DB = (function () {
     if (ol) ol.setAttribute("content", ar ? "ar_DZ" : "en_DZ");
   }
 
+  function applyProductMeta(p) {
+    const brand = pick(DB.settings().brand);
+    const title = pick(p.name) + " | " + brand;
+    const desc = pick(p.desc) || title;
+    document.title = title;
+    [
+      ['meta[name="description"]', desc],
+      ['meta[property="og:title"]', title],
+      ['meta[property="og:description"]', desc],
+      ['meta[name="twitter:title"]', title],
+      ['meta[name="twitter:description"]', desc]
+    ].forEach(([selector, value]) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute("content", value);
+    });
+  }
+
   function setLang(l) {
     I18N.set(l);
     document.documentElement.setAttribute("lang", I18N.lang);
@@ -5933,6 +5987,8 @@ window.DB = (function () {
 
     applyStaticText();
     applyMeta();
+    const currentProduct = $("#prodModal").classList.contains("open") ? DB.getProduct(openId) : null;
+    if (currentProduct) applyProductMeta(currentProduct);
 
     /* إعادة رسم كل ما يعتمد على اللغة */
     renderAll();
@@ -6085,13 +6141,18 @@ window.DB = (function () {
   }
 
   /* ---------------- النوافذ ---------------- */
-  function openOv(ovId, modalId) {
-    closeAll();
+  function openOv(ovId, modalId, preserveProductPath) {
+    closeAll(preserveProductPath);
     $(ovId).classList.add("open");
     if (modalId) $(modalId).classList.add("open");
     document.body.classList.add("no-scroll");
   }
-  function closeAll() {
+  function closeAll(preserveProductPath) {
+    const wasProductOpen = $("#prodModal") && $("#prodModal").classList.contains("open");
+    if (!preserveProductPath && wasProductOpen && productPathSlug()) {
+      history.replaceState({}, "", "/");
+      applyMeta();
+    }
     $$(".ov").forEach((o) => o.classList.remove("open"));
     $$(".modal").forEach((m) => m.classList.remove("open"));
     $$(".drawer").forEach((d) => d.classList.remove("open"));
@@ -6584,7 +6645,72 @@ window.DB = (function () {
   }
 
   /* ---------------- نافذة المنتج ---------------- */
-  function openProduct(id) {
+  function productSlugBase(p) {
+    const name = p && p.name && typeof p.name === "object"
+      ? (p.name.ar || p.name.en || p.id)
+      : (p && (p.name || p.id));
+    return String(name || "product").normalize("NFKC").toLowerCase()
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+      .replace(/[^\u0600-\u06FFa-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || String(p && p.id || "product").toLowerCase();
+  }
+
+  function productSlug(p) {
+    const base = productSlugBase(p);
+    const sameName = DB.products().filter((x) => productSlugBase(x) === base);
+    if (sameName.length < 2) return base;
+    const suffix = String(p.id || "item").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return base + "-" + (suffix || "item");
+  }
+
+  function productPathSlug() {
+    try {
+      return decodeURIComponent(location.pathname).replace(/^\/+|\/+$/g, "").toLowerCase();
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function productAtCurrentPath() {
+    const slug = productPathSlug();
+    if (!slug || slug === "admin" || slug.indexOf("admin/") === 0) return null;
+    return DB.activeProducts().find((p) => productSlug(p) === slug) || null;
+  }
+
+  function syncProductRoute() {
+    const p = productAtCurrentPath();
+    if (p) {
+      openProduct(p.id, true);
+    } else if ($("#prodModal").classList.contains("open")) {
+      closeAll(true);
+      applyMeta();
+    }
+  }
+
+  async function copyProductLink(id) {
+    const p = DB.getProduct(id);
+    if (!p) return;
+    const link = location.origin + "/" + productSlug(p);
+    let copied = false;
+    try {
+      if (!navigator.clipboard || !window.isSecureContext) throw new Error("clipboard-unavailable");
+      await navigator.clipboard.writeText(link);
+      copied = true;
+    } catch (e) {
+      const input = document.createElement("textarea");
+      input.value = link;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      try { copied = document.execCommand("copy"); } catch (err) { copied = false; }
+      input.remove();
+    }
+    toast(t(copied ? "productLinkCopied" : "productLinkCopyFailed"), copied ? "ok" : "err");
+  }
+
+  function openProduct(id, fromPath) {
     const p = DB.getProduct(id);
     if (!p) return;
     openId = id;
@@ -6621,7 +6747,11 @@ window.DB = (function () {
     now.disabled = stock <= 0;
     now.innerHTML = ART.icon("bolt", "btn-ico") + "<span>" + esc(t("buyNow")) + "</span>";
 
-    openOv("#prodOv", "#prodModal");
+    applyProductMeta(p);
+    openOv("#prodOv", "#prodModal", true);
+    if (!fromPath && productPathSlug() !== productSlug(p)) {
+      history.pushState({ kpProductId: p.id }, "", "/" + productSlug(p));
+    }
   }
 
   /* ---------------- السلة ---------------- */
@@ -6980,9 +7110,8 @@ window.DB = (function () {
      غرفة كاملة الشاشة تحلّ محلّ اللوحة المنبثقة القديمة، وتعمل على
      طبقة بيانات المتجر نفسها (DB) — لا صلة لها بأي ربط خارجي.
 
-     • الدخول: كلمة سرّ مخزّنة مشفّرة محلياً (PBKDF2-SHA256 + ملح)،
-       أو حساب سحابي إن كانت السحابة مربوطة (DB.auth.enabled).
-     • الجلسة: تبقى بعد تحديث الصفحة، و«تذكّرني» يمدّها لإغلاق المتصفّح.
+     • الدخول: حساب سحابي إن كانت السحابة مربوطة (DB.auth.enabled).
+     • الجلسة: مؤقتة في الذاكرة فقط، وتنتهي عند الخروج أو إعادة تحميل الصفحة.
      • الأقسام: الطلبات، السجل، السلة، العملاء، المنتجات، الآراء،
        التوصيل، الإعدادات، الأمان.
      ============================================================ */
@@ -6998,6 +7127,7 @@ window.DB = (function () {
   const AT = {
     ar: {
       roomTitle: "غرفة الإدارة", loginSub: "أدخل كلمة السرّ للدخول إلى غرفة الإدارة.",
+      loginEmailMissing: "تعذّر تحديد بريد حساب الإدارة الداخلي.",
       homeLead: "اختر القسم الذي تريد إدارته.", backHome: "رجوع إلى الرئيسية",
       adHintOrders: "الطلبات الجديدة الواردة", adHintHistory: "الطلبات المؤكَّدة والمنتهية",
       adHintTrash: "الطلبات الملغاة والمحذوفة", adHintCustomers: "زبائن المتجر ومراسلتهم",
@@ -7020,7 +7150,7 @@ window.DB = (function () {
       noReviews: "لا توجد آراء بعد.", shown: "ظاهر في الموقع", delRev: "حذف هذا الرأي؟",
       secTitle: "تغيير كلمة السرّ", curPass: "كلمة السرّ الحالية", newPass: "كلمة السرّ الجديدة",
       confPass: "تأكيد كلمة السرّ الجديدة", chShort: "اجعل كلمة السرّ 8 أحرف على الأقل.",
-      secNote: "أرقام فقط، من 6 إلى 12 رقماً. تتغيّر معها كلمة سرّ حساب السحابة حتى تبقى المزامنة تعمل، ولن تُطلب منك مرّة أخرى على هذا الجهاز حتى تسجيل الخروج.",
+      secNote: "أرقام فقط، من 6 إلى 12 رقماً. تتغيّر معها كلمة سرّ حساب السحابة حتى تبقى المزامنة تعمل. كلمة السرّ لا تُحفظ، وستُطلب عند كل دخول جديد.",
       secSave: "حفظ كلمة السرّ",
       chOkLocal: "تعذّر تغيير كلمة السرّ في Supabase — تحقّق من الاتصال وحاول مرّة أخرى.",
       chMismatch: "كلمتا السرّ غير متطابقتين.", chWrong: "كلمة السرّ الحالية غير صحيحة.",
@@ -7049,6 +7179,7 @@ window.DB = (function () {
     },
     en: {
       roomTitle: "Admin room", loginSub: "Enter the password to open the admin room.",
+      loginEmailMissing: "The internal admin account email is not configured.",
       homeLead: "Choose the section you want to manage.", backHome: "Back to home",
       adHintOrders: "New incoming orders", adHintHistory: "Confirmed and finished orders",
       adHintTrash: "Cancelled and deleted orders", adHintCustomers: "Your store customers",
@@ -7071,7 +7202,7 @@ window.DB = (function () {
       noReviews: "No reviews yet.", shown: "Shown on the site", delRev: "Delete this review?",
       secTitle: "Change password", curPass: "Current password", newPass: "New password",
       confPass: "Confirm new password", chShort: "Use at least 8 characters.",
-      secNote: "Numbers only, 6 to 12 digits. Your cloud account password changes with it so syncing keeps working. You will not be asked again on this device until you log out.",
+      secNote: "Numbers only, 6 to 12 digits. Your cloud account password changes with it so syncing keeps working. The password is not saved and is required for each new login.",
       secSave: "Save password",
       chOkLocal: "Could not change the password in Supabase — check the connection and try again.",
       chMismatch: "The new passwords do not match.", chWrong: "The current password is wrong.",
@@ -7123,7 +7254,7 @@ window.DB = (function () {
   let adminUnlocked = false;
 
   /* الدخول عبر Supabase Auth فقط: لا كلمة سرّ ولا بريد داخل الكود */
-  function isUnlocked() { return !!(DB.auth.enabled && DB.auth.isAdmin()); }
+  function isUnlocked() { return !!(adminUnlocked && DB.auth.enabled && DB.auth.isAdmin()); }
 
   function adminStatusLabel(s) {
     if (s === "confirmed") return t("adminStConfirmed");
@@ -7140,7 +7271,6 @@ window.DB = (function () {
       "<h3>" + esc(at("roomTitle")) + "</h3>" +
       '<p class="a-note">' + esc(at("loginSub")) + "</p>" +
       '<form data-adm="login" novalidate>' +
-      '<label class="afield wide"><span>' + esc(at("loginEmail")) + '</span><input type="email" name="email" autocomplete="username" dir="ltr" required></label>' +
       '<label class="afield wide"><span>' + esc(t("adminPass")) + '</span><input type="password" name="pass" autocomplete="current-password" dir="ltr" maxlength="72" required></label>' +
       '<p class="aerr" role="alert" hidden></p>' +
       '<button type="submit" class="btn btn-primary btn-block">' + esc(t("adminEnter")) + "</button>" +
@@ -7611,17 +7741,22 @@ window.DB = (function () {
     if (DB.probeSite && DB.cloud && DB.cloud.enabled) Promise.resolve(DB.probeSite()).then(refreshCloudBanner, refreshCloudBanner);
   }
 
-  function closeAdmin() {
+  async function closeAdmin() {
     const room = $("#adminRoom");
     if (!room) return;
     room.hidden = true;
     room.setAttribute("aria-hidden", "true");
     try { document.documentElement.classList.remove("adm-open"); } catch (e) { /* لا شيء */ }
+    adminUnlocked = false;
+    adminTab = "home";
+    admResetScroll = true;
+    try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (e) { console.error(e); }
+    renderAdmin();
   }
 
   async function doLogout() {
-    try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (x) { console.error(x); }
     adminUnlocked = false;
+    try { if (DB.auth.enabled) await DB.auth.signOut(); } catch (x) { console.error(x); }
     adminTab = "home";
     admResetScroll = true;
     renderAdmin();
@@ -7632,9 +7767,10 @@ window.DB = (function () {
     const err = f.querySelector(".aerr"), btn = f.querySelector('[type="submit"]');
     const fail = (m) => { err.hidden = false; err.textContent = m; btn.disabled = false; };
     err.hidden = true; btn.disabled = true;
-    const email = String(f.elements.email ? f.elements.email.value : "").trim();
+    const email = String(DB.auth.email() || "").trim();
     const pass = String(f.elements.pass ? f.elements.pass.value : "");
-    if (!email || !pass || !DB.auth.enabled) return fail(t("adminWrong"));
+    if (!email) return fail(at("loginEmailMissing"));
+    if (!pass || !DB.auth.enabled) return fail(t("adminWrong"));
     try {
       await DB.auth.signIn(email, pass);
       adminUnlocked = true; adminTab = "home"; admResetScroll = true;
@@ -7996,6 +8132,8 @@ window.DB = (function () {
       const open = e.target.closest("[data-open]");
       if (open) { openProduct(open.dataset.open); return; }
 
+      if (e.target.closest("#pmShare")) { copyProductLink(openId); return; }
+
       const add = e.target.closest("[data-add]");
       if (add && !add.disabled) { addToCart(add.dataset.add, 1); return; }
 
@@ -8218,21 +8356,20 @@ window.DB = (function () {
       if (e.key === "Escape" && admRoom && !admRoom.hidden) { e.preventDefault(); closeAdmin(); }
     });
     /* استعادة جلسة المدير المحلية بعد تحديث الصفحة */
-    /* رابط الإدارة الخاص: /admin (لا زر ولا رابط ظاهر في الموقع العام) */
+    /* رابط الإدارة الخاص: ‎/dadmin-alwathiq (لا زر ولا رابط ظاهر في الموقع العام) */
     try {
       const last = location.pathname.replace(/\/+$/, "").split("/").pop().replace(/\.html$/, "");
-      if (last === "admin") {
+      if (last === "dadmin-alwathiq") {
         const m = document.createElement("meta"); m.name = "robots"; m.content = "noindex,nofollow"; document.head.appendChild(m);
         document.title = "Admin";
-        /* نفتح اللوحة فوراً دون انتظار السحابة، ثم نعيد رسمها عند جاهزية الجلسة */
-        setTimeout(() => { try { openAdmin(); } catch (e) { console.error(e); } }, 0);
-        Promise.resolve(DB.auth.ready).then(() => { try { renderAdmin(); } catch (e) { /* لا شيء */ } }, () => { /* لا شيء */ });
+        Promise.resolve(DB.auth.ready).then(() => openAdmin(), () => openAdmin());
       }
     } catch (e) { /* لا شيء */ }
 
     /* معرض صور المنتج: الأسهم والمصغّرات والنقرة على كامل الشاشة */
     wireGallery();
     wireLight();
+    window.addEventListener("popstate", syncProductRoute);
   }
 
   function openCart() {
@@ -8274,8 +8411,11 @@ window.DB = (function () {
     wire();
     DB.load();
     renderAll();
+    syncProductRoute();
     if (typeof catPickInit === "function") catPickInit();
-    if (DB.syncRemote) DB.syncRemote().then((ok) => { if (ok) renderAll(); });
+    if (DB.syncRemote) DB.syncRemote().then((ok) => {
+      if (ok) { renderAll(); syncProductRoute(); }
+    });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
@@ -8327,4 +8467,4 @@ window.DB = (function () {
 })();
 </script>
 </body>
-</html>
+</html> 
