@@ -701,8 +701,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .pname:hover { color: var(--accent); }
-.prate { display: flex; align-items: center; gap: 6px; margin-top: 9px; font-size: 13px; color: var(--muted); }
-.prate .stars { font-size: 13px; }
 
 .pstock { font-size: 12.5px; margin-top: 8px; color: var(--muted); font-weight: 500; }
 /* الندرة تُقرأ بالوزن والأزرق لا بالبرتقالي، فيبقى المظهر أزرقاً خالصاً */
@@ -803,7 +801,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .pm-body { min-width: 0; padding: 4px 0; display: flex; flex-direction: column; }
 .pm-body h3 { font-size: 21px; margin-top: 9px; line-height: 1.32; }
-.pm-desc { color: var(--muted); font-size: 14.8px; margin-top: 14px; line-height: 1.68; }
+.pm-desc { color: var(--muted); font-size: 14.8px; margin-top: 14px; line-height: 1.68; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pm-desc-toggle { align-self: flex-start; border: 0; padding: 5px 0; margin-top: 3px; background: transparent; color: var(--accent); font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.pm-desc-toggle[hidden] { display: none; }
 
 .pm-specs { margin-top: 20px; display: flex; flex-direction: column; gap: 1px; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
 .pm-specs > div { display: flex; justify-content: space-between; gap: 14px; padding: 11px 14px; background: var(--card-2); font-size: 13.8px; }
@@ -1459,7 +1459,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 .stars { display: inline-flex; gap: 2px; line-height: 1; letter-spacing: 0; }
 .stars .star { width: 1em; height: 1em; display: block; fill: var(--line-2); }
 .stars .star.on { fill: var(--star); filter: drop-shadow(0 0 4px rgba(var(--glow-g1), .50)); }
-.prate .stars { font-size: 13px; }
 .rev .stars { font-size: 14px; gap: 3px; }
 
 /* ---------- الفلاتر والرقائق ---------- */
@@ -3085,7 +3084,6 @@ window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey:
             <option value="default" data-i18n="sortDefault">الترتيب الافتراضي</option>
             <option value="asc" data-i18n="sortAsc">السعر: من الأقل للأعلى</option>
             <option value="desc" data-i18n="sortDesc">السعر: من الأعلى للأقل</option>
-            <option value="rating" data-i18n="sortRating">الأعلى تقييماً</option>
             <option value="new" data-i18n="sortNew">الأحدث</option>
           </select>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
@@ -3257,9 +3255,9 @@ window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey:
     <div class="pm-body">
       <span class="pcat" id="pmCat"></span>
       <h3 id="pmName"></h3>
-      <div class="prate" id="pmRate"></div>
       <div class="pstock" id="pmStock"></div>
       <p class="pm-desc" id="pmDesc"></p>
+      <button type="button" class="pm-desc-toggle" id="pmDescToggle" aria-controls="pmDesc" aria-expanded="false" hidden></button>
       <div class="pm-specs" id="pmSpecs"></div>
       <div class="pm-row">
         <div class="pprice"><span class="pnow big" id="pmPrice"></span><span class="pold" id="pmOld"></span></div>
@@ -3273,7 +3271,6 @@ window.KP_SUPABASE = { url: "https://wlgitpkorbqegrocznwa.supabase.co", anonKey:
         <button class="btn btn-primary btn-lg btn-glow pm-add" id="pmAdd"></button>
         <button class="btn btn-ghost btn-lg pm-now" id="pmBuy"></button>
       </div>
-      <button class="btn btn-ghost btn-lg pm-share" id="pmShare" type="button" data-i18n="copyProductLink" data-i18n-aria="copyProductLink"></button>
     </div>
   </div>
 </div>
@@ -3441,7 +3438,7 @@ window.I18N = (function () {
       filters: "الفلاتر", clearFilters: "مسح الفلاتر",
       applyFilters: "عرض النتائج",
       sortDefault: "الترتيب الافتراضي", sortAsc: "السعر: من الأقل للأعلى",
-      sortDesc: "السعر: من الأعلى للأقل", sortRating: "الأعلى تقييماً",
+      sortDesc: "السعر: من الأعلى للأقل",
       sortNew: "الأحدث",
 
       fPrice: "السعر", fCategory: "الفئة", fColor: "اللون",
@@ -3453,6 +3450,7 @@ window.I18N = (function () {
       outOfStock: "نفد المخزون", addToCart: "أضف إلى السلة",
       onlyLeft: "بقي {n} فقط", inStock: "متوفر: {n}",
       copyProductLink: "نسخ رابط المنتج", productLinkCopied: "تم نسخ رابط المنتج", productLinkCopyFailed: "تعذّر نسخ الرابط",
+      showFullDescription: "إظهار الوصف كاملًا", showLess: "عرض أقل",
 
       /* النافذة */
       specs: "المواصفات", warranty: "الضمان",
@@ -3596,7 +3594,7 @@ window.I18N = (function () {
       filters: "Filters", clearFilters: "Clear filters",
       applyFilters: "Show results",
       sortDefault: "Default", sortAsc: "Price: low to high",
-      sortDesc: "Price: high to low", sortRating: "Top rated",
+      sortDesc: "Price: high to low",
       sortNew: "Newest",
 
       fPrice: "Price", fCategory: "Category", fColor: "Colour",
@@ -3607,6 +3605,7 @@ window.I18N = (function () {
       outOfStock: "Out of stock", addToCart: "Add to cart",
       onlyLeft: "Only {n} left", inStock: "In stock: {n}",
       copyProductLink: "Copy product link", productLinkCopied: "Product link copied", productLinkCopyFailed: "Could not copy the link",
+      showFullDescription: "Show full description", showLess: "Show less",
 
       specs: "Specifications", warranty: "Warranty",
       noResults: "No matching products", noResultsD: "Try a different category, keyword, or remove some filters.",
@@ -5874,6 +5873,29 @@ window.DB = (function () {
   /* طريقة التوصيل ثابتة الآن: إلى المنزل. حقل اختيارها أُزيل مؤقتاً */
   let delivery = { mode: "home", wilaya: "16", commune: "" };
   let openId = null;
+  let currentProductDescription = "";
+  let productDescriptionExpanded = false;
+  const PRODUCT_DESCRIPTION_LIMIT = 260;
+
+  function productDescriptionPreview(text) {
+    if (text.length <= PRODUCT_DESCRIPTION_LIMIT) return text;
+    let end = PRODUCT_DESCRIPTION_LIMIT;
+    const space = text.lastIndexOf(" ", end);
+    if (space > PRODUCT_DESCRIPTION_LIMIT - 60) end = space;
+    return text.slice(0, end).trimEnd() + "…";
+  }
+
+  function renderProductDescription(expanded) {
+    productDescriptionExpanded = !!expanded;
+    $("#pmDesc").textContent = productDescriptionExpanded
+      ? currentProductDescription
+      : productDescriptionPreview(currentProductDescription);
+    const toggle = $("#pmDescToggle");
+    const canExpand = currentProductDescription.length > PRODUCT_DESCRIPTION_LIMIT;
+    toggle.hidden = !canExpand;
+    toggle.setAttribute("aria-expanded", canExpand && productDescriptionExpanded ? "true" : "false");
+    toggle.textContent = productDescriptionExpanded ? t("showLess") : t("showFullDescription");
+  }
 
   function emptyFilters() {
     return { cats: [], caps: [], pow: [], port: [], color: [], feat: [], min: null, max: null, instock: false, sale: false };
@@ -5927,6 +5949,13 @@ window.DB = (function () {
     $$("[data-i18n]").forEach((el) => { el.textContent = t(el.getAttribute("data-i18n")); });
     $$("[data-i18n-ph]").forEach((el) => { el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
     $$("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria"))); });
+    if (openId) {
+      const product = DB.getProduct(openId);
+      if (product) {
+        currentProductDescription = String(pick(product.desc) || "");
+        renderProductDescription(productDescriptionExpanded);
+      }
+    }
     /* زرّ اللغة يُظهر رمز اللغة الحالية فقط: حرفان واضحان بلا كرة أرضية */
     const code = I18N.lang === "ar" ? "AR" : "EN";
     const ln = $("#langNow");
@@ -6350,9 +6379,8 @@ window.DB = (function () {
     let list = DB.activeProducts().filter((p) => passes(p) && matchesQuery(p));
     if (sortBy === "asc") list.sort((a, b) => a.price - b.price);
     else if (sortBy === "desc") list.sort((a, b) => b.price - a.price);
-    else if (sortBy === "rating") list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    else if (sortBy === "new") list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || (b.rating || 0) - (a.rating || 0));
-    else list.sort((a, b) => (b.tags || []).indexOf("best") - (a.tags || []).indexOf("best") || (b.rating || 0) - (a.rating || 0));
+    else if (sortBy === "new") list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+    else list.sort((a, b) => (b.tags || []).indexOf("best") - (a.tags || []).indexOf("best"));
     return list;
   }
 
@@ -6498,7 +6526,6 @@ window.DB = (function () {
   function cardHTML(p) {
     const stock = DB.stockOf(p.id);
     const out = stock <= 0;
-    const rate = Number(p.rating || 5);
     let stockTxt = '<div class="pstock">' + esc(t("inStock", { n: stock })) + "</div>";
     if (out) stockTxt = '<div class="pstock out">' + esc(t("outOfStock")) + "</div>";
     else if (stock <= 5) stockTxt = '<div class="pstock low">' + esc(t("onlyLeft", { n: stock })) + "</div>";
@@ -6512,7 +6539,6 @@ window.DB = (function () {
       "</div>" +
       '<div class="pbody">' +
       '<h3 class="pname" role="button" tabindex="0" data-open="' + esc(p.id) + '">' + esc(pick(p.name)) + "</h3>" +
-      '<div class="prate">' + ART.stars(Math.round(rate)) + rate.toFixed(1) + "</div>" +
       stockTxt +
       '<div class="pbottom"><div class="pprice"><span class="pnow">' + money(p.price) + "</span>" +
       (p.old && p.old > p.price ? '<span class="pold">' + money(p.old) + "</span>" : "") + "</div>" +
@@ -6715,17 +6741,16 @@ window.DB = (function () {
     if (!p) return;
     openId = id;
     const stock = DB.stockOf(id);
-    const rate = Number(p.rating || 5);
     const cat = DB.CATS.find((c) => c.id === p.cat) || {};
 
     galleryOpen(p);
     $("#pmCat").textContent = pick(cat.name);
     $("#pmName").textContent = pick(p.name);
-    $("#pmRate").innerHTML = ART.stars(Math.round(rate)) + rate.toFixed(1);
     const sEl = $("#pmStock");
     sEl.className = "pstock " + (stock <= 0 ? "out" : stock <= 5 ? "low" : "");
     sEl.textContent = stock <= 0 ? t("outOfStock") : stock <= 5 ? t("onlyLeft", { n: stock }) : t("inStock", { n: stock });
-    $("#pmDesc").textContent = pick(p.desc);
+    currentProductDescription = String(pick(p.desc) || "");
+    renderProductDescription(false);
 
     const specs = (p.specs || []).filter((s) => s && s.k);
     $("#pmSpecs").innerHTML = specs.length
@@ -7172,6 +7197,8 @@ window.DB = (function () {
       catsNeed: "اكتب اسم الفئة.", catsDel: "حذف هذه الفئة؟ المنتجات المرتبطة بها ستبقى بلا فئة.",
       pTags: "الوسوم", pTagNew: "وسم جديد", pTagAdd: "إضافة وسم", pTagNeed: "اكتب اسم الوسم.",
       pDiscPrice: "السعر بعد الخصم (دج)", pBeforeDisc: "السعر قبل الخصم (دج)",
+      needDiscPrice: "أدخل سعرًا مخفّضًا أقل من السعر قبل الخصم.",
+      discountPricesInvalid: "السعر قبل الخصم يجب أن يكون أعلى من السعر بعد الخصم.",
       /* الباقات */
       adTabPackages: "الباقات", packNew: "إضافة باقة جديدة", packAdd: "إضافة الباقة",
       packItems: "منتجات الباقة", packNoProds: "أضف منتجات أولاً لتضمينها في الباقة.",
@@ -7224,6 +7251,8 @@ window.DB = (function () {
       catsNeed: "Enter the category name.", catsDel: "Delete this category? Products using it will keep working without a category.",
       pTags: "Tags", pTagNew: "New tag", pTagAdd: "Add tag", pTagNeed: "Enter the tag name.",
       pDiscPrice: "Price after discount (DZD)", pBeforeDisc: "Price before discount (DZD)",
+      needDiscPrice: "Enter a discounted price lower than the original price.",
+      discountPricesInvalid: "The price before discount must be higher than the discounted price.",
       /* Bundles */
       adTabPackages: "Bundles", packNew: "Add a new bundle", packAdd: "Add bundle",
       packItems: "Bundle products", packNoProds: "Add products first to include them.",
@@ -7377,7 +7406,7 @@ window.DB = (function () {
       fld("pCat", '<select name="cat">' + cats + "</select>") +
       fld("pPrice", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="price">') +
       fld("pStock", '<input type="text" inputmode="numeric" data-digits autocomplete="off" name="stock" value="10">') +
-      fld("pDesc", '<textarea name="descAr" maxlength="600"></textarea>', 1) +
+      fld("pDesc", '<textarea name="descAr" rows="5"></textarea>', 1) +
       '<div class="afield wide"><span>' + esc(at("pTags")) + '</span><div class="atags">' + tagChecks([], 'name="tag" value') + "</div></div>" +
       '<label class="afield disc-field" hidden><span>' + esc(at("pDiscPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" name="discPrice"></label>' +
       '<div class="afield wide atag-new"><span>' + esc(at("pTagNew")) + '</span><div class="atag-row"><input name="newTagName" maxlength="40" autocomplete="off"><button type="button" class="adroom-act" data-adm="addtag">' + esc(at("pTagAdd")) + "</button></div></div>" +
@@ -7389,9 +7418,10 @@ window.DB = (function () {
       '<div class="aprod" data-product="' + esc(p.id) + '">' +
       '<div class="aprod-name">' + (p.image ? '<img class="athumb" alt="" src="' + esc(p.image) + '">' : "") +
       "<span>" + esc(pick(p.name)) + "</span>" +
+      '<button type="button" class="adroom-act" data-adm="plink" data-id="' + esc(p.id) + '">' + esc(t("copyProductLink")) + "</button>" +
       '<button type="button" class="aprod-del" data-adm="pdel" data-id="' + esc(p.id) + '">' + esc(at("del")) + "</button></div>" +
       '<label class="afield wide"><span>' + esc(at("pNameAr")) + '</span><input type="text" maxlength="90" autocomplete="off" data-pf="name" value="' + esc((p.name && p.name.ar) || "") + '"></label>' +
-      '<label class="afield"><span>' + esc(t("adminPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="price" value="' + esc(p.price) + '"></label>' +
+      '<label class="afield"><span data-pprice-label>' + esc((p.tags || []).indexOf("sale") >= 0 ? at("pDiscPrice") : t("adminPrice")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="price" value="' + esc(p.price) + '"></label>' +
       '<label class="afield disc-field"' + ((p.tags || []).indexOf("sale") >= 0 ? "" : " hidden") + '><span>' + esc(at("pBeforeDisc")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="old" value="' + esc(p.old || 0) + '"></label>' +
       '<label class="afield"><span>' + esc(t("adminStock")) + '</span><input type="text" inputmode="numeric" data-digits autocomplete="off" data-pf="stock" value="' + esc(DB.stockOf(p.id)) + '"></label>' +
       '<label class="afield check"><input type="checkbox" data-pf="active"' + (p.active === false ? "" : " checked") + "><span>" + esc(t("adminActive")) + "</span></label>" +
@@ -7411,7 +7441,9 @@ window.DB = (function () {
     if (!g("cat")) return fail(at("needCat"));
     const tags = Array.from(f.querySelectorAll('input[name="tag"]:checked')).map((x) => x.value);
     const base = num("price"), disc = num("discPrice");
-    const onSale = tags.indexOf("sale") >= 0 && disc > 0 && disc < base;
+    const saleSelected = tags.indexOf("sale") >= 0;
+    if (saleSelected && !(disc > 0 && disc < base)) return fail(at("needDiscPrice"));
+    const onSale = saleSelected;
     const files = Array.from(f.elements.img.files || []).slice(0, 6);
     if (files.some((x) => !/^image\//.test(x.type))) return fail(at("needImg"));
     btn.disabled = true; btn.textContent = at("publishing");
@@ -7798,7 +7830,21 @@ window.DB = (function () {
     const pane = $("#admPane");
     if (!pane) return;
     const num = (el) => Math.max(0, Math.round(Number(toNum(el.value)) || 0));
-    $$("[data-product]", pane).forEach((row) => {
+    const productRows = $$(".aprod[data-product]", pane);
+    const invalidSale = productRows.find((row) => {
+      const sale = row.querySelector('[data-tf="sale"]');
+      if (!sale || !sale.checked) return false;
+      const price = row.querySelector('[data-pf="price"]');
+      const before = row.querySelector('[data-pf="old"]');
+      return !price || !before || num(before) <= num(price);
+    });
+    if (invalidSale) {
+      toast(at("discountPricesInvalid"), "err");
+      const before = invalidSale.querySelector('[data-pf="old"]');
+      if (before) before.focus();
+      return;
+    }
+    productRows.forEach((row) => {
       const box = row.querySelector('[data-pf="active"]');
       const get = (k) => row.querySelector('[data-pf="' + k + '"]');
       const patch = {
@@ -7899,6 +7945,7 @@ window.DB = (function () {
       renderAdmin();
       return;
     }
+    if (act === "plink") { copyProductLink(id); return; }
     if (act === "home") { adminTab = "home"; admResetScroll = true; renderAdmin(); return; }
     if (act === "save") { saveAdmin(); return; }
     if (act === "pdel") {
@@ -7946,6 +7993,10 @@ window.DB = (function () {
       if (field) {
         const sale = scope.querySelector('input[data-tf="sale"], input[name="tag"][value="sale"]');
         field.hidden = !(sale && sale.checked);
+        const priceLabel = scope.querySelector("[data-pprice-label]");
+        if (priceLabel && scope.classList.contains("aprod")) {
+          priceLabel.textContent = sale && sale.checked ? at("pDiscPrice") : t("adminPrice");
+        }
       }
       return;
     }
@@ -8132,7 +8183,7 @@ window.DB = (function () {
       const open = e.target.closest("[data-open]");
       if (open) { openProduct(open.dataset.open); return; }
 
-      if (e.target.closest("#pmShare")) { copyProductLink(openId); return; }
+      if (e.target.closest("#pmDescToggle")) { renderProductDescription(!productDescriptionExpanded); return; }
 
       const add = e.target.closest("[data-add]");
       if (add && !add.disabled) { addToCart(add.dataset.add, 1); return; }
@@ -8405,7 +8456,12 @@ window.DB = (function () {
 
     try {
       const savedSort = localStorage.getItem("kp-sort");
-      if (savedSort) { sortBy = savedSort; $("#sort").value = savedSort; }
+      if (["default", "asc", "desc", "new"].indexOf(savedSort) >= 0) {
+        sortBy = savedSort;
+        $("#sort").value = savedSort;
+      } else if (savedSort) {
+        localStorage.removeItem("kp-sort");
+      }
     } catch (e) { /* لا شيء */ }
 
     wire();
