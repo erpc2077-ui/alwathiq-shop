@@ -47,7 +47,13 @@
 <link rel="canonical" href="https://alwathiq-shop.netlify.app/">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:url" content="https://alwathiq-shop.netlify.app/">
-<meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23F5F5F5'/%3E%3Cg fill='%23B8924E' transform='translate(495 200) scale(1.75)'%3E%3Cpath d='M60 3l7 11-7 11-7-11z'/%3E%3Cpath d='M4 20h30l26 100L40 74z'/%3E%3Cpath d='M116 20H86L60 120l20-46z'/%3E%3Cpath d='M40 34h12l8 58-12-14z'/%3E%3Cpath d='M80 34H68l-8 58 12-14z'/%3E%3C/g%3E%3C/svg%3E">
+<meta property="og:image" content="https://alwathiq-shop.netlify.app/og-image.jpg">
+<meta property="og:image:secure_url" content="https://alwathiq-shop.netlify.app/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="الوثيق | AL WATHIQ — أصالة تستحق ثقتك">
+<meta name="twitter:image" content="https://alwathiq-shop.netlify.app/og-image.jpg">
 
 <link rel="preconnect" href="https://wlgitpkorbqegrocznwa.supabase.co" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1830,6 +1836,10 @@ html.adm-open, html.adm-open body { overflow: hidden; }
 .aorder-addr { color: var(--faint); font-size: 13.5px; }
 .aorder-items { display: grid; gap: 4px; }
 .aorder-item { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; color: var(--muted); }
+.aorder-items-top { gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.aorder-items-top .aorder-item { font-size: 16.5px; font-weight: 800; color: var(--text); letter-spacing: .1px; text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 35%, transparent); }
+.aorder-items-top .aorder-item span { color: var(--text); }
+.aorder-items-top .aorder-item b { color: var(--accent); font-weight: 800; }
 .aorder-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
 .afield.inline { grid-auto-flow: column; align-items: center; gap: 8px; }
 .adel {
@@ -7321,13 +7331,13 @@ window.DB = (function () {
         "<b>" + money(o.total) + "</b>" +
         '<button type="button" class="adel" data-adm="otrash" data-id="' + esc(o.id) + '">' + esc(t("adminDelete")) + "</button>";
     return '<div class="aorder">' +
+      '<div class="aorder-items aorder-items-top">' + items + "</div>" +
       '<div class="aorder-top"><b class="aorder-id">' + esc(o.id) + '</b><span class="aorder-date">' + esc(DB.fmtDate(o.at)) + "</span></div>" +
       '<div class="aorder-meta"><span>' + esc(c.name || "") + '</span><span dir="ltr">' + esc(c.phone || "") + "</span>" +
       "<span>" + esc(wl) + (c.commune ? " - " + esc(c.commune) : "") + "</span>" +
       "<span>" + esc(o.delivery === "desk" ? t("adminDesk") : t("adminHome")) + "</span></div>" +
       (c.address ? '<div class="aorder-addr">' + esc(c.address) + "</div>" : "") +
       (c.notes ? '<div class="aorder-addr">' + esc(c.notes) + "</div>" : "") +
-      '<div class="aorder-items">' + items + "</div>" +
       '<div class="aorder-foot">' + foot + "</div></div>";
   }
 
