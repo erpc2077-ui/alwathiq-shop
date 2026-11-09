@@ -8431,14 +8431,21 @@ window.DB = (function () {
       if (e.key === "Escape" && admRoom && !admRoom.hidden) { e.preventDefault(); closeAdmin(); }
     });
     /* استعادة جلسة المدير المحلية بعد تحديث الصفحة */
-    /* رابط الإدارة الخاص: ‎/dadmin-alwathiq (لا زر ولا رابط ظاهر في الموقع العام) */
+    /* رابط الإدارة الخاص: /dadmin-alwathiq أو #admin */
     try {
       const last = location.pathname.replace(/\/+$/, "").split("/").pop().replace(/\.html$/, "");
-      if (last === "dadmin-alwathiq") {
+      const isAdminPath = last === "dadmin-alwathiq";
+      const isAdminHash = location.hash.toLowerCase() === "#admin";
+      if (isAdminPath || isAdminHash) {
         const m = document.createElement("meta"); m.name = "robots"; m.content = "noindex,nofollow"; document.head.appendChild(m);
         document.title = "Admin";
         Promise.resolve(DB.auth.ready).then(() => openAdmin(), () => openAdmin());
       }
+      window.addEventListener("hashchange", () => {
+        if (location.hash.toLowerCase() === "#admin") {
+          Promise.resolve(DB.auth.ready).then(() => openAdmin(), () => openAdmin());
+        }
+      });
     } catch (e) { /* لا شيء */ }
 
     /* معرض صور المنتج: الأسهم والمصغّرات والنقرة على كامل الشاشة */
