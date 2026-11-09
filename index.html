@@ -47,13 +47,13 @@
 <link rel="canonical" href="https://alwathiq-shop.netlify.app/">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:url" content="https://alwathiq-shop.netlify.app/">
-<meta property="og:image" content="https://alwathiq-shop.netlify.app/og-image.jpg">
-<meta property="og:image:secure_url" content="https://alwathiq-shop.netlify.app/og-image.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/erpc2077-ui/alwathiq-shop/main/og-image.jpg">
+<meta property="og:image:secure_url" content="https://raw.githubusercontent.com/erpc2077-ui/alwathiq-shop/main/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="الوثيق | AL WATHIQ — أصالة تستحق ثقتك">
-<meta name="twitter:image" content="https://alwathiq-shop.netlify.app/og-image.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/erpc2077-ui/alwathiq-shop/main/og-image.jpg">
 
 <link rel="preconnect" href="https://wlgitpkorbqegrocznwa.supabase.co" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3465,6 +3465,7 @@ window.I18N = (function () {
       /* النافذة */
       specs: "المواصفات", warranty: "الضمان",
       noResults: "لا توجد منتجات مطابقة", noResultsD: "جرّب تغيير الفئة أو كلمة البحث أو إزالة بعض الفلاتر.",
+      emptyProducts: "لم تتم إضافة منتجات بعد", emptyProductsD: "ستظهر هنا المنتجات التي تضيفها إلى المتجر.",
       qty: "الكمية",
       /* أزرار الكمية داخل السلة: شاشات القراءة تقرأ الرموز فقط،
          فيجب أن يحمل كل زرّ وصفاً بكلمتين لا رمزاً واحداً */
@@ -3619,6 +3620,7 @@ window.I18N = (function () {
 
       specs: "Specifications", warranty: "Warranty",
       noResults: "No matching products", noResultsD: "Try a different category, keyword, or remove some filters.",
+      emptyProducts: "No products have been added yet", emptyProductsD: "Products you add to the store will appear here.",
       qty: "Quantity",
       /* The quantity buttons are read out by screen readers, so each
          one needs words rather than a bare plus or minus symbol. */
@@ -4391,7 +4393,7 @@ window.ART = (function () {
  * المنتجات، الفئات، الفلاتر، المخزون، الطلبات، الآراء، الإعدادات.
  *
  * كل الحفظ في المتصفح (localStorage) تحت المفتاح kp-v1.
- * عند أول فتح تُحمَّل القائمة الابتدائية (SEED).
+ * يبدأ المتجر بلا منتجات؛ وتُنظَّف المنتجات التجريبية القديمة عند التحميل.
  * تُكتب البيانات بشكل ذرّي: نضع نسخة جديدة في مفتاح مؤقت ثم نستبدل،
  * حتى لا يبقى المتجر بلا بيانات إذا أُغلق التبويب أثناء الحفظ.
  * ============================================================ */
@@ -4501,8 +4503,9 @@ window.DB = (function () {
     }
   };
 
-  /* ---------------- القائمة الابتدائية ---------------- */
-  const SEED = [
+  /* ---------------- معرّفات المنتجات التجريبية القديمة ----------------
+     نحتفظ بها فقط كي نحذف النسخ التي سبق حفظها في متصفحات الزوار أو السحابة. */
+  const LEGACY_SEED = [
     /* ---------- باور بانك ---------- */
     {
       id: "pb-10k-22w", cat: "powerbank", art: "powerbank", tint: "#2f6bd8",
@@ -5011,6 +5014,9 @@ window.DB = (function () {
     }
   ];
 
+  const LEGACY_SEED_IDS = new Set(LEGACY_SEED.map((p) => String(p.id)));
+  const SEED = [];
+
   /* ---------------- الآراء الابتدائية ---------------- */
   const SEED_REVIEWS = [
     { name: { ar: "أمين ب.", en: "Amine B." }, rate: 5, text: { ar: "طلبت الباور بانك والدفع عند الاستلام. وصلني في يومين إلى وهران والجودة ممتازة.", en: "Ordered the power bank with cash on delivery. It arrived in two days to Oran and the quality is excellent." } },
@@ -5056,7 +5062,10 @@ window.DB = (function () {
       try {
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.products) && (parsed.products.length || parsed.settings)) {
-          state = parsed;
+           state = parsed;
+           const previousProductCount = state.products.length;
+           state.products = state.products.filter((p) => p && !LEGACY_SEED_IDS.has(String(p.id)));
+           const removedLegacyProducts = state.products.length !== previousProductCount;
           /* ضمان اكتمال الحقول بعد أي تحديث مستقبلي للاشتقاق */
           if (!state.settings) state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
           if (!state.settings) state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
@@ -5067,7 +5076,8 @@ window.DB = (function () {
           if (!Array.isArray(state.packages)) state.packages = [];
           syncCats();
           syncTags();
-          syncPkgs();
+           syncPkgs();
+           if (removedLegacyProducts) persist();
           return state;
         }
       } catch (e) { /* بيانات تالفة: نعيد البناء */ }
@@ -5387,6 +5397,7 @@ window.DB = (function () {
   return {
     CATS: CATS, FACETS: FACETS, TAGS: TAGS, PKGS: PKGS,
     products: products, activeProducts: activeProducts, getProduct: getProduct,
+    isLegacySeedProduct: (id) => LEGACY_SEED_IDS.has(String(id)),
     stockOf: stockOf, reviews: reviews, settings: settings, rates: rates,
     stats: stats, createOrder: createOrder, orders: orders, subscribe: subscribe,
     packages: activePackages, savePackages: savePackages, applySite: applySite,
@@ -5589,7 +5600,7 @@ window.DB = (function () {
     if (!ENABLED) return false;
     await ready;
     let data;
-    try { data = await BE.products(); } catch (e) { logE(e); return false; }
+    try { data = (await BE.products()).filter((p) => !DB.isLegacySeedProduct(p.id)); } catch (e) { logE(e); return false; }
     const s = DB.load(), byId = {};
     data.forEach((x) => { byId[x.id] = x; });
     s.products = s.products.filter((p) => !p.custom);
@@ -6560,11 +6571,14 @@ window.DB = (function () {
 
   function renderGrid() {
     const list = visibleProducts();
+    const total = DB.activeProducts().length;
     const grid = $("#grid");
     grid.innerHTML = list.length
       ? list.map(cardHTML).join("")
-      : '<div class="empty-note"><b>' + esc(t("noResults")) + "</b>" + esc(t("noResultsD")) + "</div>";
-    $("#resultCount").innerHTML = "<b>" + list.length + "</b> / " + DB.activeProducts().length;
+      : total
+        ? '<div class="empty-note"><b>' + esc(t("noResults")) + "</b>" + esc(t("noResultsD")) + "</div>"
+        : '<div class="empty-note"><b>' + esc(t("emptyProducts")) + "</b>" + esc(t("emptyProductsD")) + "</div>";
+    $("#resultCount").innerHTML = "<b>" + list.length + "</b> / " + total;
   }
 
   /* ---------------- تبديل عرض المنتجات: شبكة / قائمة ---------------- */
